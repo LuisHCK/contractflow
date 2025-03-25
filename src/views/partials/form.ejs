@@ -1,0 +1,65 @@
+<form action="<%= locals.action %>" method="<%= locals.method || 'post' %>">
+    <% fields.map(field => { %>
+    <div class="field <%= field.className %>">
+        <label class="label" for="<%= field.name %>">
+            <%= field.label %>
+            <% if (field.required) { %>
+                *
+            <% } %>
+        </label>
+        <div class="control">
+            <!-- TEXTAREA -->
+            <% if (field.type === 'textarea') { %>
+            <textarea
+                class="textarea"
+                name="<%= field.name %>"
+                id="<%= field.name %>"
+                placeholder="<%= field.placeholder %>"
+                <% if (field.required) { %>
+                    required
+                <% } %>
+            ><%= field.value %></textarea>
+            <!-- SELECT -->
+            <% } else if (field.type === 'select') { %>
+            <div class="select">
+                <select
+                    name="<%= field.name %>"
+                    id="<%= field.name %>"
+                    <% if (field.required) { %>
+                        required
+                    <% } %>
+                    value=""
+                >
+                    <option value="">Select an <%= field.name %></option>
+                    <% field.options.forEach((option, index) => { %>
+                    <option value="<%= option %>" <%= field.value === option ? 'selected' : '' %>>
+                        <%= option.replace('_', ' ') %>
+                    </option>
+                    <% }) %>
+                </select>
+            </div>
+            <!-- Default input -->
+            <% } else { %>
+            <input
+                class="input"
+                type="<%= field.type || 'text' %>"
+                placeholder="<%= field.placeholder %>"
+                name="<%= field.name %>"
+                id="<%= field.name %>"
+                value="<%= field.value %>"
+                <% if (field.required) { %>
+                    required
+                <% } %>
+
+            />
+            <% } %>
+        </div>
+    </div>
+    <% }) %>
+
+    <div>
+        <button class="button is-primary" type="submit">
+            Submit
+        </button>
+    </div>
+</form>

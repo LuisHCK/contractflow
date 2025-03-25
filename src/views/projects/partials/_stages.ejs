@@ -1,0 +1,65 @@
+<div class="table-container">
+    <table class="table is-striped is-hoverable is-fullwidth">
+        <thead>
+            <tr class="is-light">
+                <th>Name</th>
+                <th>Estimated cost</th>
+                <th>Payed</th>
+                <th>Progress</th>
+                <th class="has-text-right">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% stages.forEach(stage=> { %>
+                <tr>
+                    <td>
+                        <%= stage.name %>
+                    </td>
+                    <td>
+                        <div class="tag is-dark">
+                            $<%= stage.estimatedCost %>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="tag is-info">
+                            $<%= stage.totalPayments %>
+                        </div>
+                    </td>
+                    <td>
+                        <progress class="progress <% if (stage.progress >= 100) {%> is-success <%}%> "
+                            value="<%= stage.progress %>" max="100">
+                            <%= stage.progress %>%
+                        </progress>
+
+                    </td>
+                    <td>
+                        <div class="field is-grouped is-justify-content-flex-end">
+                            <p class="control">
+                                <a class="button primary is-small"
+                                    href="/projects/show/<%= project.id %>/stages/show/<%= stage.id %>/payments/create">
+                                    Register payment
+                                </a>
+                            </p>
+                            <p class="control">
+                                <button class="button is-secondary is-small js-iframe-modal-button"
+                                    data-src="/projects/show/<%= project.id %>/stages/show/<%= stage.id %>/payments"
+                                    data-title="Payments for <%= stage.name %>"
+                                    data-actions='[{ "label": "Print", "handler": "printAll", "className": "is-primary" }, { "label": "Close", "className": "is-seconary", "handler": "closeModal" }]'>
+                                    View payments
+                                </button>
+                            </p>
+                            <p class="control">
+                                <a class="button is-light is-small"
+                                    href="/projects/show/<%= project.id %>/stages/edit/<%= stage.id %>">Edit</a>
+                            </p>
+                            <p class="control">
+                                <a class="button is-warning is-small"
+                                    href="/projects/<%= project.id %>/stages/<%= stage.id %>/delete">Delete</a>
+                            </p>
+                        </div>
+                    </td>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+</div>

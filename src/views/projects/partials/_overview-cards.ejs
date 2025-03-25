@@ -1,0 +1,26 @@
+<div class="columns is-multiline is-mobile">
+    <div class="column is-one-quarter-desktop is-half-tablet is-half-mobile">
+        <div class="box">
+            <p class="subtitle is-6 mb-3">Estimated project cost</p>
+            <h4 class="title is-5">$<%= project.estimatedCost %></h4>
+        </div>
+    </div>
+    <div class="column is-one-quarter-desktop is-half-tablet is-half-mobile">
+        <div class="box">
+            <p class="subtitle is-6 mb-3">Actual cost</p>
+            <h4 class="title is-5">$<%= project.actualCost %></h4>
+        </div>
+    </div>
+    <div class="column is-one-quarter-desktop is-half-tablet is-half-mobile">
+        <div class="box">
+            <p class="subtitle is-6 mb-3">Total stages</p>
+            <h4 class="title is-5"><%= stages.length %></h4>
+        </div>
+    </div>
+    <div class="column is-one-quarter-desktop is-half-tablet is-half-mobile">
+        <div class="box">
+            <p class="subtitle is-6 mb-3">Status</p>
+            <h4 class="title is-5 is-capitalized"><%= project.statusLabel %></h4>
+        </div>
+    </div>
+</div>

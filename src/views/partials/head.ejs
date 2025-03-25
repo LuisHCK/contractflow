@@ -1,0 +1,28 @@
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+    <title>
+        <% if (locals.title) { %>
+            <%= locals.title %>
+        <% } else { %>
+            ContractorPay | Streamline your payments, simplify your life
+        <% } %>
+    </title>
+    <meta name="description"
+        content="Plan, budget, and track projects with confidence. Create, manage, and pay contractors with ease.">
+    <meta name="keywords" content="contractor, pay, payment, project, budget, track, manage, create, pay, ease">
+    <meta name="author" content="ContractorPay">
+
+    <!-- Load custom scripts -->
+     <% if (locals.scripts) { %>
+        <% locals.scripts.forEach(script => { %>
+            <script src="<%= script %>" defer></script>
+        <% }); %>
+    <% } %>
+</head>

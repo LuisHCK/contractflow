@@ -1,0 +1,25 @@
+<table class="table is-striped is-hoverable is-fullwidth is-fullwidth">
+    <thead>
+        <tr class="is-light">
+            <% fields.forEach((key)=> { %>
+                <th>
+                    <span class="is-capitalized">
+                        <%= key %>
+                    </span>
+                </th>
+            <% }); %>
+        </tr>
+    </thead>
+
+   <tbody>
+        <% data.forEach((row)=> { %>
+            <tr>
+                <% fields.forEach((key)=> { %>
+                    <td>
+                        <%= row[key] %>
+                    </td>
+                <% }); %>
+            </tr>
+        <% }); %>
+   </tbody>
+</table>

@@ -1,0 +1,22 @@
+{
+    "name": "project-payments",
+    "module": "index.ts",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "dev": "bun --watch ./src/server.js"
+    },
+    "devDependencies": {
+        "@types/bun": "latest"
+    },
+    "peerDependencies": {
+        "typescript": "^5"
+    },
+    "dependencies": {
+        "cors": "^2.8.5",
+        "ejs": "^3.1.10",
+        "express": "^4.21.2",
+        "passport": "^0.7.0",
+        "passport-local": "^1.0.0"
+    }
+}

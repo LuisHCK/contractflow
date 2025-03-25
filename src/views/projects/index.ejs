@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<%- include('../partials/head') %>
+
+    <body>
+        <%- include('../partials/navigation') %>
+
+            <main class="container is-max-desktop py-6 px-4">
+                <nav class="breadcrumb is-small" aria-label="breadcrumbs">
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li class="is-active"><a href="#">Projects</a></li>
+                    </ul>
+                </nav>
+
+                <div class="is-flex is-justify-content-space-between is-align-items-center">
+                    <h1 class="title is-1 is-family-sans-serif">Projects</h1>
+                    <a href="/projects/create %>" class="button is-primary">
+                        Add Project
+                    </a>
+                </div>
+
+                <div class="box">
+                    <%- include('partials/_list', { projects }) %>
+                </div>
+            </main>
+    </body>
+
+</html>
