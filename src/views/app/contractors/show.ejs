@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+    <%- include('../../partials/head', { title: `ContractorPay | ${contractor.name}` }) %>
+
+    <body>
+        <%- include('../../partials/navigation') %>
+
+        <main class="container is-max-desktop py-6 px-4">
+            <nav class="breadcrumb is-small" aria-label="breadcrumbs">
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/contractors">Contractors</a></li>
+                    <li class="is-active">
+                        <a href="#" aria-current="page" class="has-text-dark"> <%= contractor.name %> </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="is-flex is-justify-content-space-between is-align-items-center">
+                <h1 class="title is-1 is-family-sans-serif"><%= contractor.name %></h1>
+                <a href="/contractors/edit/<%= contractor.id %>" class="button is-primary"> Edit </a>
+            </div>
+
+            <h2 class="title is-5">Details</h2>
+
+            <section class="box">
+                <div class="columns">
+                    <div class="column is-6">
+                        <p class="block"><strong>Name:</strong> <%= contractor.name %></p>
+                        <p class="block"><strong>Email:</strong> <%= contractor.email %></p>
+                    </div>
+                    <div class="column is-6">
+                        <p class="block"><strong>Phone:</strong> <%= contractor.phone %></p>
+                        <p class="block"><strong>Address:</strong> <%= contractor.address %></p>
+                    </div>
+                </div>
+                <div class="columns">
+                    <div class="column is-12">
+                        <h3 class="title is-5">Notes</h3>
+                        <p><%= contractor.notes %></p>
+                    </div>
+                </div>
+                <div class="columns">
+                    <div class="column is-12">
+                        <h3 class="title is-5">Projects</h3>
+                        <ul>
+                            <% projects.forEach(project => { %>
+                                <li>
+                                    <a href="/projects/<%= project.id %>"><%= project.name %></a>
+                                </li>
+                            <% }) %>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </body>
+</html>

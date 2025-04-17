@@ -41,16 +41,8 @@
                                 </a>
                             </p>
                             <p class="control">
-                                <button class="button is-secondary is-small js-iframe-modal-button"
-                                    data-src="/projects/show/<%= project.id %>/stages/show/<%= stage.id %>/payments"
-                                    data-title="Payments for <%= stage.name %>"
-                                    data-actions='[{ "label": "Print", "handler": "printAll", "className": "is-primary" }, { "label": "Close", "className": "is-seconary", "handler": "closeModal" }]'>
-                                    View payments
-                                </button>
-                            </p>
-                            <p class="control">
                                 <a class="button is-light is-small"
-                                    href="/projects/show/<%= project.id %>/stages/edit/<%= stage.id %>">Edit</a>
+                                    href="/projects/show/<%= project.id %>/stages/show/<%= stage.id %>">View</a>
                             </p>
                             <p class="control">
                                 <a class="button is-warning is-small"

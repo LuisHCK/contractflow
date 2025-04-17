@@ -19,10 +19,17 @@
     <meta name="keywords" content="contractor, pay, payment, project, budget, track, manage, create, pay, ease">
     <meta name="author" content="ContractorPay">
 
+    <!-- App Scripts -->
+    <script src="/js/iframe-controller.js" defer></script>
+
     <!-- Load custom scripts -->
      <% if (locals.scripts) { %>
         <% locals.scripts.forEach(script => { %>
             <script src="<%= script %>" defer></script>
         <% }); %>
     <% } %>
+
+    <!-- Prefetchers -->
+    <link rel="prefetch" href="/projects" />
+    <link rel="prefetch" href="/contractors" />
 </head>

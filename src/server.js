@@ -4,12 +4,12 @@ import bodyParser from 'body-parser'
 import cors from 'cors'
 import path from 'path'
 import routes from './routes'
-import { init } from './database'
+import { init as dbInit } from './database'
 
 const app = express()
 
 // Initialize database
-init()
+dbInit()
 
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, '/views'));

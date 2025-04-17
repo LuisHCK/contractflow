@@ -4,7 +4,11 @@
             <% fields.forEach((key)=> { %>
                 <th>
                     <span class="is-capitalized">
-                        <%= key %>
+                        <% if (typeof key === 'function') { %>
+                            <%- key() %>
+                        <% } else {%>
+                            <%= key %>
+                        <% } %>
                     </span>
                 </th>
             <% }); %>
@@ -16,7 +20,11 @@
             <tr>
                 <% fields.forEach((key)=> { %>
                     <td>
-                        <%= row[key] %>
+                        <% if (typeof row[key] === 'function') { %>
+                            <%- row[key]() %>
+                        <% } else {%>
+                            <%= row[key] %>
+                        <% } %>
                     </td>
                 <% }); %>
             </tr>

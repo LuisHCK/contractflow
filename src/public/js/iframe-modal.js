@@ -45,6 +45,16 @@ function initButtons() {
             iframe.frameborder = '0'
             iframe.allowFullscreen = true
 
+            // Set the iframe's onload event to handle iframe events
+            iframe.onload = function () {
+                const iframeWindow = iframe.contentWindow
+                iframeWindow.closeIframe = closeModal
+                iframeWindow.redirectIframe = function (url) {
+                    window.location.href = url
+                }
+                iframeWindow.printIframe = printAll
+            }
+
             // Insert the iframe into the modal body
             const modalBody = document.querySelector('.modal-card-body')
             modalBody.innerHTML = ''

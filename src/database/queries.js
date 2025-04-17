@@ -19,10 +19,10 @@ export const PROJECTS = {
 
     ADD: `
         INSERT INTO projects (
-            name, description, start_date, end_date, status
+            name, description, start_date, end_date, status, created_by
         ) 
         VALUES (
-            :name, :description, :startDate, :endDate, :status
+            :name, :description, :startDate, :endDate, :status, :createdBy
         );`,
 
     GET: `
@@ -52,6 +52,8 @@ export const PROJECTS = {
             start_date = :startDate,
             status = :status,
             end_date = :endDate
+            created_by = :createdBy,
+            updated_at = CURRENT_TIMESTAMP
         WHERE id = :id;
     `
 }
@@ -67,10 +69,10 @@ export const STAGES = {
 
     ADD: `
         INSERT INTO stage (
-            project_id, name, estimated_cost, created_by
+            project_id, name, estimated_cost, created_by, start_date, end_date, description
         ) 
         VALUES (
-            :projectId, :name, :estimatedCost, :createdBy
+            :projectId, :name, :estimatedCost, :createdBy, :startDate, :endDate, :description
         );`,
     GET: `SELECT * FROM stage WHERE id = :id;`,
 
@@ -78,18 +80,142 @@ export const STAGES = {
         UPDATE stage
         SET name = :name,
             estimated_cost = :estimatedCost
-        WHERE id = :id;`
+        WHERE id = :id;`,
+
+    GET_PROJECT_ID: `
+        SELECT p.id AS project_id
+        FROM stage s
+        JOIN projects p ON s.project_id = p.id
+        WHERE s.id = :stageId;`
 }
 
 export const PAYMENTS = {
     ADD: `
         INSERT INTO payments (
-            stage_id, amount, date, payer, payee
+            stage_id, amount, date, payer, payee, payment_category_id, contractor_id, description, payment_method, created_by
         ) 
         VALUES (
-            :stageId, :amount, :date, :payer, :payee
+            :stageId, :amount, :date, :payer, :payee, :paymentCategoryId, :contractorId, :description, :paymentMethod, :createdBy
         );`,
-    
+
     GET_ALL: `
-        SELECT * FROM payments WHERE stage_id = :stageId ORDER BY date(date) ASC;`
+        SELECT * FROM payments WHERE stage_id = :stageId ORDER BY date(date) ASC;`,
+
+    GET_ALL_BY_PROJECT_ID: `
+        SELECT * FROM payments p
+        JOIN stage s ON p.stage_id = s.id
+        WHERE s.project_id = :projectId
+        ORDER BY date(date) ASC;`,
+
+    GET: `
+        SELECT * FROM payments WHERE id = :id;`,
+    
+    GET_PROJECT_ID: `
+        SELECT p.id AS project_id
+        FROM payments py
+        JOIN stage s ON py.stage_id = s.id
+        JOIN projects p ON s.project_id = p.id
+        WHERE py.id = :paymentId;`,
+
+    GET_STAGE_ID: `
+        SELECT s.id AS stage_id
+        FROM payments py
+        JOIN stage s ON py.stage_id = s.id
+        WHERE py.id = :paymentId;`,
+}
+
+export const PAYMENT_CATEGORIES = {
+    GET: `SELECT * FROM payment_categories WHERE id = :id;`,
+
+    GET_ALL: `
+        SELECT * FROM payment_categories;`,
+
+    ADD: `
+        INSERT INTO payment_categories (name, description) 
+        VALUES (:name, :description);`,
+
+    UPDATE: `
+        UPDATE payment_categories
+        SET name = :name,
+            description = :description
+        WHERE id = :id;`
+}
+
+export const CONTRACTORS = {
+    // Get all contractors
+    GET_ALL: `
+        SELECT * FROM contractors
+        ORDER BY name ASC;`,
+
+    // Get a single contractor by ID
+    GET: `
+        SELECT * FROM contractors
+        WHERE id = :id;`,
+
+    // Add a new contractor
+    ADD: `
+        INSERT INTO contractors (
+            name, email, phone, address
+        ) 
+        VALUES (
+            :name, :email, :phone, :address
+        );`,
+
+    // Update an existing contractor
+    UPDATE: `
+        UPDATE contractors
+        SET name = :name,
+            email = :email,
+            phone = :phone,
+            address = :address,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = :id;`,
+
+    // Delete a contractor by ID
+    DELETE: `
+        DELETE FROM contractors
+        WHERE id = :id;`,
+
+    // Get all contractors for a specific project
+    PROJECTS: `
+        SELECT DISTINCT 
+            p.id AS project_id,
+            p.name AS project_name
+        FROM 
+            projects p
+        JOIN stage s ON p.id = s.project_id
+        JOIN payments py ON s.id = py.stage_id
+        WHERE 
+            py.contractor_id = :id
+        ORDER BY p.start_date ASC
+        LIMIT 10 OFFSET 0;`
+}
+
+export const EVIDENCES = {
+    ADD: `
+        INSERT INTO evidences (
+            payment_id, file_path, description, created_by
+        ) 
+        VALUES (
+            :paymentId, :filePath, :description, :createdBy
+        );`,
+
+    GET_ALL: `
+        SELECT * FROM evidences WHERE payment_id = :paymentId;`,
+
+    GET: `
+        SELECT * FROM evidences WHERE id = :id;`,
+
+    GET_PROJECT_ID: `
+        SELECT p.id AS project_id
+        FROM payments py
+        JOIN stage s ON py.stage_id = s.id
+        JOIN projects p ON s.project_id = p.id
+        WHERE py.id = :paymentId;`,
+
+    GET_STAGE_ID: `
+        SELECT s.id AS stage_id
+        FROM payments py
+        JOIN stage s ON py.stage_id = s.id
+        WHERE py.id = :paymentId;`
 }

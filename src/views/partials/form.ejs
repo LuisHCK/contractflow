@@ -1,4 +1,11 @@
-<form action="<%= locals.action %>" method="<%= locals.method || 'post' %>">
+<form
+    action="<%= locals.action %>"
+    method="<%= locals.method || 'post' %>"
+    class="form"
+    <% if (fields.some(field => field.type === 'file')) { %>
+        enctype="multipart/form-data"
+    <% } %>
+>
     <% fields.map(field => { %>
     <div class="field <%= field.className %>">
         <label class="label" for="<%= field.name %>">
@@ -19,6 +26,7 @@
                     required
                 <% } %>
             ><%= field.value %></textarea>
+
             <!-- SELECT -->
             <% } else if (field.type === 'select') { %>
             <div class="select">
@@ -30,14 +38,51 @@
                     <% } %>
                     value=""
                 >
-                    <option value="">Select an <%= field.name %></option>
+                    <option value=""><%= field.placeholder %></option>
                     <% field.options.forEach((option, index) => { %>
-                    <option value="<%= option %>" <%= field.value === option ? 'selected' : '' %>>
-                        <%= option.replace('_', ' ') %>
-                    </option>
+                        <!-- Handle object options -->
+                        <% if (typeof option === 'object') { %>
+                        <option
+                            value="<%= option.value %>"
+                            <%= field.value === option ? 'selected' : '' %>
+                        >
+                            <%= option.label %>
+                        </option>
+                        <!-- Simple text -->
+                        <% } else { %>
+                        <option value="<%= option %>" <%= field.value === option ? 'selected' : '' %>>
+                            <%= option.replace('_', ' ') %>
+                        </option>
+                        <% } %>
                     <% }) %>
                 </select>
             </div>
+
+            <!-- FILE -->
+            <% } else if (field.type === 'file') { %>
+            <div class="file has-name is-fullwidth">
+                <label class="file-label">
+                <input
+                    class="file-input"
+                    type="file"
+                    name="<%= field.name %>"
+                    accept="<%= field.accept %>"
+                    id="<%= field.name %>"
+                    <% if (field.required) { %>
+                        required
+                    <% } %>
+                    onchange="const fileName = this.files[0].name;document.getElementById('filename-<%= field.name %>').innerText = fileName;"
+                />
+                <span class="file-cta">
+                    <span class="file-icon">
+                    <i class="fas fa-upload"></i>
+                    </span>
+                    <span class="file-label">Choose a file…</span>
+                </span>
+                <span class="file-name" id="filename-<%= field.name %>"></span>
+                </label>
+            </div>
+
             <!-- Default input -->
             <% } else { %>
             <input

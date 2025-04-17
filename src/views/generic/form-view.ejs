@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <%- include('../partials/head', {title: `ContractorPay | ${locals.title}`}) %>
+
     <body>
         <%- include('../partials/navigation') %>
             <main class="container is-max-desktop py-6 px-4">
@@ -8,8 +9,24 @@
                     <%= locals.title %>
                 </h1>
                 <div class="box">
+
+                    <% if (form.error) { %>
+                        <div class="notification is-danger" id="alert">
+                            <button
+                                class="delete"
+                                onclick="
+                                    const alert = document.getElementById('alert');
+                                    alert.parentNode.removeChild(alert);
+                                "
+                            >
+                        </button>
+                            <%= form.error %>
+                        </div>
+                    <% } %>
+
                     <%- include('../partials/form', form) %>
                 </div>
             </main>
     </body>
+
 </html>

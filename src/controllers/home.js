@@ -1,3 +1,3 @@
 export const index = (_req, res) => {
-    res.render('index')
+    res.render('app/index')
 }

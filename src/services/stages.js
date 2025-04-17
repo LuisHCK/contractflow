@@ -9,6 +9,11 @@ export class Stage {
         this.estimatedCost = stage.estimatedCost || stage.estimated_cost
         this.totalPayments = stage.totalPayments || stage.total_payments || 0
         this.progress = stage.progress || 0
+        this.createdAt = stage.createdAt || stage.created_at
+        this.updatedAt = stage.updatedAt || stage.updated_at
+        this.createdBy = stage.createdBy || stage.created_by
+        this.updatedBy = stage.updatedBy || stage.updated_by
+        Object.assign(this, stage)
     }
 }
 
@@ -89,6 +94,27 @@ export const updateStage = async (id, stage) => {
         return null
     } catch (error) {
         console.error(`Error updating stage: ${error.message}`)
+        return null
+    }
+}
+
+/**
+ * Retrieves the project ID associated with a given stage ID from the database.
+ *
+ * @async
+ * @function getProjectId
+ * @param {number|string} stageId - The unique identifier of the stage.
+ * @returns {Promise<number|string|null>} A promise that resolves with the project ID if found,
+ * or null if an error occurs during the database query or if the stage ID doesn't correspond to a project.
+ * Logs an error message to the console if the database operation fails.
+ */
+export const getProjectId = async (stageId) => {
+    try {
+        const query = database.query(STAGES.GET_PROJECT_ID)
+        const { projectId } = query.get({ stageId })
+        return projectId
+    } catch (error) {
+        console.error(`Error fetching project ID: ${error.message}`)
         return null
     }
 }
