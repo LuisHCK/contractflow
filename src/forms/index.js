@@ -145,3 +145,16 @@ export const EVIDENCE_FORM = {
         }
     ]
 }
+
+export const LOGIN_FORM = {
+    fields: [
+        { label: 'Email', name: 'email', placeholder: 'Email', type: 'email', required: true },
+        {
+            label: 'Password',
+            name: 'password',
+            placeholder: 'Password',
+            type: 'password',
+            required: true
+        }
+    ]
+}

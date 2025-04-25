@@ -1,6 +1,5 @@
 // Express simple router
 import express from 'express'
-import * as homeController from '@/controllers/home'
 import * as projectController from '@/controllers/projects'
 import * as stageController from '@/controllers/stages'
 import * as contractorsController from '@/controllers/contractors'
@@ -8,13 +7,11 @@ import * as paymentsController from '@/controllers/payments'
 import * as paymentCategoriesController from '@/controllers/payment-categories'
 import * as evidencesController from '@/controllers/evidences'
 import { uploadFileMiddleware as uploadFileMiddleware } from '@/middlewares/upload'
+import { ensureAuthenticated } from '@/middlewares/auth'
 
 const router = express.Router()
 
-/**
- * HOMEPAGE
- */
-router.get('/', homeController.index)
+router.use(ensureAuthenticated)
 
 /**
  * PROJECTS

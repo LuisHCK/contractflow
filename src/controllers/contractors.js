@@ -1,9 +1,9 @@
-import { database } from '@/database'
+import { database } from '@/database' // TODO: Move this code to a service
 import { CONTRACTORS } from '@/database/queries'
 import { CONTRACTOR_FORM } from '@/forms'
 import { populateForm } from '@/forms/utils'
 import * as contractorService from '@/services/contractors'
-import { formatData, formatFields, formatTableViewData } from '@/utils/generic-views'
+import { formatTableViewData } from '@/utils/generic-views'
 
 // Get all contractors
 export const index = async (_req, res) => {

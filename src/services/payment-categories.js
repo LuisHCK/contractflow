@@ -56,6 +56,17 @@ export const create = async (category = {}) => {
     }
 }
 
+export const createOrUpdate = async (category = {}) => {
+    try {
+        const query = database.query(PAYMENT_CATEGORIES.ADD_OR_UPDATE)
+        const { lastInsertRowid } = query.run({ ...category })
+        return new PaymentCategory({ ...category, id: lastInsertRowid })
+    } catch (error) {
+        console.error(`Error creating or updating payment category: ${error.message}`)
+        return null
+    }
+}
+
 /**
  * Update a payment category
  * @param {number} id Payment category ID
@@ -70,5 +81,50 @@ export const update = async (id, category = {}) => {
     } catch (error) {
         console.error(`Error updating payment category: ${error.message}`)
         return null
+    }
+}
+
+/**
+ * Seeds the database with a predefined list of payment categories.
+ * Each category includes a name and description.
+ *
+ * @async
+ * @function
+ * @returns {Promise<void>} Resolves when all categories have been created.
+ */
+export const seedPaymentCategories = async () => {
+    try {
+        const categories = [
+            {
+                name: 'Labor',
+                description: 'Payments for construction workers, subcontractors, and skilled labor'
+            },
+            {
+                name: 'Materials',
+                description:
+                    'Payments related to construction materials such as cement, steel, and bricks'
+            },
+            {
+                name: 'Equipment Rental',
+                description: 'Payments for renting construction equipment and machinery'
+            },
+            {
+                name: 'Permits & Fees',
+                description: 'Payments for government permits, licenses, and inspection fees'
+            },
+            {
+                name: 'Site Utilities',
+                description:
+                    'Payments for temporary utilities like water, electricity, and sanitation on site'
+            }
+        ]
+
+        for (const category of categories) {
+            await createOrUpdate(category)
+        }
+
+        console.info('Payment categories seeded successfully.')
+    } catch (error) {
+        console.error(`Error seeding payment categories: ${error.message}`)
     }
 }

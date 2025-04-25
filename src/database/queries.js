@@ -1,3 +1,33 @@
+export const USERS = {
+    GET_ALL: `
+        SELECT * FROM users;`,
+
+    GET: `
+        SELECT * FROM users WHERE id = :id;`,
+
+    ADD: `
+        INSERT INTO users (
+            password, email, role, active, name
+        )
+        VALUES (
+            :password, :email, :role, :active, :name
+        );`,
+
+    COUNT: `
+        SELECT COUNT(*) AS count FROM users;`,
+
+    UPDATE: `
+        UPDATE users
+        SET password = :password,
+            email = :email,
+            role = :role,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = :id;`,
+
+    FIND_BY_EMAIL: `
+        SELECT * FROM users WHERE email = :email;`
+}
+
 export const PROJECTS = {
     GET_ALL: `
         SELECT 
@@ -109,7 +139,7 @@ export const PAYMENTS = {
 
     GET: `
         SELECT * FROM payments WHERE id = :id;`,
-    
+
     GET_PROJECT_ID: `
         SELECT p.id AS project_id
         FROM payments py
@@ -121,7 +151,7 @@ export const PAYMENTS = {
         SELECT s.id AS stage_id
         FROM payments py
         JOIN stage s ON py.stage_id = s.id
-        WHERE py.id = :paymentId;`,
+        WHERE py.id = :paymentId;`
 }
 
 export const PAYMENT_CATEGORIES = {
@@ -133,6 +163,12 @@ export const PAYMENT_CATEGORIES = {
     ADD: `
         INSERT INTO payment_categories (name, description) 
         VALUES (:name, :description);`,
+
+    ADD_OR_UPDATE: `
+        INSERT INTO payment_categories (name, description)
+        VALUES (:name, :description)
+        ON CONFLICT(name) DO UPDATE SET
+            description = excluded.description;`,
 
     UPDATE: `
         UPDATE payment_categories

@@ -40,3 +40,10 @@ yarn-error.log
 # sql database
 *.sqlite
 *.db
+
+# Uploads folder
+uploads
+# Bun cache
+.bun
+# Bun build cache
+.bun-build

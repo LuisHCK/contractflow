@@ -1,4 +1,5 @@
 import { Database } from 'bun:sqlite'
+import seed from './seed'
 
 export const database = new Database('database.db', {
     create: true,
@@ -90,10 +91,9 @@ export const init = async () => {
             FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE RESTRICT
         );
         CREATE INDEX IF NOT EXISTS idx_evidences_payment_id ON evidences(payment_id);
-
-        INSERT INTO users (name, email, password, role, active)
-        SELECT 'admin', 'admin@example.com', 'hashed_password_here', 'admin', 1
-        WHERE NOT EXISTS (SELECT id FROM users WHERE email = 'admin@example.com' AND role = 'admin');
     `)
+
     console.log('Database initialized')
+
+    await seed()
 }
