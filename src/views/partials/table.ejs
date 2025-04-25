@@ -1,6 +1,6 @@
 <table class="table is-striped is-hoverable is-fullwidth is-fullwidth">
     <thead>
-        <tr class="is-light">
+        <tr>
             <% fields.forEach((key)=> { %>
                 <th>
                     <span class="is-capitalized">
@@ -29,5 +29,15 @@
                 <% }); %>
             </tr>
         <% }); %>
+
+        <% if (data.length === 0) { %>
+            <tr>
+                <td colspan="<%= fields.length %>" class="has-text-centered">
+                    <div class="notification is-warning">
+                        No data available
+                    </div>
+                </td>
+            </tr>
+        <% } %>
    </tbody>
 </table>

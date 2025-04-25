@@ -18,11 +18,38 @@ export const login = async (req, res, next) => {
     try {
         // Handle login form submission
         if (req.method === 'POST') {
-            const { email, password } = req.body
-            passport.authenticate('local', {
-                successRedirect: '/projects', // Redirect on successful login
-                failureRedirect: '/login', // Redirect on failed login
-                failureMessage: true // Enable flash messages for failure
+            return passport.authenticate('local', (err, user, _info) => {
+                // If an error occurs during authentication
+                if (!!err) {
+                    return res.render('generic/form-view', {
+                        title: 'Login',
+                        form: LOGIN_FORM,
+                        messages: [
+                            { content: 'An error occurred during authentication', type: 'danger' }
+                        ]
+                    })
+                }
+
+                // If user is not found or password is incorrect
+                if (!user) {
+                    return res.render('generic/form-view', {
+                        title: 'Login',
+                        form: LOGIN_FORM,
+                        messages: [{ content: 'Invalid credentials', type: 'warning' }]
+                    })
+                }
+
+                // If user is found, log them in
+                req.logIn(user, (err) => {
+                    if (err) {
+                        return res.render('generic/form-view', {
+                            title: 'Login',
+                            form: LOGIN_FORM,
+                            messages: [{ content: 'Failed to log in', type: 'warning' }]
+                        })
+                    }
+                    return res.redirect('/projects')
+                })
             })(req, res, next)
         } else {
             // Render the login form
@@ -30,6 +57,34 @@ export const login = async (req, res, next) => {
         }
     } catch (error) {
         console.error(`Error during login: ${error.message}`)
-        res.status(500).json({ error: 'Failed to log in' })
+
+        return res.render('generic/form-view', {
+            title: 'Login',
+            form: LOGIN_FORM,
+            messages: [
+                {
+                    content: 'Please log in to continue',
+                    type: 'info'
+                }
+            ]
+        })
+    }
+}
+
+export const logout = async (req, res) => {
+    try {
+        // Log the user out
+        req.logout((err) => {
+            if (err) {
+                console.error(`Error during logout: ${err.message}`)
+                return res.status(500).json({ error: 'Failed to log out' })
+            }
+
+            // Redirect to login page after successful logout
+            res.redirect('/login')
+        })
+    } catch (error) {
+        console.error(`Error during logout: ${error.message}`)
+        res.redirect('/?error=logout_failed')
     }
 }

@@ -2,7 +2,7 @@
 <div class="table-container">
     <table class="table is-striped is-hoverable is-fullwidth">
         <thead>
-            <tr class="is-light">
+            <tr>
                 <th>Name</th>
                 <th>Description</th>
                 <th>Status</th>
@@ -34,6 +34,17 @@
                 </td>
             </tr>
         <% }); %>
+
+        <!-- No projects message -->
+        <% if (projects.length === 0) { %>
+            <tr>
+                <td colspan="6">
+                    <div class="notification is-warning has-text-centered">
+                        No projects found.
+                    </div>
+                </td>
+            </tr>
+        <% } %>
         </tbody>
     </table>
 </div>

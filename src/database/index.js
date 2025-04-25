@@ -69,7 +69,6 @@ export const init = async () => {
             amount REAL NOT NULL,
             date DATE NOT NULL,
             payer TEXT NOT NULL,
-            payee TEXT NOT NULL,
             evidence TEXT,
             created_by INTEGER NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -90,7 +89,14 @@ export const init = async () => {
             FOREIGN KEY (payment_id) REFERENCES payments(id) ON DELETE RESTRICT,
             FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE RESTRICT
         );
+
         CREATE INDEX IF NOT EXISTS idx_evidences_payment_id ON evidences(payment_id);
+
+        CREATE TABLE IF NOT EXISTS sessions (
+            sid TEXT PRIMARY KEY,
+            sess TEXT NOT NULL,
+            expire INTEGER NOT NULL
+        );
     `)
 
     console.log('Database initialized')

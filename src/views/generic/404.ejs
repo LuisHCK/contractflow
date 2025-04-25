@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="<%= locals.theme || 'light' %>">
+<%- include('../partials/head', {title: `ContractorPay | ${locals.title}`}) %>
+
+    <body>
+        <%- include('../partials/navigation') %>
+            <main class="container is-max-desktop py-6 px-4">
+                <section class="hero is-medium">
+                    <div class="hero-body">
+                        <p class="title is-size-1">404</p>
+                        <p class="subtitle">
+                            Page not found
+                        </p>
+                        <div class="">
+                            <button
+                                class="button is-primary"
+                                onclick="window.history.back()"
+                            >
+                                Go back
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            </main>
+    </body>
+
+</html>

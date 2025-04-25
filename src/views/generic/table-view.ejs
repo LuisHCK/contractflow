@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="<%= locals.theme || 'light' %>">
 <%- include('../partials/head', {title: `ContractorPay | ${locals.title}`}) %>
 
     <body>
@@ -28,7 +28,9 @@
                     <h2 class="subtitle"><%= locals.description %></h2>
                 <% } %>
 
-                <%- include('../partials/table', { data, fields }) %>
+                <div class="box">
+                    <%- include('../partials/table', { data, fields }) %>
+                </div>
             </section>
         </main>
     </body>

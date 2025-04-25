@@ -76,6 +76,5 @@ export class Payment {
         this.amount = Number(payment.amount || 0)
         this.date = payment.date
         this.payer = payment.payer ?? ''
-        this.payee = payment.payee ?? ''
     }
 }

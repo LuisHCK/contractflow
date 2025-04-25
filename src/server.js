@@ -9,6 +9,8 @@ import { init as dbInit } from './database'
 import passport from 'passport'
 import session from 'express-session'
 import initializePassport from './auth/passport'
+import { setLocals } from './middlewares/auth'
+import { BunSQLiteStore } from './auth/bun-sqlite-store'
 const app = express()
 
 // Initialize database
@@ -29,13 +31,18 @@ initializePassport(passport)
 
 app.use(
     session({
+        store: new BunSQLiteStore(), // Store session in SQLite database
         secret: process.env.SECRET_KEY,
         resave: false,
-        saveUninitialized: false
+        saveUninitialized: false,
+        cookie: {
+            maxAge: 1000 * 60 * 60 * 24 // 1 day
+        }
     })
 )
 app.use(passport.initialize())
 app.use(passport.session())
+app.use(setLocals)
 
 // Public routes
 app.post('/api/payments', (req, res) => {
@@ -61,7 +68,7 @@ app.use(privateRouter)
 
 // Handle 404 errors
 app.use((_req, res, _next) => {
-    res.status(404).send('404 Not Found')
+    res.render('generic/404', {title: '404 - Not Found'})
 })
 
 const port = process.env.PORT || 3000

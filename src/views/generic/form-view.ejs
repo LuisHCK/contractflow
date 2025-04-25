@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="<%= locals.theme || 'light' %>">
 <%- include('../partials/head', {title: `ContractorPay | ${locals.title}`}) %>
-
     <body>
         <%- include('../partials/navigation') %>
             <main class="container is-max-desktop py-6 px-4">
+                <%- include('../partials/flash-messages', locals) %>
+
                 <h1 class="title is-3">
                     <%= locals.title %>
                 </h1>

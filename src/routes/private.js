@@ -8,6 +8,7 @@ import * as paymentCategoriesController from '@/controllers/payment-categories'
 import * as evidencesController from '@/controllers/evidences'
 import { uploadFileMiddleware as uploadFileMiddleware } from '@/middlewares/upload'
 import { ensureAuthenticated } from '@/middlewares/auth'
+import { logout } from '@/controllers/auth'
 
 const router = express.Router()
 
@@ -77,5 +78,10 @@ router.post(
     uploadFileMiddleware.single('attachment'),
     evidencesController.create
 )
+
+/**
+ * SESSION
+ */
+router.post('/logout', logout)
 
 export default router

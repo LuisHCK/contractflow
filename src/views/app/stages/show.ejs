@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="<%= locals.theme || 'light' %>">
 <%- include('../../partials/head', { title: `ContractorPay | ${project.name} stages` }) %>
 
     <body>
@@ -26,6 +26,7 @@
                     <h1 class="title is-1 is-family-sans-serif">
                         <%= stage.name %>
                     </h1>
+
                     <div>
                         <a href="/projects/show/<%= project.id %>/stages/edit/<%= stage.id %>?backto=details"
                             class="button is-primary">
@@ -35,17 +36,22 @@
                             class="button is-secondary">
                             Register payment
                         </a>
-                        <a href="/projects/show/<%= project.id %>/stages/print/<%= stage.id %>" class="button is-info">
-                            Print report
-                        </a>
+                        <% if (payments.length > 0) { %>
+                            <a href="/projects/show/<%= project.id %>/stages/print/<%= stage.id %>" class="button is-info">
+                                Print report
+                            </a>
+                        <% } %>
                     </div>
+
                 </section>
+
+                <h2 class="subtitle"><%= stage.description %></h2>
 
                 <section>
                     <h2 class="title is-5">Payments</h2>
                 </section>
 
-                <div class="mt-4 box">
+                <div class="mt-4">
                     <ul class="columns is-mobile is-multiline">
                         <% if (payments.length === 0) { %>
                             <li class="column is-full">

@@ -12,7 +12,6 @@ export class Payment {
         this.amount = payment.amount
         this.date = payment.date
         this.payer = payment.payer
-        this.payee = payment.payee
         this.paymentCategoryId = payment.paymentCategoryId || payment.payment_category_id
         this.contractor = payment.contractor
         this.description = payment.description

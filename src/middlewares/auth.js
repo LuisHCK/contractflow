@@ -36,3 +36,11 @@ export const ensureAuthenticated = (req, res, next) => {
     res.redirect('/login')
     return
 }
+
+
+export const setLocals = (req, res, next) => {
+    res.locals.user = req.user || null
+    res.locals.theme = 'light'
+
+    next()
+}
