@@ -1,6 +1,8 @@
 import { STAGE_FORM } from '@/forms'
+import { formatOptions, populateForm } from '@/forms/utils'
 import { getAllPayments } from '@/services/payments'
 import { getProjectById } from '@/services/projects'
+import { getAll as getAllContractors } from '@/services/contractors'
 import { createStage, getStageById, updateStage } from '@/services/stages'
 
 export const index = async (_req, res) => {
@@ -92,9 +94,22 @@ export const create = async (req, res) => {
             }
         }
 
+        const contractorsOptions = formatOptions({
+            items: await getAllContractors()
+        })
+
+        const form = populateForm({
+            form: STAGE_FORM,
+            data: {
+                ...req.body,
+                contractorId: contractorsOptions
+            }
+        })
+
         // Render form view
-        res.render('generic/form-view', { form: STAGE_FORM, title: 'Create project stage' })
+        res.render('generic/form-view', { form, title: 'Create project stage' })
     } catch (error) {
+        console.error(error)
         res.status(500).json({ message: error.message })
     }
 }

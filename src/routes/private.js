@@ -47,6 +47,11 @@ router.post(
     paymentsController.createStagePayment
 )
 
+router.get(
+    '/payments/print/:id',
+    paymentsController.print
+)
+
 /**
  * CONTRACTORS
  */

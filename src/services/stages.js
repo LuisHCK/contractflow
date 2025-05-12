@@ -8,6 +8,7 @@ export class Stage {
         this.name = stage.name
         this.estimatedCost = stage.estimatedCost || stage.estimated_cost
         this.totalPayments = stage.totalPayments || stage.total_payments || 0
+        this.contractorId = stage.contractorId || stage.contractor_idW
         this.progress = stage.progress || 0
         this.createdAt = stage.createdAt || stage.created_at
         this.updatedAt = stage.updatedAt || stage.updated_at

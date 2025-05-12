@@ -50,6 +50,14 @@ export const STAGE_FORM = {
             placeholder: 'Stage description',
             required: true,
             type: 'textarea'
+        },
+        {
+            label: 'Contractor',
+            name: 'contractorId',
+            placeholder: 'Select the contractor',
+            required: true,
+            type: 'select',
+            options: [] // to be populated dynamically
         }
     ]
 }

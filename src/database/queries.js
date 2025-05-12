@@ -99,10 +99,10 @@ export const STAGES = {
 
     ADD: `
         INSERT INTO stage (
-            project_id, name, estimated_cost, created_by, start_date, end_date, description
+            project_id, name, estimated_cost, created_by, start_date, end_date, description, contractor_id
         ) 
         VALUES (
-            :projectId, :name, :estimatedCost, :createdBy, :startDate, :endDate, :description
+            :projectId, :name, :estimatedCost, :createdBy, :startDate, :endDate, :description, :contractorId
         );`,
     GET: `SELECT * FROM stage WHERE id = :id;`,
 

@@ -1,9 +1,10 @@
 import { database } from '@/database'
-import { PAYMENTS } from '@/database/queries'
+import { PAYMENTS, PROJECTS } from '@/database/queries'
 import { getById as getContractorById } from './contractors'
 import { getById as getPaymentCategoryById } from './payment-categories'
 import { format } from 'date-fns'
 import { DATE_FORMAT } from '@/config/constants'
+import { Project } from '@/database/models'
 
 export class Payment {
     constructor(payment) {
@@ -13,7 +14,7 @@ export class Payment {
         this.date = payment.date
         this.payer = payment.payer
         this.paymentCategoryId = payment.paymentCategoryId || payment.payment_category_id
-        this.contractor = payment.contractor
+        this.contractorId = payment.contractorId || payment.contractor_id
         this.description = payment.description
         this.paymentMethod = payment.paymentMethod || payment.payment_method
         this.paymentCategory = payment.paymentCategory
@@ -42,22 +43,6 @@ export class Payment {
     }
 }
 
-/**
- * Get all payments by stage id
- * @param {number} stageId Stage id
- * @returns {Promise<Payment[]>}
- */
-/**
- * Retrieves all payments for a given stage ID, with an option to include related contractor data.
- *
- * @async
- * @function
- * @param {number} stageId - The ID of the stage for which payments are being retrieved.
- * @param {Object} options - Additional options for the query.
- * @param {boolean} [options.includeRelated=false] - Whether to include related contractor data in the payments.
- * @returns {Promise<Payment[]>} A promise that resolves to an array of Payment instances.
- * @throws {Error} Logs an error message and returns an empty array if an error occurs during the query.
- */
 /**
  * Retrieves all payments for a given stage ID, with an option to include related data.
  *
@@ -104,6 +89,21 @@ export const getAllPayments = async (stageId, options = { includeRelated: false 
     }
 }
 
+export const getById = async (paymentId) => {
+    try {
+        const query = database.query(PAYMENTS.GET)
+        const payment = query.get({ id: paymentId })
+
+        if (payment) {
+            return new Payment(payment)
+        }
+        return null
+    } catch (error) {
+        console.error(`Error fetching payment by ID: ${error.message}`)
+        return null
+    }
+}
+
 export const getPaymentsByProjectId = async (projectId) => {
     try {
         const query = database.query(PAYMENTS.GET_ALL_BY_PROJECT_ID).as(Payment)
@@ -140,10 +140,16 @@ export const createPayment = async (payment = {}) => {
  * @param {number | string} paymentId - The ID of the payment to retrieve the project for.
  * @returns {Promise<object|null>} A promise that resolves to the project object if found, or null if an error occurs or the project is not found.
  */
-export const getPaymentProject = async (paymentId) => {
+export const getPaymentProject = async (paymentId, asObject = false) => {
     try {
         const query = database.query(PAYMENTS.GET_PROJECT_ID)
         const { project_id } = query.get({ paymentId })
+
+        if (asObject) {
+            const projectQuery = database.query(PROJECTS.GET).as(Project)
+            const project = projectQuery.get({ id: project_id })
+            return project
+        }
         return project_id
     } catch (error) {
         console.error(`Error fetching payment project: ${error.message}`)

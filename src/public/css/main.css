@@ -1,0 +1,7 @@
+@import "https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css";
+
+
+/* Overrides */
+.select, select {
+    width: 100%;
+}

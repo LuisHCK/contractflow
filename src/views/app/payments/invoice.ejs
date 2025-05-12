@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<%- include('../../partials/head') %>
+
+    <body class="container">
+        <section class="receipt-container">
+            <div class="receipt-body">
+                <h1 class=" is-size-5">Payment Receipt</h1>
+                <div>
+                    <div class="has-text-right">
+                        <b>Receipt #:</b>
+                        <span class="is-underlined">
+                            <%= payment.id %>
+                        </span>
+                    </div>
+
+                    <div class="nowrap has-text-right">
+                        <b>Payment Date:</b>
+                        <span>
+                            <%= payment.createdAt %>
+                        </span>
+                    </div>
+                </div>
+
+
+                <div class="">
+                    <b>Amount: </b>
+                    <span class="is-underlined">
+                        <%= payment.amount %>
+                    </span>
+                </div>
+
+                <div class="">
+                    <b>In words:</b>
+                    <span>
+                        <%= payment.amountInWords %>
+                    </span>
+                </div>
+
+                <div class="">
+                    <b>Received from:</b>
+                    <span class="is-underlined">
+                        <%= payment.payer %>
+                    </span>
+                </div>
+
+                <div class="">
+                    <b>For payment of:</b>
+                    <span class="is-underlined">
+                        <%= payment.description %>
+                    </span>
+                </div>
+
+                <div class="span-col">
+                    <b>Payment method:</b>
+                    <span class="is-underlined">
+                        <%= payment.paymentMethod %>
+                    </span>
+                </div>
+
+
+                <div class="">
+                    <b>Received by:</b>
+                    <span class="is-underlined">
+                        <%= contractor.name %>
+                    </span>
+                </div>
+
+                <!-- Summary -->
+                <table class="table is-bordered is-narrow ">
+                    <tbody>
+                        <tr>
+                            <td>
+                                Acc. Amount
+                            </td>
+                            <td>
+                                ---
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>This payment</td>
+                            <td>
+                                <%= payment.amount %>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>Balance due:</td>
+                            <td>
+                                $0
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </body>
+
+    <style>
+        body {
+            font-size: small;
+        }
+
+        .receipt-container {
+            border: 1px solid black;
+            padding: 1rem;
+        }
+
+        .receipt-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+        }
+
+        .receipt-body>h1 {
+            white-space: nowrap;
+        }
+
+        .span-col {
+            grid-column: 1 / span 2;
+        }
+
+        .nowrap {
+            white-space: nowrap;
+        }
+    </style>
+
+</html>

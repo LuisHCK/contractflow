@@ -1,6 +1,7 @@
 import { PAYMENT_FORM } from '@/forms'
 import { formatOptions, populateForm } from '@/forms/utils'
-import { getPaymentsByProjectId, createPayment } from '@/services/payments'
+import { getPaymentsByProjectId, createPayment, getById, getPaymentProject } from '@/services/payments'
+import { getById as getContractorById } from '@/services/contractors'
 import { getAll as getAllPaymentCategories } from '@/services/payment-categories'
 import { getAll as getAllContractors } from '@/services/contractors'
 import { format } from 'date-fns'
@@ -73,5 +74,27 @@ export const createStagePayment = async (req, res) => {
         res.render('generic/form-view', { form, title: 'Register new payment' })
     } catch (error) {
         res.status(500).json({ message: error.message })
+    }
+}
+
+export const print = async (req, res) => {
+    try {
+        const { id } = req.params
+        const payment = await getById(id)
+        const contractor = await getContractorById(payment.contractorId)
+        const project = await getPaymentProject(id, true)
+
+        if (!payment) {
+            return res.status(404).send('Payment not found')
+        }
+
+        res.render('app/payments/invoice', {
+            payment,
+            contractor,
+            project
+        })
+    } catch (error) {
+        console.error(`Error fetching payment: ${error.message}`)
+        return res.status(500).send('An error occurred while fetching the payment. Please try again later.')
     }
 }
