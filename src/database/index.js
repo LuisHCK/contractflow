@@ -48,7 +48,7 @@ export const init = async () => {
             start_date DATE NOT NULL,
             end_date DATE,
             description TEXT,
-            contactor_id INTEGER NOT NULL,
+            contractor_id INTEGER NOT NULL,
             created_by INTEGER NOT NULL,
             FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE,
             FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL

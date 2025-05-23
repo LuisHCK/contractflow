@@ -81,8 +81,7 @@ export const PROJECTS = {
             description = :description,
             start_date = :startDate,
             status = :status,
-            end_date = :endDate
-            created_by = :createdBy,
+            end_date = :endDate,
             updated_at = CURRENT_TIMESTAMP
         WHERE id = :id;
     `

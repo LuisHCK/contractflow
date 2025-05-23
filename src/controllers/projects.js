@@ -51,18 +51,33 @@ export const show = async (req, res) => {
     }
 }
 
+/**
+ * Handles the editing of a project.
+ *
+ * - If the request method is 'POST', attempts to update the project with the provided data.
+ *   - On success, redirects to the project's detail page.
+ *   - On failure, redirects back to the edit page with an error query.
+ * - If the request method is not 'POST', retrieves the project by ID and renders the edit form.
+ *   - If the project is not found, responds with a 404 error.
+ *   - Otherwise, renders the edit form with the project's current data.
+ *
+ * @async
+ * @function edit
+ * @param {import('express').Request} req - Express request object.
+ * @param {import('express').Response} res - Express response object.
+ * @returns {Promise<void>}
+ */
 export const edit = async (req, res) => {
     try {
         if (req.method === 'POST') {
             const { body, params } = req
-            console.log(body)
             const updatedProject = await updateProject(params.id, body)
 
             if (updatedProject?.id) {
                 return res.redirect(`/projects/show/${params.id}`)
             }
 
-            res.redirect(`/projects/edit/${params.id}?error=true`)
+            return res.redirect(`/projects/edit/${params.id}?error=true`)
         }
 
         // Get instance

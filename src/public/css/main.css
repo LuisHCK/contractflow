@@ -5,3 +5,7 @@
 .select, select {
     width: 100%;
 }
+
+.is-dark-bordered.table td, .is-dark-bordered.table th {
+    border-color: black;
+}

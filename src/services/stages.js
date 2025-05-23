@@ -1,5 +1,6 @@
 import { database } from '@/database'
 import { STAGES } from '@/database/queries'
+import { formatToCurrency } from '@/utils/money'
 
 export class Stage {
     constructor(stage) {
@@ -15,6 +16,10 @@ export class Stage {
         this.createdBy = stage.createdBy || stage.created_by
         this.updatedBy = stage.updatedBy || stage.updated_by
         Object.assign(this, stage)
+    }
+
+    get formattedEstimatedCost() {
+        return formatToCurrency(this.estimatedCost)
     }
 }
 
@@ -91,7 +96,7 @@ export const updateStage = async (id, stage) => {
         if (!!changes) {
             return getStageById(id)
         }
-        
+
         return null
     } catch (error) {
         console.error(`Error updating stage: ${error.message}`)

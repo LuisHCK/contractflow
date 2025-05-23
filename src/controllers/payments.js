@@ -1,11 +1,18 @@
 import { PAYMENT_FORM } from '@/forms'
 import { formatOptions, populateForm } from '@/forms/utils'
-import { getPaymentsByProjectId, createPayment, getById, getPaymentProject } from '@/services/payments'
+import {
+    getPaymentsByProjectId,
+    createPayment,
+    getById,
+    getPaymentProject
+} from '@/services/payments'
 import { getById as getContractorById } from '@/services/contractors'
 import { getAll as getAllPaymentCategories } from '@/services/payment-categories'
 import { getAll as getAllContractors } from '@/services/contractors'
 import { format } from 'date-fns'
 import { DATE_FORMAT } from '@/config/constants'
+import { getStageById } from '@/services/stages'
+import numberToWords from '@/utils/number-to-words'
 
 export const index = async (req, res) => {
     try {
@@ -82,6 +89,7 @@ export const print = async (req, res) => {
         const { id } = req.params
         const payment = await getById(id)
         const contractor = await getContractorById(payment.contractorId)
+        const stage = await getStageById(payment.stageId)
         const project = await getPaymentProject(id, true)
 
         if (!payment) {
@@ -91,10 +99,17 @@ export const print = async (req, res) => {
         res.render('app/payments/invoice', {
             payment,
             contractor,
-            project
+            project,
+            stage: {
+                ...stage,
+                estimatedCostWords: numberToWords(stage.estimatedCost)
+            },
+            balance: estimatedCost - payment.amount
         })
     } catch (error) {
         console.error(`Error fetching payment: ${error.message}`)
-        return res.status(500).send('An error occurred while fetching the payment. Please try again later.')
+        return res
+            .status(500)
+            .send('An error occurred while fetching the payment. Please try again later.')
     }
 }

@@ -34,7 +34,7 @@
                 <div class="">
                     <b>In words:</b>
                     <span>
-                        <%= payment.amountInWords %>
+                        <%= stage.estimatedCostWords %>
                     </span>
                 </div>
 
@@ -68,14 +68,14 @@
                 </div>
 
                 <!-- Summary -->
-                <table class="table is-bordered is-narrow ">
+                <table class="table is-bordered is-narrow is-dark-bordered">
                     <tbody>
                         <tr>
                             <td>
                                 Acc. Amount
                             </td>
                             <td>
-                                ---
+                                <%= stage.formattedEstimatedCost %>
                             </td>
                         </tr>
                         <tr>
