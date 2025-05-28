@@ -92,6 +92,7 @@ export const create = async (req, res) => {
             } else {
                 res.redirect(`/projects/show/${params.id}/stages/create?error=true`)
             }
+            return
         }
 
         const contractorsOptions = formatOptions({

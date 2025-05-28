@@ -141,7 +141,10 @@ export const createPayment = async (payment = {}) => {
         // Get previous payments for the stage
         const previousPayments = await getAllPayments(payment.stageId)
         // Calculate the total amount already paid for the stage
-        const overallPaidAmount = previousPayments.reduce((sum, p) => Number(sum) + Number(p.amount), 0)
+        const overallPaidAmount = previousPayments.reduce(
+            (sum, p) => Number(sum) + Number(p.amount),
+            0
+        )
         const currentPaidAmount = overallPaidAmount + Number(payment.amount)
         // Calculate the balance
         const balance = Number(stage.estimatedCost) - currentPaidAmount
@@ -164,16 +167,15 @@ export const createPayment = async (payment = {}) => {
  */
 export const getPaymentProject = async (paymentId, asObject = false) => {
     try {
-        const query = database.query(PAYMENTS.GET_PROJECT_ID)
-        const project = query.get({ paymentId })
-
         if (asObject) {
             const projectQuery = database.query(PROJECTS.GET).as(Project)
             const project = projectQuery.get({ id: project.id })
             return project
+        } else {
+            const query = database.query(PAYMENTS.GET_PROJECT_ID)
+            const project = query.get({ paymentId })
+            return project.project_id
         }
-
-        return project?.project_id
     } catch (error) {
         console.error(`Error fetching payment project: ${error.message}`, error)
         return null

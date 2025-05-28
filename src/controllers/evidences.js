@@ -70,6 +70,8 @@ export const create = async (req, res) => {
         const projectId = await getPaymentProject(paymentId)
         const stageId = await getPaymentStage(paymentId)
 
+        console.log({ projectId, stageId })
+
         if (!projectId || !stageId) {
             // Rollback file upload if project or stage retrieval fails
             if (req.file) {

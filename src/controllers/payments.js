@@ -116,7 +116,7 @@ export const print = async (req, res) => {
         const payment = await getById(id)
         const contractor = await getContractorById(payment.contractorId)
         const stage = await getStageById(payment.stageId)
-        const project = await getPaymentProject(id, true)
+        const project = await getPaymentProject(id)
 
         if (!payment || !contractor || !stage || !project) {
             return res.status(404).send('Payment not found')
