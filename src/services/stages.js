@@ -34,7 +34,7 @@ export const getStageById = async (id) => {
         const stage = query.get({ id })
         return new Stage(stage)
     } catch (error) {
-        console.error(`Error fetching stage: ${error.message}`)
+        console.error(`Error fetching stage by id: ${error.message}`)
         return {}
     }
 }
@@ -53,7 +53,7 @@ export const getStagesByProject = async (projectId) => {
         })
         return stages.map((stage) => new Stage(stage))
     } catch (error) {
-        console.error(`Error fetching stages: ${error.message}`)
+        console.error(`Error fetching stages by project: ${error.message}`)
         return []
     }
 }

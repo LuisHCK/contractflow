@@ -30,7 +30,7 @@ export const show = async (req, res) => {
 
         res.render('app/stages/show', { stage, project, payments })
     } catch (error) {
-        console.error(`Error fetching stage: ${error}`)
+        console.error(`[StagesController.show] Error fetching stage: ${error}`)
         return res
             .status(500)
             .send('An error occurred while fetching stage. Please try again later.')

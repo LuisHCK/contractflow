@@ -1,28 +1,23 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
-
-<%- include('../../partials/head') %>
+    <%- include('../../partials/head') %>
 
     <body class="container">
+        <% for (let i = 0; i < 2; i++) { %>
         <section class="receipt-container">
             <div class="receipt-body">
-                <h1 class=" is-size-5">Payment Receipt</h1>
+                <h1 class="is-size-5">Payment Receipt</h1>
                 <div>
                     <div class="has-text-right">
                         <b>Receipt #:</b>
-                        <span class="is-underlined">
-                            <%= payment.id %>
-                        </span>
+                        <span class="is-underlined"> <%= payment.paymentNumber %> </span>
                     </div>
 
                     <div class="nowrap has-text-right">
                         <b>Payment Date:</b>
-                        <span class="is-underlined">
-                            <%= payment.createdAt %>
-                        </span>
+                        <span class="is-underlined"> <%= payment.createdAt %> </span>
                     </div>
                 </div>
-
 
                 <div class="">
                     <b>Amount: </b>
@@ -33,68 +28,55 @@
 
                 <div class="">
                     <b>In words:</b>
-                    <span class="is-underlined">
-                        <%= stage.estimatedCostWords %>
-                    </span>
+                    <span class="is-underlined"> <%= stage.estimatedCostWords %> </span>
                 </div>
 
                 <div class="">
                     <b>Received from:</b>
-                    <span class="is-underlined">
-                        <%= payment.payer %>
-                    </span>
+                    <span class="is-underlined"> <%= payment.payer %> </span>
                 </div>
 
                 <div class="">
                     <b>For payment of:</b>
-                    <span class="is-underlined">
-                        <%= payment.description %>
-                    </span>
+                    <span class="is-underlined"> <%= payment.description %> </span>
                 </div>
 
                 <div class="span-col">
                     <b>Payment method:</b>
-                    <span class="is-underlined">
-                        <%= payment.paymentMethod %>
-                    </span>
+                    <span class="is-underlined"> <%= payment.paymentMethod %> </span>
                 </div>
-
 
                 <div class="">
                     <b>Received by:</b>
-                    <span class="is-underlined">
-                        <%= contractor.name %>
-                    </span>
+                    <span class="is-underlined"> <%= contractor.name %> </span>
                 </div>
 
                 <!-- Summary -->
                 <table class="table is-bordered is-narrow is-dark-bordered">
                     <tbody>
                         <tr>
-                            <td>
-                                Acc. Amount
-                            </td>
-                            <td>
-                                <%= utils.formatToCurrency(stage.estimatedCost) %>
-                            </td>
+                            <td>Acc. Amount</td>
+                            <td><%= utils.formatToCurrency(stage.estimatedCost) %></td>
                         </tr>
                         <tr>
                             <td>This payment</td>
-                            <td>
-                                <%= utils.formatToCurrency(payment.amount) %>
-                            </td>
+                            <td><%= utils.formatToCurrency(payment.amount) %></td>
                         </tr>
 
                         <tr>
                             <td>Balance due:</td>
-                            <td>
-                                <%= utils.formatToCurrency(balance) %>
-                            </td>
+                            <td><%= utils.formatToCurrency(payment.balance) %></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </section>
+
+        <% if (i === 0) { %>
+        <hr class="my-4 divider">
+        <% } %>
+
+        <% } %>
     </body>
 
     <style>
@@ -113,7 +95,7 @@
             gap: 0.5rem;
         }
 
-        .receipt-body>h1 {
+        .receipt-body > h1 {
             white-space: nowrap;
         }
 
@@ -124,6 +106,20 @@
         .nowrap {
             white-space: nowrap;
         }
+
+        .divider {
+            width: 100%;
+            height: 1px;
+            border-bottom: 1px dashed rgb(100, 100, 100);
+        }
     </style>
 
+    <script>
+        window.addEventListener('DOMContentLoaded', function() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('autoprint') === 'true') {
+                window.print();
+            }
+        });
+    </script>
 </html>

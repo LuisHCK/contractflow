@@ -70,6 +70,21 @@ export const create = async (req, res) => {
         const projectId = await getPaymentProject(paymentId)
         const stageId = await getPaymentStage(paymentId)
 
+        if (!projectId || !stageId) {
+            // Rollback file upload if project or stage retrieval fails
+            if (req.file) {
+                Bun.file(req.file?.path).delete()
+            }
+
+            return res.render('generic/form-view', {
+                title: 'Register payment evidence',
+                form: EVIDENCE_FORM,
+                messages: [
+                    { content: 'Failed to retrieve project or stage information', type: 'error' }
+                ]
+            })
+        }
+
         if (!newEvidence?.id) {
             // Rollback file upload if creation fails
             if (req.file) {

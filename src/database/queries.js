@@ -121,10 +121,10 @@ export const STAGES = {
 export const PAYMENTS = {
     ADD: `
         INSERT INTO payments (
-            stage_id, amount, date, payer, payment_category_id, contractor_id, description, payment_method, created_by
+            stage_id, amount, date, payer, payment_category_id, contractor_id, description, payment_method, created_by, balance
         ) 
         VALUES (
-            :stageId, :amount, :date, :payer, :paymentCategoryId, :contractorId, :description, :paymentMethod, :createdBy
+            :stageId, :amount, :date, :payer, :paymentCategoryId, :contractorId, :description, :paymentMethod, :createdBy, :balance
         );`,
 
     GET_ALL: `
@@ -141,16 +141,22 @@ export const PAYMENTS = {
 
     GET_PROJECT_ID: `
         SELECT p.id AS project_id
-        FROM payments py
-        JOIN stage s ON py.stage_id = s.id
-        JOIN projects p ON s.project_id = p.id
-        WHERE py.id = :paymentId;`,
+        FROM payments AS py
+        INNER JOIN stage AS s ON py.stage_id = s.id
+        INNER JOIN projects AS p ON s.project_id = p.id
+        WHERE py.id = :paymentId
+        LIMIT 1;`,
 
     GET_STAGE_ID: `
         SELECT s.id AS stage_id
         FROM payments py
         JOIN stage s ON py.stage_id = s.id
-        WHERE py.id = :paymentId;`
+        WHERE py.id = :paymentId;`,
+
+    GET_TOTAL_PAYED_AMOUNT: `
+        SELECT COALESCE(SUM(amount), 0) AS total_amount
+        FROM payments
+        WHERE stage_id = :stageId;`
 }
 
 export const PAYMENT_CATEGORIES = {

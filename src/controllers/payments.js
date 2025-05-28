@@ -79,6 +79,7 @@ export const createStagePayment = async (req, res) => {
                     `/projects/show/${params.id}/stages/show/${params.stageId}/payments/create`
                 )
             }
+            return
         }
 
         // GET handling
@@ -129,7 +130,6 @@ export const print = async (req, res) => {
                 ...stage,
                 estimatedCostWords: numberToWords(payment.amount).toUpperCase()
             },
-            balance: stage.estimatedCost - payment.amount,
             utils: {
                 formatToCurrency
             }

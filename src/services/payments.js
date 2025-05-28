@@ -6,11 +6,14 @@ import { getAll as getEvidences } from './evidences'
 import { format } from 'date-fns'
 import { DATE_FORMAT } from '@/config/constants'
 import { Project } from '@/database/models'
+import { getStageById } from './stages'
 
 export class Payment {
     constructor(payment) {
         this.id = payment.id
+        /** @type {number} */
         this.stageId = payment.stageId || payment.stage_id
+        /** @type {number} */
         this.amount = payment.amount
         this.date = payment.date
         this.payer = payment.payer
@@ -24,6 +27,7 @@ export class Payment {
         this._updatedAt = payment.updatedAt || payment.updated_at
         this.evidences = payment.evidences || []
         this.contractor = payment.contractor || null
+        this.balance = payment.balance || 0
     }
 
     /**
@@ -132,8 +136,18 @@ export const getPaymentsByProjectId = async (projectId) => {
  */
 export const createPayment = async (payment = {}) => {
     try {
+        // Calculate balance
+        const stage = await getStageById(payment.stageId)
+        // Get previous payments for the stage
+        const previousPayments = await getAllPayments(payment.stageId)
+        // Calculate the total amount already paid for the stage
+        const overallPaidAmount = previousPayments.reduce((sum, p) => Number(sum) + Number(p.amount), 0)
+        const currentPaidAmount = overallPaidAmount + Number(payment.amount)
+        // Calculate the balance
+        const balance = Number(stage.estimatedCost) - currentPaidAmount
+
         const query = database.query(PAYMENTS.ADD)
-        const { lastInsertRowid } = query.run({ ...payment })
+        const { lastInsertRowid } = query.run({ ...payment, balance })
         return new Payment({ ...payment, id: lastInsertRowid })
     } catch (error) {
         console.error(`Error creating payment: ${error.message}`)
@@ -151,16 +165,17 @@ export const createPayment = async (payment = {}) => {
 export const getPaymentProject = async (paymentId, asObject = false) => {
     try {
         const query = database.query(PAYMENTS.GET_PROJECT_ID)
-        const { project_id } = query.get({ paymentId })
+        const project = query.get({ paymentId })
 
         if (asObject) {
             const projectQuery = database.query(PROJECTS.GET).as(Project)
-            const project = projectQuery.get({ id: project_id })
+            const project = projectQuery.get({ id: project.id })
             return project
         }
-        return project_id
+
+        return project?.project_id
     } catch (error) {
-        console.error(`Error fetching payment project: ${error.message}`)
+        console.error(`Error fetching payment project: ${error.message}`, error)
         return null
     }
 }
@@ -177,10 +192,29 @@ export const getPaymentProject = async (paymentId, asObject = false) => {
 export const getPaymentStage = async (paymentId) => {
     try {
         const query = database.query(PAYMENTS.GET_STAGE_ID)
-        const { stage_id } = query.get({ paymentId })
-        return stage_id
+        const stage = query.get({ paymentId })
+        return stage?.stage_id
     } catch (error) {
         console.error(`Error fetching payment stage: ${error.message}`)
         return null
+    }
+}
+
+/**
+ * Retrieves the total amount paid for a specific stage.
+ *
+ * @async
+ * @function
+ * @param {string|number} stageId - The unique identifier of the stage.
+ * @returns {Promise<number>} The total amount paid for the given stage, or 0 if an error occurs or no payments are found.
+ */
+export const getTotalPayedAmount = async (stageId) => {
+    try {
+        const query = database.query(PAYMENTS.GET_TOTAL_PAYED_AMOUNT)
+        const { total } = query.get({ stageId })
+        return total || 0
+    } catch (error) {
+        console.error(`Error fetching total payed amount: ${error.message}`)
+        return 0
     }
 }

@@ -68,6 +68,7 @@ export const init = async () => {
             description TEXT,
             payment_method TEXT NOT NULL,
             amount REAL NOT NULL,
+            balance REAL NOT NULL DEFAULT 0,
             date DATE NOT NULL,
             payer TEXT NOT NULL,
             evidence TEXT,

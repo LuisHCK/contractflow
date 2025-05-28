@@ -1,8 +1,7 @@
 import { PAYMENT_FORM, PROJECT_FORM } from '@/forms'
-import { createPayment, getAllPayments } from '@/services/payments'
+import { getAllPayments } from '@/services/payments'
 import { createProject, getAllProjects, getProjectById, updateProject } from '@/services/projects'
 import { getStageById, getStagesByProject } from '@/services/stages'
-import { Project } from '@/database/models'
 import { format } from 'date-fns'
 import { DATE_FORMAT } from '@/config/constants'
 
@@ -25,11 +24,13 @@ export const create = async (req, res) => {
         const project = await createProject({ ...body, createdBy: 1 })
 
         if (!project?.id) {
-            res.redirect('/projects/create?error=true')
+            return res.redirect('/projects/create?error=true')
         } else {
-            res.redirect(`/projects/show/${project.id}?created=true`)
+            return res.redirect(`/projects/show/${project.id}?created=true`)
         }
     }
+
+    // Render form view
     res.render('generic/form-view', { form: PROJECT_FORM, title: 'Create project' })
 }
 
@@ -119,7 +120,7 @@ export const listProjectStages = async (req, res) => {
         const stages = await getStagesByProject(req.params.id)
         res.render('app/projects/stages', { stages })
     } catch (error) {
-        console.error(`Error fetching stages: ${error.message}`)
+        console.error(`[listProjectStages] Error fetching stages: ${error.message}`)
         return res
             .status(500)
             .send('An error occurred while fetching stages. Please try again later.')
