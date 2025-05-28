@@ -30,18 +30,18 @@ const fileFilter = (_req, file, cb) => {
  * @property {Function} filename - Generates a unique filename for each uploaded file.
  */
 const storage = multer.diskStorage({
-    destination: async (_req, _file, cb) => {
+    destination: async (_req, _file, callback) => {
         const currentDate = new Date().toISOString().split('T')[0]
         const destination = `./uploads/${currentDate}`
         // Create the directory if it doesn't exist
         await mkdir(destination, { recursive: true })
         // Set the destination for the uploaded file
-        cb(null, destination)
+        callback(null, destination)
     },
-    filename: (_req, file, cb) => {
+    filename: (_req, file, callback) => {
         const id = randomUUIDv7()
         const ext = file.originalname.split('.').pop()
-        cb(null, `${id}.${ext}`) // Generate a unique filename
+        callback(null, `${id}.${ext}`) // Generate a unique filename
     }
 })
 

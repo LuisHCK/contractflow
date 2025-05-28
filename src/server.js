@@ -25,6 +25,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 // Serve static files
 app.use(express.static(path.join(__dirname, '/public')))
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')))
 
 // Initialize passport
 initializePassport(passport)
@@ -45,22 +46,6 @@ app.use(passport.session())
 app.use(setLocals)
 
 // Public routes
-app.post('/api/payments', (req, res) => {
-    console.log(req.body)
-    res.send('ok')
-})
-
-app.get('/api/hash', async (req, res) => {
-    return res.status(200).send(
-        await Bun.password.hash('password', {
-            algorithm: 'argon2i',
-            memoryCost: 2 ** 16,
-            timeCost: 12
-        })
-    )
-})
-
-// Public routes
 app.use(publicRouter)
 
 // Private Routes
@@ -68,7 +53,7 @@ app.use(privateRouter)
 
 // Handle 404 errors
 app.use((_req, res, _next) => {
-    res.render('generic/404', {title: '404 - Not Found'})
+    res.render('generic/404', { title: '404 - Not Found' })
 })
 
 const port = process.env.PORT || 3000

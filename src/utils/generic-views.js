@@ -73,6 +73,17 @@ export const formatTableViewData = ({
     }
 }
 
+/**
+ * Formats data for a detail view, including fields, title, description, and route information.
+ *
+ * @param {Object} params - The parameters for formatting the detail view data.
+ * @param {*} params.data - The main data to be displayed in the detail view.
+ * @param {Object} [params.form={}] - The form configuration object used to format fields.
+ * @param {string} [params.baseRoute=''] - The base route for navigation or links.
+ * @param {string} [params.title=''] - The title for the detail view.
+ * @param {string} [params.description=''] - The description for the detail view.
+ * @returns {Object} An object containing the formatted detail view data, fields, title, description, showCreate flag, and baseRoute.
+ */
 export const formatDetailViewData = ({
     data,
     form = {},

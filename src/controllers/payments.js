@@ -13,7 +13,18 @@ import { format } from 'date-fns'
 import { DATE_FORMAT } from '@/config/constants'
 import { getStageById } from '@/services/stages'
 import numberToWords from '@/utils/number-to-words'
+import { formatToCurrency } from '@/utils/money'
 
+/**
+ * Handles the request to list all payments for a specific project stage.
+ * Fetches payments, formats data for table view, and renders the list view template.
+ *
+ * @async
+ * @function index
+ * @param {import('express').Request} req - Express request object, expects `params.id` and `params.stageId`.
+ * @param {import('express').Response} res - Express response object.
+ * @returns {Promise<void>} Renders the payments list view or sends a 500 error response on failure.
+ */
 export const index = async (req, res) => {
     try {
         const projectPayments = await getPaymentsByProjectId()
@@ -43,6 +54,18 @@ export const index = async (req, res) => {
     }
 }
 
+/**
+ * Handles the creation of a stage payment.
+ * 
+ * - On POST requests, attempts to create a payment for a specific stage and redirects based on success.
+ * - On GET requests, renders a form for creating a new payment, populating contractor and payment category options.
+ * 
+ * @async
+ * @function
+ * @param {import('express').Request} req - Express request object.
+ * @param {import('express').Response} res - Express response object.
+ * @returns {Promise<void>}
+ */
 export const createStagePayment = async (req, res) => {
     try {
         if (req.method === 'POST') {
@@ -50,13 +73,15 @@ export const createStagePayment = async (req, res) => {
             const stage = await createPayment({ ...body, stageId: params.stageId, createdBy: 1 })
 
             if (stage?.id) {
-                res.redirect(`/projects/show/${params.id}`)
+                res.redirect(`/projects/show/${params.id}/stages/show/${params.stageId}`)
             } else {
                 res.redirect(
                     `/projects/show/${params.id}/stages/show/${params.stageId}/payments/create`
                 )
             }
         }
+
+        // GET handling
         const contractors = await getAllContractors()
         const paymentCategories = await getAllPaymentCategories()
 
@@ -78,7 +103,7 @@ export const createStagePayment = async (req, res) => {
         })
 
         // Render form view
-        res.render('generic/form-view', { form, title: 'Register new payment' })
+        return res.render('generic/form-view', { form, title: 'Register new payment' })
     } catch (error) {
         res.status(500).json({ message: error.message })
     }
@@ -92,7 +117,7 @@ export const print = async (req, res) => {
         const stage = await getStageById(payment.stageId)
         const project = await getPaymentProject(id, true)
 
-        if (!payment) {
+        if (!payment || !contractor || !stage || !project) {
             return res.status(404).send('Payment not found')
         }
 
@@ -102,12 +127,15 @@ export const print = async (req, res) => {
             project,
             stage: {
                 ...stage,
-                estimatedCostWords: numberToWords(stage.estimatedCost)
+                estimatedCostWords: numberToWords(payment.amount).toUpperCase()
             },
-            balance: estimatedCost - payment.amount
+            balance: stage.estimatedCost - payment.amount,
+            utils: {
+                formatToCurrency
+            }
         })
     } catch (error) {
-        console.error(`Error fetching payment: ${error.message}`)
+        console.error(`Error fetching payment: ${error}`)
         return res
             .status(500)
             .send('An error occurred while fetching the payment. Please try again later.')

@@ -74,7 +74,7 @@
                                             <div class="fixed-grid has-2-cols">
                                                 <div class="grid">
                                                     <div class="cell">
-                                                        <strong>Amount:</strong>
+                                                        <div class="has-text-weight-semibold">Amount:</div>
                                                         <span class="tag is-success">
                                                             <%= payment.amount.toLocaleString('en-US', {
                                                                 style: 'currency' , currency: 'USD' }) %>
@@ -82,34 +82,51 @@
                                                     </div>
 
                                                     <div class="cell">
-                                                        <strong>Payment date:</strong>
+                                                        <div class="has-text-weight-semibold">Payment date:</div>
                                                         <span class="tag">
                                                             <%= payment.createdAt %>
                                                         </span>
                                                     </div>
 
                                                     <div class="cell">
-                                                        <strong>Payment method:</strong>
+                                                        <div class="has-text-weight-semibold">Payment method:</div>
                                                         <span class="tag is-info">
                                                             <%= payment.paymentMethod %>
                                                         </span>
                                                     </div>
 
                                                     <div class="cell">
-                                                        <strong>Contractor:</strong>
+                                                        <div class="has-text-weight-semibold">Contractor:</div>
                                                         <%= payment.contractor?.name %>
                                                     </div>
 
                                                     <div class="cell is-col-span-2">
-                                                        <strong>Payment category</strong>
+                                                        <div class="has-text-weight-semibold">Payment category:</div>
                                                         <%= payment.paymentCategory?.name %>
                                                     </div>
 
                                                     <div class="cell is-col-span-2">
-                                                        <strong>Description</strong>
+                                                        <div class="has-text-weight-semibold">Description:</div>
                                                         <p>
                                                             <%= payment.description %>
                                                         </p>
+                                                    </div>
+
+                                                    <div class="cell is-col-span-2">
+                                                        <div class="has-text-weight-semibold">Evidences:</div>
+                                                        <% if (payment.evidences?.length > 0) { %>
+                                                            <ul>
+                                                                <% payment.evidences.forEach(evidence => { %>
+                                                                    <li>
+                                                                        <a href="/<%= evidence.filePath %>" target="_blank">
+                                                                            <%= evidence.fileName %>
+                                                                        </a>
+                                                                    </li>
+                                                                <% }) %>
+                                                            </ul>
+                                                        <% } else { %>
+                                                            <span class="tag is-light">No evidence registered</span>
+                                                        <% } %>
                                                     </div>
 
                                                 </div>

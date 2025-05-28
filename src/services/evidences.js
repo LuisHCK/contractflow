@@ -10,6 +10,10 @@ export class Evidence {
         this.createdAt = evidence.created_at || evidence.createdAt
         this.updatedAt = evidence.updated_at || evidence.updatedAt
     }
+
+    get fileName() {
+        return this.filePath.split('/').pop()
+    }
 }
 
 /**

@@ -98,6 +98,13 @@ export const init = async () => {
             sess TEXT NOT NULL,
             expire INTEGER NOT NULL
         );
+
+        CREATE TABLE IF NOT EXISTS system_settings (
+            key TEXT PRIMARY KEY NOT NULL,
+            value TEXT
+        );
+
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_system_settings_key ON system_settings(key);
     `)
 
     console.log('Database initialized')

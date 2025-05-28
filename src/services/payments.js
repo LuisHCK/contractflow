@@ -2,6 +2,7 @@ import { database } from '@/database'
 import { PAYMENTS, PROJECTS } from '@/database/queries'
 import { getById as getContractorById } from './contractors'
 import { getById as getPaymentCategoryById } from './payment-categories'
+import { getAll as getEvidences } from './evidences'
 import { format } from 'date-fns'
 import { DATE_FORMAT } from '@/config/constants'
 import { Project } from '@/database/models'
@@ -21,6 +22,8 @@ export class Payment {
         this.createdBy = payment.createdBy || payment.created_by
         this._createdAt = payment.createdAt || payment.created_at
         this._updatedAt = payment.updatedAt || payment.updated_at
+        this.evidences = payment.evidences || []
+        this.contractor = payment.contractor || null
     }
 
     /**
@@ -63,12 +66,13 @@ export const getAllPayments = async (stageId, options = { includeRelated: false 
 
         // Include related data if specified
         if (options.includeRelated) {
-            await Promise.all([
-                payments.forEach(async (payment) => {
+            await Promise.all(
+                payments.map(async (payment) => {
                     const contractor = await getContractorById(payment.contractor_id)
                     const paymentCategory = await getPaymentCategoryById(
                         payment.payment_category_id
                     )
+                    const evidences = await getEvidences(payment.id)
 
                     if (contractor) {
                         payment.contractor = contractor
@@ -77,8 +81,12 @@ export const getAllPayments = async (stageId, options = { includeRelated: false 
                     if (paymentCategory) {
                         payment.paymentCategory = paymentCategory
                     }
+
+                    if (evidences) {
+                        payment.evidences = evidences
+                    }
                 })
-            ])
+            )
         }
 
         // Map payments to Payment class instances

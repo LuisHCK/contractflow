@@ -17,7 +17,7 @@
 
                     <div class="nowrap has-text-right">
                         <b>Payment Date:</b>
-                        <span>
+                        <span class="is-underlined">
                             <%= payment.createdAt %>
                         </span>
                     </div>
@@ -27,13 +27,13 @@
                 <div class="">
                     <b>Amount: </b>
                     <span class="is-underlined">
-                        <%= payment.amount %>
+                        <%= utils.formatToCurrency(payment.amount) %>
                     </span>
                 </div>
 
                 <div class="">
                     <b>In words:</b>
-                    <span>
+                    <span class="is-underlined">
                         <%= stage.estimatedCostWords %>
                     </span>
                 </div>
@@ -75,20 +75,20 @@
                                 Acc. Amount
                             </td>
                             <td>
-                                <%= stage.formattedEstimatedCost %>
+                                <%= utils.formatToCurrency(stage.estimatedCost) %>
                             </td>
                         </tr>
                         <tr>
                             <td>This payment</td>
                             <td>
-                                <%= payment.amount %>
+                                <%= utils.formatToCurrency(payment.amount) %>
                             </td>
                         </tr>
 
                         <tr>
                             <td>Balance due:</td>
                             <td>
-                                $0
+                                <%= utils.formatToCurrency(balance) %>
                             </td>
                         </tr>
                     </tbody>
