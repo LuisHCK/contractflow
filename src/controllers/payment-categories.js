@@ -2,7 +2,7 @@ import { PAYMENT_CATEGORY_FORM } from '@/forms'
 import * as service from '@/services/payment-categories'
 import { formatDetailViewData, formatTableViewData } from '@/utils/generic-views'
 
-export const index = async (_req, res) => {
+export const index = async (req, res) => {
     try {
         const categories = await service.getAll()
         const pageData = formatTableViewData({

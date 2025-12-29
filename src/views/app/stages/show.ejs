@@ -9,8 +9,8 @@
                 <!-- Breadcrumbs -->
                 <nav class="breadcrumb is-small" aria-label="breadcrumbs">
                     <ul>
-                        <li><a href="/">Home</a></li>
-                        <li><a href="/projects">Projects</a></li>
+                        <li><a href="/"> <%= __('breadcrumb_home') %> </a></li>
+                        <li><a href="/projects"> <%= __('breadcrumb_projects') %> </a></li>
                         <li><a href="/projects/show/<%= project.id %>">
                                 <%= project.name %>
                             </a></li>
@@ -30,15 +30,15 @@
                     <div>
                         <a href="/projects/show/<%= project.id %>/stages/edit/<%= stage.id %>?backto=details"
                             class="button is-primary">
-                            Edit
+                            <%= __('detail_edit') %>
                         </a>
                         <a href="/projects/show/<%= project.id %>/stages/show/<%= stage.id %>/payments/create"
                             class="button is-secondary">
-                            Register payment
+                            <%= __('stages_register_payment') %>
                         </a>
                         <% if (payments.length > 0) { %>
                             <a href="/projects/show/<%= project.id %>/stages/print/<%= stage.id %>" class="button is-info">
-                                Print report
+                                <%= __('print_report', 'Print report') %>
                             </a>
                         <% } %>
                     </div>
@@ -48,7 +48,7 @@
                 <h2 class="subtitle"><%= stage.description %></h2>
 
                 <section>
-                    <h2 class="title is-5">Payments</h2>
+                    <h2 class="title is-5"><%= __('payments_stage_title', 'Payments') %></h2>
                 </section>
 
                 <div class="mt-4">
@@ -56,7 +56,7 @@
                         <% if (payments.length === 0) { %>
                             <li class="column is-full">
                                 <div class="notification is-warning">
-                                    No payments registered for this stage.
+                                    <%= __('stages_no_payments', 'No payments registered for this stage.') %>
                                 </div>
                             </li>
                         <% } %>
@@ -66,7 +66,7 @@
                                 <div class="card">
                                     <header class="card-header">
                                         <p class="card-header-title">
-                                            Payment #<%= payment.paymentNumber %>
+                                            <%= __('payment_number', 'Payment #') %><%= payment.paymentNumber %>
                                         </p>
                                     </header>
                                     <div class="card-content">
@@ -74,7 +74,7 @@
                                             <div class="fixed-grid has-2-cols">
                                                 <div class="grid">
                                                     <div class="cell">
-                                                        <div class="has-text-weight-semibold">Amount:</div>
+                                                        <div class="has-text-weight-semibold"><%= __('invoice_amount') %></div>
                                                         <span class="tag is-success">
                                                             <%= payment.amount.toLocaleString('en-US', {
                                                                 style: 'currency' , currency: 'USD' }) %>
@@ -82,38 +82,38 @@
                                                     </div>
 
                                                     <div class="cell">
-                                                        <div class="has-text-weight-semibold">Payment date:</div>
+                                                        <div class="has-text-weight-semibold"><%= __('invoice_payment_date') %></div>
                                                         <span class="tag">
                                                             <%= payment.createdAt %>
                                                         </span>
                                                     </div>
 
                                                     <div class="cell">
-                                                        <div class="has-text-weight-semibold">Payment method:</div>
+                                                        <div class="has-text-weight-semibold"><%= __('invoice_payment_method') %></div>
                                                         <span class="tag is-info">
                                                             <%= payment.paymentMethod %>
                                                         </span>
                                                     </div>
 
                                                     <div class="cell">
-                                                        <div class="has-text-weight-semibold">Contractor:</div>
+                                                        <div class="has-text-weight-semibold"><%= __('contractor_name') %></div>
                                                         <%= payment.contractor?.name %>
                                                     </div>
 
                                                     <div class="cell is-col-span-2">
-                                                        <div class="has-text-weight-semibold">Payment category:</div>
+                                                        <div class="has-text-weight-semibold"><%= __('payment_categories_list_title') %></div>
                                                         <%= payment.paymentCategory?.name %>
                                                     </div>
 
                                                     <div class="cell is-col-span-2">
-                                                        <div class="has-text-weight-semibold">Description:</div>
+                                                        <div class="has-text-weight-semibold"><%= __('evidence_description') %></div>
                                                         <p>
                                                             <%= payment.description %>
                                                         </p>
                                                     </div>
 
                                                     <div class="cell is-col-span-2">
-                                                        <div class="has-text-weight-semibold">Evidences:</div>
+                                                        <div class="has-text-weight-semibold"><%= __('evidence_attachment') %></div>
                                                         <% if (payment.evidences?.length > 0) { %>
                                                             <ul>
                                                                 <% payment.evidences.forEach(evidence => { %>
@@ -125,7 +125,7 @@
                                                                 <% }) %>
                                                             </ul>
                                                         <% } else { %>
-                                                            <span class="tag is-light">No evidence registered</span>
+                                                            <span class="tag is-light"><%= __('evidence_no_evidence', 'No evidence registered') %></span>
                                                         <% } %>
                                                     </div>
 
@@ -134,8 +134,8 @@
                                         </div>
                                     </div>
                                     <footer class="card-footer">
-                                        <a href="/payments/print/<%= payment.id %>" class="card-footer-item">Print</a>
-                                        <a href="/payments/show/<%= payment.id %>/evidences/create" class="card-footer-item">Register evidence</a>
+                                        <a href="/payments/print/<%= payment.id %>" class="card-footer-item"><%= __('print', 'Print') %></a>
+                                        <a href="/payments/show/<%= payment.id %>/evidences/create" class="card-footer-item"><%= __('evidences_create_title', 'Register evidence') %></a>
                                     </footer>
                                 </div>
                             </li>

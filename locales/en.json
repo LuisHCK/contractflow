@@ -34,7 +34,7 @@
         "stages_progress": "Progress",
         "stages_actions": "Actions",
         "stages_register_payment": "Register Payment",
-        "stages_view": "View",
+        "view": "View",
         "stages_delete": "Delete",
         "stages_no_stages": "No stages found.",
         "overview_estimated_cost": "Estimated Project Cost",
@@ -148,5 +148,11 @@
         "email": "Email",
         "phone": "Phone",
         "address": "Address",
-        "actions": "Actions"
+        "actions": "Actions",
+        "submit": "Save",
+        "stages_no_payments": "No payments registered for this stage.",
+        "payment_number": "Payment #",
+        "print_report": "Print report",
+        "evidence_no_evidence": "No evidence registered",
+        "print": "Print"
     }

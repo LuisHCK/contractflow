@@ -138,7 +138,7 @@ export const showStagePayments = async (req, res) => {
             date: format(payment.date, DATE_FORMAT),
             amount: () => `<span class="tag is-primary">$${payment.amount.toFixed(2)}</span>`,
             actions: () =>
-                `<a href="/projects/show/${req.params.id}/stages/${req.params.stageId}/payments/show/${payment.id}" class="button is-small">View</a>`
+                `<a href="/projects/show/${req.params.id}/stages/${req.params.stageId}/payments/show/${payment.id}" class="button is-small">${req.__('view')}</a>`
         }))
 
         const fields = PAYMENT_FORM.fields.map((field) => field.name)
