@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="<%= locals.theme || 'light' %>">
+<html lang="<%= locale %>" data-theme="<%= locals.theme || 'light' %>">
     <%- include('../../partials/head', { title: `ContractorPay | ${contractor.name}` }) %>
 
     <body>
@@ -8,8 +8,8 @@
         <main class="container is-max-desktop py-6 px-4">
             <nav class="breadcrumb is-small" aria-label="breadcrumbs">
                 <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/contractors">Contractors</a></li>
+                    <li><a href="/"> <%= __('breadcrumb_home') %> </a></li>
+                    <li><a href="/contractors"> <%= __('breadcrumb_contractors') %> </a></li>
                     <li class="is-active">
                         <a href="#" aria-current="page" class="has-text-dark"> <%= contractor.name %> </a>
                     </li>
@@ -18,31 +18,31 @@
 
             <div class="is-flex is-justify-content-space-between is-align-items-center">
                 <h1 class="title is-1 is-family-sans-serif"><%= contractor.name %></h1>
-                <a href="/contractors/edit/<%= contractor.id %>" class="button is-primary"> Edit </a>
+                <a href="/contractors/edit/<%= contractor.id %>" class="button is-primary"> <%= __('contractor_edit') %> </a>
             </div>
 
-            <h2 class="title is-5">Details</h2>
+            <h2 class="title is-5"><%= __('contractor_details') %></h2>
 
             <section class="box">
                 <div class="columns">
                     <div class="column is-6">
-                        <p class="block"><strong>Name:</strong> <%= contractor.name %></p>
-                        <p class="block"><strong>Email:</strong> <%= contractor.email %></p>
+                        <p class="block"><strong><%= __('contractor_name') %>:</strong> <%= contractor.name %></p>
+                        <p class="block"><strong><%= __('contractor_email') %>:</strong> <%= contractor.email %></p>
                     </div>
                     <div class="column is-6">
-                        <p class="block"><strong>Phone:</strong> <%= contractor.phone %></p>
-                        <p class="block"><strong>Address:</strong> <%= contractor.address %></p>
+                        <p class="block"><strong><%= __('contractor_phone') %>:</strong> <%= contractor.phone %></p>
+                        <p class="block"><strong><%= __('contractor_address') %>:</strong> <%= contractor.address %></p>
                     </div>
                 </div>
                 <div class="columns">
                     <div class="column is-12">
-                        <h3 class="title is-5">Notes</h3>
+                        <h3 class="title is-5"><%= __('contractor_notes') %></h3>
                         <p><%= contractor.notes %></p>
                     </div>
                 </div>
                 <div class="columns">
                     <div class="column is-12">
-                        <h3 class="title is-5">Projects</h3>
+                        <h3 class="title is-5"><%= __('contractor_projects') %></h3>
                         <ul>
                             <% projects.forEach(project => { %>
                                 <li>

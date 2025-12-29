@@ -3,6 +3,8 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import cors from 'cors'
 import path from 'path'
+import cookieParser from 'cookie-parser'
+import i18n from 'i18n'
 import privateRouter from './routes/private'
 import publicRouter from './routes/public'
 import { init as dbInit } from './database'
@@ -12,6 +14,7 @@ import initializePassport from './auth/passport'
 import { setLocals } from './middlewares/auth'
 import { BunSQLiteStore } from './auth/bun-sqlite-store'
 const app = express()
+const localesDirectory = path.join(process.cwd(), 'locales')
 
 // Initialize database
 dbInit()
@@ -22,6 +25,23 @@ app.set('views', path.join(__dirname, '/views'))
 app.use(cors())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
+app.use(cookieParser())
+
+i18n.configure({
+    locales: ['en', 'es'],
+    directory: localesDirectory,
+    defaultLocale: 'en',
+    queryParameter: 'lang',
+    cookie: 'lang',
+    autoReload: true,
+    updateFiles: false
+})
+app.use(i18n.init)
+app.use((req, res, next) => {
+    res.locals.__ = res.__
+    res.locals.locale = req.getLocale()
+    next()
+})
 
 // Serve static files
 app.use(express.static(path.join(__dirname, '/public')))
@@ -44,6 +64,15 @@ app.use(
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(setLocals)
+
+app.get('/lang/:locale', (req, res) => {
+    const { locale } = req.params
+    if (['en', 'es'].includes(locale)) {
+        res.cookie('lang', locale, { maxAge: 1000 * 60 * 60 * 24 * 30, httpOnly: true })
+    }
+    const redirectTo = req.query.redirect || req.get('referer') || '/'
+    res.redirect(redirectTo)
+})
 
 // Public routes
 app.use(publicRouter)

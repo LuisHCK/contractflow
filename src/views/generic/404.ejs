@@ -7,16 +7,16 @@
             <main class="container is-max-desktop py-6 px-4">
                 <section class="hero is-medium">
                     <div class="hero-body">
-                        <p class="title is-size-1">404</p>
+                        <p class="title is-size-1"><%= __('error_404_title') %></p>
                         <p class="subtitle">
-                            Page not found
+                            <%= __('error_404_message') %>
                         </p>
                         <div class="">
                             <button
                                 class="button is-primary"
                                 onclick="window.history.back()"
                             >
-                                Go back
+                                <%= __('error_404_back') %>
                             </button>
                         </div>
                     </div>

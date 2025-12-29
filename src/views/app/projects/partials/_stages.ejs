@@ -2,11 +2,11 @@
     <table class="table is-striped is-hoverable is-fullwidth">
         <thead>
             <tr class="is-<%= locals.theme || 'light' %>">
-                <th>Name</th>
-                <th>Estimated cost</th>
-                <th>Payed</th>
-                <th>Progress</th>
-                <th class="has-text-right">Actions</th>
+                <th><%= __('stages_name') %></th>
+                <th><%= __('stages_estimated_cost') %></th>
+                <th><%= __('stages_paid') %></th>
+                <th><%= __('stages_progress') %></th>
+                <th class="has-text-right"><%= __('stages_actions') %></th>
             </tr>
         </thead>
         <tbody>
@@ -37,16 +37,16 @@
                             <p class="control">
                                 <a class="button primary is-small"
                                     href="/projects/show/<%= project.id %>/stages/show/<%= stage.id %>/payments/create">
-                                    Register payment
+                                    <%= __('stages_register_payment') %>
                                 </a>
                             </p>
                             <p class="control">
                                 <a class="button is-light is-small"
-                                    href="/projects/show/<%= project.id %>/stages/show/<%= stage.id %>">View</a>
+                                    href="/projects/show/<%= project.id %>/stages/show/<%= stage.id %>"><%= __('stages_view') %></a>
                             </p>
                             <p class="control">
                                 <a class="button is-warning is-small"
-                                    href="/projects/<%= project.id %>/stages/<%= stage.id %>/delete">Delete</a>
+                                    href="/projects/<%= project.id %>/stages/<%= stage.id %>/delete"><%= __('stages_delete') %></a>
                             </p>
                         </div>
                     </td>
@@ -58,7 +58,7 @@
                 <tr>
                     <td colspan="5">
                         <div class="notification is-warning has-text-centered">
-                            No stages found.
+                            <%= __('stages_no_stages') %>
                         </div>
                     </td>
                 </tr>

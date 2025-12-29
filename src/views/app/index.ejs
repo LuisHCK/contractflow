@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="<%= locals.theme || 'light' %>">
+<html lang="<%= locale %>" data-theme="<%= locals.theme || 'light' %>">
     <%- include('../partials/head') %>
     <body>
         <%- include('../partials/navigation') %>
         <main class="container is-max-desktop py-6">
+            <h1 class="title is-2 has-text-centered mt-6 mb-6"><%= __('index_title') %></h1>
         </main>
     </body>
 </html>

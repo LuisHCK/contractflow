@@ -3,12 +3,12 @@
     <table class="table is-striped is-hoverable is-fullwidth">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Status</th>
-                <th>Estimated cost</th>
-                <th>Payed</th>
-                <th>Actions</th>
+                <th><%= __('projects_list_name') %></th>
+                <th><%= __('projects_list_description') %></th>
+                <th><%= __('projects_list_status') %></th>
+                <th><%= __('projects_list_estimated_cost') %></th>
+                <th><%= __('projects_list_payed') %></th>
+                <th><%= __('projects_list_actions') %></th>
             </tr>
         </thead>
         <tbody>
@@ -28,7 +28,7 @@
                 <td>
                     <div class="field is-grouped is-justify-content-flex-end">
                         <p class="control">
-                            <a class="button is-primary is-small" href="/projects/show/<%= project.id %>">View</a>
+                            <a class="button is-primary is-small" href="/projects/show/<%= project.id %>"><%= __('projects_list_view') %></a>
                         </p>
                     </div>
                 </td>
@@ -40,7 +40,7 @@
             <tr>
                 <td colspan="6">
                     <div class="notification is-warning has-text-centered">
-                        No projects found.
+                        <%= __('projects_list_no_projects') %>
                     </div>
                 </td>
             </tr>

@@ -1,53 +1,53 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="<%= locale %>" data-theme="light">
     <%- include('../../partials/head') %>
 
     <body class="container">
         <% for (let i = 0; i < 2; i++) { %>
         <section class="receipt-container">
             <div class="receipt-body">
-                <h1 class="is-size-5">Payment Receipt</h1>
+                <h1 class="is-size-5"><%= __('invoice_title') %></h1>
                 <div>
                     <div class="has-text-right">
-                        <b>Receipt #:</b>
+                        <b><%= __('invoice_receipt_number') %></b>
                         <span class="is-underlined"> <%= payment.paymentNumber %> </span>
                     </div>
 
                     <div class="nowrap has-text-right">
-                        <b>Payment Date:</b>
+                        <b><%= __('invoice_payment_date') %></b>
                         <span class="is-underlined"> <%= payment.createdAt %> </span>
                     </div>
                 </div>
 
                 <div class="">
-                    <b>Amount: </b>
+                    <b><%= __('invoice_amount') %></b>
                     <span class="is-underlined">
                         <%= utils.formatToCurrency(payment.amount) %>
                     </span>
                 </div>
 
                 <div class="">
-                    <b>In words:</b>
+                    <b><%= __('invoice_in_words') %></b>
                     <span class="is-underlined"> <%= stage.estimatedCostWords %> </span>
                 </div>
 
                 <div class="">
-                    <b>Received from:</b>
+                    <b><%= __('invoice_received_from') %></b>
                     <span class="is-underlined"> <%= payment.payer %> </span>
                 </div>
 
                 <div class="">
-                    <b>For payment of:</b>
+                    <b><%= __('invoice_for_payment_of') %></b>
                     <span class="is-underlined"> <%= payment.description %> </span>
                 </div>
 
                 <div class="span-col">
-                    <b>Payment method:</b>
+                    <b><%= __('invoice_payment_method') %></b>
                     <span class="is-underlined"> <%= payment.paymentMethod %> </span>
                 </div>
 
                 <div class="">
-                    <b>Received by:</b>
+                    <b><%= __('invoice_received_by') %></b>
                     <span class="is-underlined"> <%= contractor.name %> </span>
                 </div>
 
@@ -55,16 +55,16 @@
                 <table class="table is-bordered is-narrow is-dark-bordered">
                     <tbody>
                         <tr>
-                            <td>Acc. Amount</td>
+                            <td><%= __('invoice_acc_amount') %></td>
                             <td><%= utils.formatToCurrency(stage.estimatedCost) %></td>
                         </tr>
                         <tr>
-                            <td>This payment</td>
+                            <td><%= __('invoice_this_payment') %></td>
                             <td><%= utils.formatToCurrency(payment.amount) %></td>
                         </tr>
 
                         <tr>
-                            <td>Balance due:</td>
+                            <td><%= __('invoice_balance_due') %></td>
                             <td><%= utils.formatToCurrency(payment.balance) %></td>
                         </tr>
                     </tbody>

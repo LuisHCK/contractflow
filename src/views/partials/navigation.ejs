@@ -20,21 +20,21 @@
 
     <div id="navbarBasicExample" class="navbar-menu">
         <div class="navbar-start">
-            <a href="/" class="navbar-item"> Home </a>
+            <a href="/" class="navbar-item"> <%= __('nav_home') %> </a>
             <% if (locals.user) { %>
-            <a href="/projects" class="navbar-item">Projects</a>
-            <a href="/contractors" class="navbar-item">Contractors</a>
+            <a href="/projects" class="navbar-item"><%= __('nav_projects') %></a>
+            <a href="/contractors" class="navbar-item"><%= __('nav_contractors') %></a>
             <% } %>
 
             <div class="navbar-item has-dropdown is-hoverable">
-                <a class="navbar-link"> More </a>
+                <a class="navbar-link"> <%= __('nav_more') %> </a>
 
                 <div class="navbar-dropdown">
-                    <a href="/payment-categories" class="navbar-item">Payment Categories</a>
+                    <a href="/payment-categories" class="navbar-item"><%= __('nav_paymentCategories') %></a>
 
                     <!-- Admin link -->
                     <% if (locals.user && locals.user.role === 'admin') { %>
-                    <a href="/admin" class="navbar-item">Admin</a>
+                    <a href="/admin" class="navbar-item"><%= __('nav_admin') %></a>
                     <% } %>
                 </div>
             </div>
@@ -46,12 +46,12 @@
                     <% if (locals.user) { %>
                     <form action="/logout" method="post">
                         <button class="button is-seconary" type="submit">
-                            <strong>Logout</strong>
+                            <strong><%= __('nav_logout') %></strong>
                         </button>
                     </form>
                     <% } else { %>
                     <a class="button is-primary" href="/login">
-                        <strong>Login</strong>
+                        <strong><%= __('nav_login') %></strong>
                     </a>
                     <% } %>
                 </div>

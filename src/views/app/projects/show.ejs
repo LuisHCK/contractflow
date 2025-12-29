@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="<%= locals.theme || 'light' %>">
+<html lang="<%= locale %>" data-theme="<%= locals.theme || 'light' %>">
     <%- include('../../partials/head', { title: `ContractorPay ${project.name}`, scripts: ['/js/iframe-modal.js'] }) %>
 
     <body>
@@ -8,8 +8,8 @@
         <main class="container is-max-desktop py-6 px-4">
             <nav class="breadcrumb is-small" aria-label="breadcrumbs">
                 <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/projects">Projects</a></li>
+                    <li><a href="/"> <%= __('breadcrumb_home') %> </a></li>
+                    <li><a href="/projects"> <%= __('breadcrumb_projects') %> </a></li>
                     <li class="is-active">
                         <a href="#" aria-current="page" class="has-text-dark"> <%= project.name %> </a>
                     </li>
@@ -18,24 +18,24 @@
 
             <div class="is-flex is-justify-content-space-between is-align-items-center">
                 <h1 class="title is-1 is-family-sans-serif"><%= project.name %></h1>
-                <a href="/projects/edit/<%= project.id %>" class="button is-primary"> Edit </a>
+                <a href="/projects/edit/<%= project.id %>" class="button is-primary"> <%= __('projects_edit') %> </a>
             </div>
 
             <h2 class="subtitle"><%= project.description %></h2>
 
             <section>
-                <h2 class="title is-5">Overview</h2>
+                <h2 class="title is-5"><%= __('projects_overview') %></h2>
                 <%- include('partials/_overview-cards', { project, stages }) %>
             </section>
 
             <section class="mt-6">
                 <div class="is-flex is-justify-content-space-between is-align-items-center">
-                    <h2 class="title is-5">Stages</h2>
+                    <h2 class="title is-5"><%= __('projects_stages') %></h2>
                     <a
                         href="/projects/show/<%= project.id %>/stages/create"
                         class="button is-secondary is-small"
                     >
-                        Add stage
+                        <%= __('projects_add_stage') %>
                     </a>
                 </div>
 
