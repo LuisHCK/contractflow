@@ -45,7 +45,7 @@ export const show = async (req, res) => {
 
 // Create a new contractor
 export const create = async (req, res) => {
-    const { name, email, phone, address, createdBy } = req.body
+    const { name, email, phone, address } = req.body || {}
     try {
         // Render the form for creating a new contractor
         if (req.method === 'GET') {
