@@ -21,8 +21,10 @@
     <div id="navbarBasicExample" class="navbar-menu">
         <div class="navbar-start">
             <a href="/" class="navbar-item"> Home </a>
+            <% if (locals.user) { %>
             <a href="/projects" class="navbar-item">Projects</a>
             <a href="/contractors" class="navbar-item">Contractors</a>
+            <% } %>
 
             <div class="navbar-item has-dropdown is-hoverable">
                 <a class="navbar-link"> More </a>

@@ -39,7 +39,7 @@ export const show = async (req, res) => {
 }
 
 export const create = async (req, res) => {
-    const { type, description } = req.body
+    const { type, description } = req.body || {}
     const { paymentId } = req.params
     try {
         // Render the form for creating a new evidence
