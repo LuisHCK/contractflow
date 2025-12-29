@@ -1,0 +1,14 @@
+-- Example migration file
+-- Add your SQL statements here
+-- 
+-- Naming convention: XXX_description.sql
+-- Examples:
+--   001_add_notes_to_projects.sql
+--   002_create_audit_log_table.sql
+--   003_add_index_on_payments_date.sql
+--
+-- Each migration runs in a transaction automatically.
+-- If it fails, changes are rolled back.
+
+-- Example: Add a notes column to the projects table
+-- ALTER TABLE projects ADD COLUMN notes TEXT;

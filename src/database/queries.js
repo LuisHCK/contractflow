@@ -121,10 +121,10 @@ export const STAGES = {
 export const PAYMENTS = {
     ADD: `
         INSERT INTO payments (
-            stage_id, amount, date, payer, payment_category_id, contractor_id, description, payment_method, created_by, balance
+            stage_id, amount, date, payer, payment_category_id, contractor_id, description, payment_method, created_by, balance, hide_totals_invoice
         ) 
         VALUES (
-            :stageId, :amount, :date, :payer, :paymentCategoryId, :contractorId, :description, :paymentMethod, :createdBy, :balance
+            :stageId, :amount, :date, :payer, :paymentCategoryId, :contractorId, :description, :paymentMethod, :createdBy, :balance, :hide_totals_invoice
         );`,
 
     GET_ALL: `

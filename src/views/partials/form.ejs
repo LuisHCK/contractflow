@@ -83,6 +83,24 @@
                 </label>
             </div>
 
+            <!-- CHECKBOX -->
+            <% } else if (field.type === 'checkbox') { %>
+            <label class="checkbox">
+                <input
+                    type="checkbox"
+                    name="<%= field.name %>"
+                    id="<%= field.name %>"
+                    value="<%= field.value || '1' %>"
+                    <% if (field.value) { %>
+                        checked
+                    <% } %>
+                    <% if (field.required) { %>
+                        required
+                    <% } %>
+                />
+                <%= typeof __ === 'function' ? __(field.checkboxLabel || '') : (field.checkboxLabel || '') %>
+            </label>
+
             <!-- Default input -->
             <% } else { %>
             <input

@@ -54,19 +54,24 @@
                 <!-- Summary -->
                 <table class="table is-bordered is-narrow is-dark-bordered">
                     <tbody>
+                        <% if (!payment.hideTotalsInvoice) { %>
                         <tr>
                             <td><%= __('invoice_acc_amount') %></td>
                             <td><%= utils.formatToCurrency(stage.estimatedCost) %></td>
                         </tr>
+                        <% } %>
+                        
                         <tr>
                             <td><%= __('invoice_this_payment') %></td>
                             <td><%= utils.formatToCurrency(payment.amount) %></td>
                         </tr>
 
+                        <% if (!payment.hideTotalsInvoice) { %>
                         <tr>
                             <td><%= __('invoice_balance_due') %></td>
                             <td><%= utils.formatToCurrency(payment.balance) %></td>
                         </tr>
+                        <% } %>
                     </tbody>
                 </table>
             </div>

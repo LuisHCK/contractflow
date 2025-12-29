@@ -28,6 +28,7 @@ export class Payment {
         this.evidences = payment.evidences || []
         this.contractor = payment.contractor || null
         this.balance = payment.balance || 0
+        this.hideTotalsInvoice = payment.hideTotalsInvoice || payment.hide_totals_invoice || false
     }
 
     /**

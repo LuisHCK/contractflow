@@ -1,5 +1,6 @@
 import { Database } from 'bun:sqlite'
 import seed from './seed'
+import { runMigrations } from './migrations'
 
 export const database = new Database('database.db', {
     create: true,
@@ -109,6 +110,9 @@ export const init = async () => {
     `)
 
     console.log('Database initialized')
+
+    // Run pending migrations
+    await runMigrations()
 
     await seed()
 }

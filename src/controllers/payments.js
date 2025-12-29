@@ -128,7 +128,7 @@ export const print = async (req, res) => {
             project,
             stage: {
                 ...stage,
-                estimatedCostWords: numberToWords(payment.amount).toUpperCase()
+                estimatedCostWords: numberToWords(payment.amount, req.getLocale()).toUpperCase()
             },
             utils: {
                 formatToCurrency

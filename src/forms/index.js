@@ -134,6 +134,12 @@ export const PAYMENT_FORM = {
             required: false,
             type: 'select',
             options: [] // to be populated dynamically
+        },
+        {
+            checkboxLabel: 'payments_hide_totals_invoice',
+            name: 'hide_totals_invoice',
+            type: 'checkbox',
+            description: 'payments_hide_totals_invoice_description'
         }
     ]
 }
