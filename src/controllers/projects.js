@@ -31,7 +31,7 @@ export const create = async (req, res) => {
     }
 
     // Render form view
-    res.render('generic/form-view', { form: PROJECT_FORM, title: 'Create project' })
+    res.render('generic/form-view', { form: PROJECT_FORM, title: req.__('projects_create_title') })
 }
 
 export const show = async (req, res) => {
@@ -99,7 +99,7 @@ export const edit = async (req, res) => {
                     return { ...field, value }
                 })
             },
-            title: `Edit project ${project.name}`
+            title: req.__('projects_edit_title', { name: project.name })
         })
     } catch (error) {
         res.status(500).json({ message: error.message })
@@ -147,7 +147,7 @@ export const showStagePayments = async (req, res) => {
         res.render('generic/table-view', {
             data,
             fields,
-            title: `Payments for stage: ${stage.name}`
+            title: req.__('projects_payments_stage_title', { name: stage.name })
         })
     } catch (error) {
         res.status(500).json({ message: error.message })

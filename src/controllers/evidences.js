@@ -10,8 +10,8 @@ export const index = async (req, res) => {
             data: evidences,
             form: EVIDENCE_FORM,
             baseRoute: 'evidences',
-            title: 'Evidences',
-            description: 'List of evidences',
+            title: req.__('evidences_list_title'),
+            description: req.__('evidences_list_description'),
             showCreate: true,
             createPath: '/evidences/create'
         })
@@ -45,14 +45,14 @@ export const create = async (req, res) => {
         // Render the form for creating a new evidence
         if (req.method === 'GET') {
             return res.render('generic/form-view', {
-                title: 'Register payment evidence',
+                title: req.__('evidences_create_title'),
                 form: EVIDENCE_FORM
             })
         }
 
         if (!req.file) {
             return res.render('generic/form-view', {
-                title: 'Register payment evidence',
+                title: req.__('evidences_create_title'),
                 form: EVIDENCE_FORM,
                 error: 'File is required'
             })
@@ -79,7 +79,7 @@ export const create = async (req, res) => {
             }
 
             return res.render('generic/form-view', {
-                title: 'Register payment evidence',
+                title: req.__('evidences_create_title'),
                 form: EVIDENCE_FORM,
                 messages: [
                     { content: 'Failed to retrieve project or stage information', type: 'error' }
@@ -94,7 +94,7 @@ export const create = async (req, res) => {
             }
 
             return res.render('generic/form-view', {
-                title: 'Register payment evidence',
+                title: req.__('evidences_create_title'),
                 form: EVIDENCE_FORM,
                 error: 'Failed to create evidence'
             })

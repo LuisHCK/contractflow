@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="<%= locals.theme || 'light' %>">
-<%- include('../partials/head', {title: `ContractorPay | ${locals.title}`}) %>
+<%
+    const TITLE = __(locals.title)
+%>
+<%- include('../partials/head', {title: `ContractorPay | ${TITLE}`}) %>
 
     <body>
         <%- include('../partials/navigation') %>
@@ -9,14 +12,14 @@
                 <ul>
                     <li><a href="/">Home</a></li>
                     <li class="is-active">
-                        <a href="#" aria-current="page" class="has-text-dark"> <%= locals.title %> </a>
+                        <a href="#" aria-current="page" class="has-text-dark"> <%= TITLE %> </a>
                     </li>
                 </ul>
             </nav>
 
             <section class="px-4">
                 <div class="is-flex is-justify-content-space-between is-align-items-center">
-                    <h1 class="title is-1 is-family-sans-serif"><%= locals.title %></h1>
+                    <h1 class="title is-1 is-family-sans-serif"><%= TITLE %></h1>
                     <% if (locals.showCreate) { %>
                         <a href="<%= locals.createPath %>" class="button is-primary">
                             <%= __('list_create') %>

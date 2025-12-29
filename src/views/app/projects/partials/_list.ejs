@@ -17,7 +17,7 @@
                 <td><%= project.name %></td>
                 <td><%= project.description %></td>
                 <td>
-                    <span class="tag is-info is-capitalized"><%= project.statusLabel %></span>
+                    <span class="tag is-info is-capitalized"><%= __(`projects_status_${project.status}`) %></span>
                 </td>
                 <td>
                     <span class="tag is-dark">$<%= project.estimatedCost %></span>

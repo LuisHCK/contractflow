@@ -9,7 +9,7 @@
     <% fields.map(field => { %>
     <div class="field <%= field.className %>">
         <label class="label" for="<%= field.name %>">
-            <%= field.label %>
+            <%= typeof __ === 'function' ? __(field.label) : field.label %>
             <% if (field.required) { %>
                 *
             <% } %>
@@ -21,7 +21,7 @@
                 class="textarea"
                 name="<%= field.name %>"
                 id="<%= field.name %>"
-                placeholder="<%= field.placeholder %>"
+                placeholder="<%= typeof __ === 'function' ? __(field.placeholder) : field.placeholder %>"
                 <% if (field.required) { %>
                     required
                 <% } %>
@@ -38,7 +38,7 @@
                     <% } %>
                     value=""
                 >
-                    <option value=""><%= field.placeholder %></option>
+                    <option value=""><%= typeof __ === 'function' ? __(field.placeholder) : field.placeholder %></option>
                     <% field.options.forEach((option, index) => { %>
                         <!-- Handle object options -->
                         <% if (typeof option === 'object') { %>
@@ -46,12 +46,12 @@
                             value="<%= option.value %>"
                             <%= field.value === option ? 'selected' : '' %>
                         >
-                            <%= option.label %>
+                            <%= typeof __ === 'function' ? __(option.label) : option.label %>
                         </option>
                         <!-- Simple text -->
                         <% } else { %>
                         <option value="<%= option %>" <%= field.value === option ? 'selected' : '' %>>
-                            <%= option.replace('_', ' ') %>
+                            <%= typeof __ === 'function' ? __(option) : option.replace('_', ' ') %>
                         </option>
                         <% } %>
                     <% }) %>
@@ -88,14 +88,13 @@
             <input
                 class="input"
                 type="<%= field.type || 'text' %>"
-                placeholder="<%= field.placeholder %>"
+                placeholder="<%= typeof __ === 'function' ? __(field.placeholder) : field.placeholder %>"
                 name="<%= field.name %>"
                 id="<%= field.name %>"
                 value="<%= field.value %>"
                 <% if (field.required) { %>
                     required
                 <% } %>
-
             />
             <% } %>
         </div>

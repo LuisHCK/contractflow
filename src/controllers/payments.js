@@ -44,7 +44,7 @@ export const index = async (req, res) => {
         res.render('generic/list-view', {
             data,
             fields,
-            title: `Payments for stage: ${stage.name}`
+            title: req.__('payments_stage_title', { name: stage.name })
         })
     } catch (error) {
         console.error(`Error fetching projects: ${error.message}`)
@@ -104,7 +104,7 @@ export const createStagePayment = async (req, res) => {
         })
 
         // Render form view
-        return res.render('generic/form-view', { form, title: 'Register new payment' })
+        return res.render('generic/form-view', { form, title: req.__('payments_create_title') })
     } catch (error) {
         res.status(500).json({ message: error.message })
     }

@@ -1,11 +1,20 @@
-@import "https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css";
-
+@import 'https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css';
 
 /* Overrides */
-.select, select {
+.select,
+select {
     width: 100%;
 }
 
-.is-dark-bordered.table td, .is-dark-bordered.table th {
+.is-dark-bordered.table td,
+.is-dark-bordered.table th {
     border-color: black;
+}
+
+.h-full {
+    height: 100%;
+}
+
+.mt-auto {
+    margin-top: auto;
 }

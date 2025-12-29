@@ -74,7 +74,7 @@ export const edit = async (req, res) => {
                     return { ...field, value }
                 })
             },
-            title: `Edit stage ${stage.name}`
+            title: req.__('stages_edit_title', { name: stage.name })
         })
     } catch (error) {
         res.status(500).json({ message: error.message })
@@ -108,7 +108,7 @@ export const create = async (req, res) => {
         })
 
         // Render form view
-        res.render('generic/form-view', { form, title: 'Create project stage' })
+        res.render('generic/form-view', { form, title: req.__('stages_create_title') })
     } catch (error) {
         console.error(error)
         res.status(500).json({ message: error.message })

@@ -9,8 +9,8 @@ export const index = async (_req, res) => {
             data: categories,
             form: PAYMENT_CATEGORY_FORM,
             baseRoute: 'payment-categories',
-            title: 'Payment Categories',
-            description: 'List of payment categories',
+            title: req.__('payment_categories_list_title'),
+            description: req.__('payment_categories_list_description'),
             showCreate: true
         })
         res.render('generic/table-view', pageData)
@@ -35,8 +35,8 @@ export const show = async (req, res) => {
             data: category,
             form: PAYMENT_CATEGORY_FORM,
             baseRoute: 'payment-categories',
-            title: `Payment Category: ${category.name}`,
-            description: 'Payment category details'
+            title: req.__('payment_categories_detail_title', { name: category.name }),
+            description: req.__('payment_categories_detail_description')
         })
 
         res.render('generic/detail-view', pageData)
@@ -79,7 +79,7 @@ export const edit = async (req, res) => {
                     return { ...field, value }
                 })
             },
-            title: `Edit Payment Category: ${category.name}`
+            title: req.__('payment_categories_edit_title', { name: category.name })
         })
     } catch (error) {
         res.status(500).json({ message: error.message })
@@ -102,7 +102,7 @@ export const create = async (req, res) => {
         // Render form view
         res.render('generic/form-view', {
             form: PAYMENT_CATEGORY_FORM,
-            title: 'Create Payment Category'
+            title: req.__('payment_categories_create_title')
         })
     } catch (error) {
         res.status(500).json({ message: error.message })

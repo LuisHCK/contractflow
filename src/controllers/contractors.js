@@ -6,15 +6,15 @@ import * as contractorService from '@/services/contractors'
 import { formatTableViewData } from '@/utils/generic-views'
 
 // Get all contractors
-export const index = async (_req, res) => {
+export const index = async (req, res) => {
     try {
         const contractors = await contractorService.getAll()
         const pageData = formatTableViewData({
             data: contractors,
             form: CONTRACTOR_FORM,
             baseRoute: 'contractors',
-            title: 'Contractors',
-            description: 'List of contractors',
+            title: req.__('contractors_list_title'),
+            description: req.__('contractors_list_description'),
             showCreate: true,
             createPath: '/contractors/create'
         })
@@ -50,7 +50,7 @@ export const create = async (req, res) => {
         // Render the form for creating a new contractor
         if (req.method === 'GET') {
             return res.render('generic/form-view', {
-                title: 'Create contractor',
+                title: req.__('contractors_create_title'),
                 form: CONTRACTOR_FORM
             })
         }
@@ -64,11 +64,11 @@ export const create = async (req, res) => {
 
         if (!newContractor?.id) {
             return res.render('generic/form-view', {
-                title: 'Create contractor',
+                title: req.__('contractors_create_title'),
                 form: populateForm({
                     form: CONTRACTOR_FORM,
                     data: { name, email, phone, address },
-                    error: 'Failed to create contractor'
+                    error: req.__('contractors_create_error')
                 })
             })
         }
@@ -95,12 +95,11 @@ export const update = async (req, res) => {
 
             // Render the form with the contractor data
             return res.render('generic/form-view', {
-                title: 'Edit contractor',
+                title: req.__('contractors_edit_title', { name: contractor.name }),
                 form: populateForm({
                     form: CONTRACTOR_FORM,
                     data: contractor
-                }),
-                title: `Edit contractor: ${contractor.name}`
+                })
             })
         }
 
