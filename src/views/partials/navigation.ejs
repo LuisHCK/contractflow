@@ -35,6 +35,23 @@
                     <% if (locals.user && locals.user.role === 'admin') { %>
                     <a href="/admin" class="navbar-item"><%= __('nav_admin') %></a>
                     <% } %>
+
+                    <hr class="navbar-divider" />
+                    <div class="navbar-item">
+                        <div class="dropdown is-hoverable">
+                            <div class="dropdown-trigger">
+                                <button class="button is-small" aria-haspopup="true" aria-controls="dropdown-menu-lang">
+                                    <span><%= __('nav_language') %></span>
+                                </button>
+                            </div>
+                            <div class="dropdown-menu" id="dropdown-menu-lang" role="menu">
+                                <div class="dropdown-content">
+                                    <a href="/lang/en" class="dropdown-item">English</a>
+                                    <a href="/lang/es" class="dropdown-item">Español</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <% } %>
