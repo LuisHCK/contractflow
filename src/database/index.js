@@ -1,8 +1,15 @@
 import { Database } from 'bun:sqlite'
+import { mkdirSync } from 'node:fs'
+import { dirname, isAbsolute, join } from 'node:path'
 import seed from './seed'
 import { runMigrations } from './migrations'
 
-export const database = new Database('database.db', {
+const dbFile = process.env.DATABASE_FILE || 'data/database.db'
+const dbPath = isAbsolute(dbFile) ? dbFile : join(process.cwd(), dbFile)
+
+mkdirSync(dirname(dbPath), { recursive: true })
+
+export const database = new Database(dbPath, {
     create: true,
     strict: true,
     safeIntegers: true

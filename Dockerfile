@@ -33,8 +33,8 @@ COPY . .
 ENV PORT=3000
 EXPOSE 3000
 
-# Optional: where file uploads will be stored
-VOLUME ["/app/uploads"]
+# Optional: where file uploads and database will be stored
+VOLUME ["/app/uploads", "/app/data"]
 
 # Start the server with Bun
 CMD ["bun", "src/server.js"]
