@@ -15,6 +15,7 @@ export class Stage {
         this.updatedAt = stage.updatedAt || stage.updated_at
         this.createdBy = stage.createdBy || stage.created_by
         this.updatedBy = stage.updatedBy || stage.updated_by
+        this.deleted = Boolean(stage.deleted) || false
         Object.assign(this, stage)
     }
 
@@ -122,5 +123,21 @@ export const getProjectId = async (stageId) => {
     } catch (error) {
         console.error(`Error fetching project ID: ${error.message}`)
         return null
+    }
+}
+
+/**
+ * Soft delete a stage by setting its deleted flag.
+ * @param {number|string} stageId - The unique identifier of the stage.
+ * @returns {Promise<boolean>} True if a row was updated, false otherwise.
+ */
+export const deleteStageById = async (stageId) => {
+    try {
+        const query = database.query(STAGES.SOFT_DELETE)
+        const result = query.run({ id: stageId })
+        return result.changes > 0
+    } catch (error) {
+        console.error(`Error soft deleting stage: ${error.message}`)
+        return false
     }
 }

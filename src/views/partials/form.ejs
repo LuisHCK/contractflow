@@ -85,12 +85,11 @@
 
             <!-- CHECKBOX -->
             <% } else if (field.type === 'checkbox') { %>
-            <label class="checkbox">
+            <label class="checkbox has-text-weight-bold"">
                 <input
                     type="checkbox"
                     name="<%= field.name %>"
                     id="<%= field.name %>"
-                    value="<%= field.value || '1' %>"
                     <% if (field.value) { %>
                         checked
                     <% } %>
@@ -98,7 +97,7 @@
                         required
                     <% } %>
                 />
-                <%= typeof __ === 'function' ? __(field.checkboxLabel || '') : (field.checkboxLabel || '') %>
+                <%= typeof __ === 'function' ? __(field.checkboxLabel) : field.checkboxLabel %>
             </label>
 
             <!-- Default input -->

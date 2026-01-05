@@ -29,6 +29,7 @@ export class Payment {
         this.contractor = payment.contractor || null
         this.balance = payment.balance || 0
         this.hideTotalsInvoice = payment.hideTotalsInvoice || payment.hide_totals_invoice || false
+        this.deleted = Boolean(payment.deleted) || false
     }
 
     /**
@@ -219,5 +220,21 @@ export const getTotalPayedAmount = async (stageId) => {
     } catch (error) {
         console.error(`Error fetching total payed amount: ${error.message}`)
         return 0
+    }
+}
+
+/**
+ * Soft delete a payment by setting its deleted flag.
+ * @param {string|number} paymentId - The unique identifier of the payment.
+ * @returns {Promise<boolean>} True if a row was updated, false otherwise.
+ */
+export const deletePaymentById = async (paymentId) => {
+    try {
+        const query = database.query(PAYMENTS.SOFT_DELETE)
+        const result = query.run({ id: paymentId })
+        return result.changes > 0
+    } catch (error) {
+        console.error(`Error soft deleting payment: ${error.message}`)
+        return false
     }
 }

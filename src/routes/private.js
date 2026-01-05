@@ -33,6 +33,8 @@ router.get('/projects/show/:id/stages/create', stageController.create)
 router.post('/projects/show/:id/stages/create', stageController.create)
 router.get('/projects/show/:id/stages/edit/:stageId', stageController.edit)
 router.post('/projects/show/:id/stages/edit/:stageId', stageController.edit)
+router.delete('/projects/show/:id/stages/remove/:stageId', stageController.deleteStage)
+router.post('/projects/show/:id/stages/remove/:stageId', stageController.deleteStage)
 
 /**
  * PAYMENTS

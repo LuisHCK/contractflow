@@ -47,8 +47,13 @@
                                 </a>
                             </p>
                             <p class="control">
-                                <a class="button is-warning is-small"
-                                    href="/projects/<%= project.id %>/stages/<%= stage.id %>/delete"><%= __('stages_delete') %></a>
+                                <form method="POST" action="/projects/show/<%= project.id %>/stages/remove/<%= stage.id %>">
+                                    <button
+                                        type="submit"
+                                        class="button is-warning is-small">
+                                        <%= __('stages_delete') %>
+                                    </button>
+                                </form>
                             </p>
                         </div>
                     </td>

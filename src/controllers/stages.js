@@ -3,7 +3,7 @@ import { formatOptions, populateForm } from '@/forms/utils'
 import { getAllPayments } from '@/services/payments'
 import { getProjectById } from '@/services/projects'
 import { getAll as getAllContractors } from '@/services/contractors'
-import { createStage, getStageById, updateStage } from '@/services/stages'
+import { createStage, getStageById, updateStage, deleteStageById } from '@/services/stages'
 
 export const index = async (_req, res) => {
     try {
@@ -112,5 +112,32 @@ export const create = async (req, res) => {
     } catch (error) {
         console.error(error)
         res.status(500).json({ message: error.message })
+    }
+}
+
+/**
+ * Soft deletes a stage and redirects back to the project view.
+ *
+ * @async
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ */
+export const deleteStage = async (req, res) => {
+    try {
+        const { id: projectId, stageId } = req.params
+        const stage = await getStageById(stageId)
+
+        if (!stage?.id) {
+            return res.status(404).send('Stage not found')
+        }
+
+        await deleteStageById(stageId)
+
+        return res.redirect(`/projects/show/${projectId}`)
+    } catch (error) {
+        console.error(`Error deleting stage: ${error}`)
+        return res
+            .status(500)
+            .send('An error occurred while deleting the stage. Please try again later.')
     }
 }

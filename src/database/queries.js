@@ -42,8 +42,8 @@ export const PROJECTS = {
         ) AS actual_cost 
         FROM 
         projects p 
-        LEFT JOIN stage s ON p.id = s.project_id 
-        LEFT JOIN payments py ON s.id = py.stage_id 
+        LEFT JOIN stage s ON p.id = s.project_id AND s.deleted = 0
+        LEFT JOIN payments py ON p.id = s.project_id AND s.id = py.stage_id AND py.deleted = 0
         GROUP BY 
         p.id;`,
 
@@ -68,8 +68,8 @@ export const PROJECTS = {
         ) AS actual_cost 
         FROM 
             projects p 
-            LEFT JOIN stage s ON p.id = s.project_id 
-            LEFT JOIN payments py ON s.id = py.stage_id 
+            LEFT JOIN stage s ON p.id = s.project_id AND s.deleted = 0
+            LEFT JOIN payments py ON p.id = s.project_id AND s.id = py.stage_id AND py.deleted = 0
         WHERE 
             p.id = :id 
         GROUP BY 
@@ -92,8 +92,8 @@ export const STAGES = {
         SELECT s.*, ROUND((100 * COALESCE(SUM(p.amount), 0)) / s.estimated_cost, 1) AS progress,
         COALESCE(SUM(p.amount), 0) AS total_payments
         FROM stage s 
-        LEFT JOIN payments p ON s.id = p.stage_id 
-        WHERE s.project_id = :projectId 
+        LEFT JOIN payments p ON s.id = p.stage_id AND p.deleted = 0
+        WHERE s.project_id = :projectId AND s.deleted = 0
         GROUP BY s.id;`,
 
     ADD: `
@@ -103,7 +103,7 @@ export const STAGES = {
         VALUES (
             :projectId, :name, :estimatedCost, :createdBy, :startDate, :endDate, :description, :contractorId
         );`,
-    GET: `SELECT * FROM stage WHERE id = :id;`,
+    GET: `SELECT * FROM stage WHERE id = :id AND deleted = 0;`,
 
     UPDATE: `
         UPDATE stage
@@ -115,7 +115,12 @@ export const STAGES = {
         SELECT p.id AS project_id
         FROM stage s
         JOIN projects p ON s.project_id = p.id
-        WHERE s.id = :stageId;`
+        WHERE s.id = :stageId AND s.deleted = 0;`,
+
+    SOFT_DELETE: `
+        UPDATE stage
+        SET deleted = 1
+        WHERE id = :id;`
 }
 
 export const PAYMENTS = {
@@ -124,39 +129,44 @@ export const PAYMENTS = {
             stage_id, amount, date, payer, payment_category_id, contractor_id, description, payment_method, created_by, balance, hide_totals_invoice
         ) 
         VALUES (
-            :stageId, :amount, :date, :payer, :paymentCategoryId, :contractorId, :description, :paymentMethod, :createdBy, :balance, :hide_totals_invoice
+            :stageId, :amount, :date, :payer, :paymentCategoryId, :contractorId, :description, :paymentMethod, :createdBy, :balance, :hideTotalsInvoice
         );`,
 
     GET_ALL: `
-        SELECT * FROM payments WHERE stage_id = :stageId ORDER BY date(date) ASC;`,
+        SELECT * FROM payments WHERE stage_id = :stageId AND deleted = 0 ORDER BY date(date) ASC;`,
 
     GET_ALL_BY_PROJECT_ID: `
         SELECT * FROM payments p
         JOIN stage s ON p.stage_id = s.id
-        WHERE s.project_id = :projectId
+        WHERE s.project_id = :projectId AND p.deleted = 0
         ORDER BY date(date) ASC;`,
 
     GET: `
-        SELECT * FROM payments WHERE id = :id;`,
+        SELECT * FROM payments WHERE id = :id AND deleted = 0;`,
 
     GET_PROJECT_ID: `
         SELECT p.id AS project_id
         FROM payments AS py
         INNER JOIN stage AS s ON py.stage_id = s.id
         INNER JOIN projects AS p ON s.project_id = p.id
-        WHERE py.id = :paymentId
+        WHERE py.id = :paymentId AND py.deleted = 0
         LIMIT 1;`,
 
     GET_STAGE_ID: `
         SELECT s.id AS stage_id
         FROM payments py
         JOIN stage s ON py.stage_id = s.id
-        WHERE py.id = :paymentId;`,
+        WHERE py.id = :paymentId AND py.deleted = 0;`,
 
     GET_TOTAL_PAYED_AMOUNT: `
         SELECT COALESCE(SUM(amount), 0) AS total_amount
         FROM payments
-        WHERE stage_id = :stageId;`
+        WHERE stage_id = :stageId AND deleted = 0;`,
+
+    SOFT_DELETE: `
+        UPDATE payments
+        SET deleted = 1
+        WHERE id = :id;`
 }
 
 export const PAYMENT_CATEGORIES = {
@@ -225,7 +235,7 @@ export const CONTRACTORS = {
         FROM 
             projects p
         JOIN stage s ON p.id = s.project_id
-        JOIN payments py ON s.id = py.stage_id
+        JOIN payments py ON s.id = py.stage_id AND py.deleted = 0
         WHERE 
             py.contractor_id = :id
         ORDER BY p.start_date ASC

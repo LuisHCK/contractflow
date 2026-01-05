@@ -137,7 +137,7 @@ export const PAYMENT_FORM = {
         },
         {
             checkboxLabel: 'payments_hide_totals_invoice',
-            name: 'hide_totals_invoice',
+            name: 'hideTotalsInvoice',
             type: 'checkbox',
             description: 'payments_hide_totals_invoice_description'
         }
