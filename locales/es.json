@@ -99,6 +99,7 @@
     "projects_status_on_hold": "En espera",
     "projects_status_canceled": "Cancelado",
     "projects_status_delayed": "Retrasado",
+    "stages_create_title": "Crear etapa",
     "stages_create_name_placeholder": "Nombre de la etapa",
     "stages_create_estimated_cost_placeholder": "Costo estimado",
     "stages_create_start_date": "Fecha de inicio",
