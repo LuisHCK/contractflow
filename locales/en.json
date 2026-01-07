@@ -157,5 +157,6 @@
         "evidence_no_evidence": "No evidence registered",
         "print": "Print",
         "payments_hide_totals_invoice": "Hide totals on invoice",
-        "payments_hide_totals_invoice_description": "If checked, the invoice will not display the accrued, this payment, or balance due totals."
+        "payments_hide_totals_invoice_description": "If checked, the invoice will not display the accrued, this payment, or balance due totals.",
+        "stages_create_new_contractor": "Create new contractor"
     }

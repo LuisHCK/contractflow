@@ -77,7 +77,11 @@ export const STAGE_FORM = {
             placeholder: 'stages_create_contractor_placeholder',
             required: true,
             type: 'select',
-            options: [] // to be populated dynamically
+            options: [], // to be populated dynamically
+            showCreateOption: true,
+            createOptionLabel: 'stages_create_new_contractor',
+            createOptionPath: '/contractors/create',
+            optionsSource: '/contractors'
         }
     ]
 }
@@ -111,7 +115,11 @@ export const PAYMENT_FORM = {
             placeholder: 'payments_create_contractor_placeholder',
             required: true,
             type: 'select',
-            options: [] // to be populated dynamically
+            options: [], // to be populated dynamically
+            showCreateOption: true,
+            createOptionLabel: 'payments_create_new_contractor',
+            createOptionPath: '/contractors/create',
+            optionsSource: '/contractors'
         },
         {
             label: 'payments_create_description',

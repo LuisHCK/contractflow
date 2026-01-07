@@ -4,11 +4,19 @@ import { CONTRACTOR_FORM } from '@/forms'
 import { populateForm } from '@/forms/utils'
 import * as contractorService from '@/services/contractors'
 import { formatTableViewData } from '@/utils/generic-views'
+import JSONSerializer from '@/utils/json-serializer'
 
 // Get all contractors
 export const index = async (req, res) => {
+    const wantsJson = req.headers.accept && req.headers.accept.includes('application/json')
     try {
         const contractors = await contractorService.getAll()
+
+        // JSON response
+        if (wantsJson) {
+            return res.json(JSONSerializer(contractors))
+        }
+
         const pageData = formatTableViewData({
             data: contractors,
             form: CONTRACTOR_FORM,
@@ -46,12 +54,14 @@ export const show = async (req, res) => {
 // Create a new contractor
 export const create = async (req, res) => {
     const { name, email, phone, address } = req.body || {}
+    const isIframe = req.query.iframe === 'true'
     try {
         // Render the form for creating a new contractor
         if (req.method === 'GET') {
             return res.render('generic/form-view', {
                 title: req.__('contractors_create_title'),
-                form: CONTRACTOR_FORM
+                form: CONTRACTOR_FORM,
+                showNavigation: !isIframe
             })
         }
         // Handle form submission for creating a new contractor

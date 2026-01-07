@@ -6,8 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (inIframe) {
         // Detect any user navigation and close the iframe
         window.onbeforeunload = function (e) {
-            e.preventDefault()
-            window.parent.closeModal()
+            // broadcast to parent window to close the modal
+            window.parent.postMessage({ action: 'closeModal' }, '*')
         }
     }
 })

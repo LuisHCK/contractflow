@@ -7,112 +7,129 @@
     <% } %>
 >
     <% fields.map(field => { %>
-    <div class="field <%= field.className %>">
+    <div class="field-wrapper mb-4">
         <label class="label" for="<%= field.name %>">
             <%= typeof __ === 'function' ? __(field.label) : field.label %>
             <% if (field.required) { %>
                 *
             <% } %>
         </label>
-        <div class="control">
-            <!-- TEXTAREA -->
-            <% if (field.type === 'textarea') { %>
-            <textarea
-                class="textarea"
-                name="<%= field.name %>"
-                id="<%= field.name %>"
-                placeholder="<%= typeof __ === 'function' ? __(field.placeholder) : field.placeholder %>"
-                <% if (field.required) { %>
-                    required
-                <% } %>
-            ><%= field.value %></textarea>
-
-            <!-- SELECT -->
-            <% } else if (field.type === 'select') { %>
-            <div class="select">
-                <select
+        <div class="field has-addons <%= field.className %>">
+            <div class="control is-expanded">
+                <!-- TEXTAREA -->
+                <% if (field.type === 'textarea') { %>
+                <textarea
+                    class="textarea"
                     name="<%= field.name %>"
                     id="<%= field.name %>"
+                    placeholder="<%= typeof __ === 'function' ? __(field.placeholder) : field.placeholder %>"
                     <% if (field.required) { %>
                         required
                     <% } %>
-                    value=""
-                >
-                    <option value=""><%= typeof __ === 'function' ? __(field.placeholder) : field.placeholder %></option>
-                    <% field.options.forEach((option, index) => { %>
-                        <!-- Handle object options -->
-                        <% if (typeof option === 'object') { %>
-                        <option
-                            value="<%= option.value %>"
-                            <%= field.value === option ? 'selected' : '' %>
-                        >
-                            <%= typeof __ === 'function' ? __(option.label) : option.label %>
-                        </option>
-                        <!-- Simple text -->
-                        <% } else { %>
-                        <option value="<%= option %>" <%= field.value === option ? 'selected' : '' %>>
-                            <%= typeof __ === 'function' ? __(option) : option.replace('_', ' ') %>
-                        </option>
+                ><%= field.value %></textarea>
+
+                <!-- SELECT -->
+                <% } else if (field.type === 'select') { %>
+                <div class="select">
+                    <select
+                        name="<%= field.name %>"
+                        id="<%= field.name %>"
+                        <% if (field.required) { %>
+                            required
                         <% } %>
-                    <% }) %>
-                </select>
-            </div>
+                        value=""
+                    >
+                        <option value=""><%= typeof __ === 'function' ? __(field.placeholder) : field.placeholder %></option>
+                        <% field.options.forEach((option, index) => { %>
+                            <!-- Handle object options -->
+                            <% if (typeof option === 'object') { %>
+                            <option
+                                value="<%= option.value %>"
+                                <%= field.value === option ? 'selected' : '' %>
+                            >
+                                <%= typeof __ === 'function' ? __(option.label) : option.label %>
+                            </option>
+                            <!-- Simple text -->
+                            <% } else { %>
+                            <option value="<%= option %>" <%= field.value === option ? 'selected' : '' %>>
+                                <%= typeof __ === 'function' ? __(option) : option.replace('_', ' ') %>
+                            </option>
+                            <% } %>
+                        <% }) %>
+                    </select>
+                </div>
 
-            <!-- FILE -->
-            <% } else if (field.type === 'file') { %>
-            <div class="file has-name is-fullwidth">
-                <label class="file-label">
-                <input
-                    class="file-input"
-                    type="file"
-                    name="<%= field.name %>"
-                    accept="<%= field.accept %>"
-                    id="<%= field.name %>"
-                    <% if (field.required) { %>
-                        required
-                    <% } %>
-                    onchange="const fileName = this.files[0].name;document.getElementById('filename-<%= field.name %>').innerText = fileName;"
-                />
-                <span class="file-cta">
-                    <span class="file-icon">
-                    <i class="fas fa-upload"></i>
+                <!-- FILE -->
+                <% } else if (field.type === 'file') { %>
+                <div class="file has-name is-fullwidth">
+                    <label class="file-label">
+                    <input
+                        class="file-input"
+                        type="file"
+                        name="<%= field.name %>"
+                        accept="<%= field.accept %>"
+                        id="<%= field.name %>"
+                        <% if (field.required) { %>
+                            required
+                        <% } %>
+                        onchange="const fileName = this.files[0].name;document.getElementById('filename-<%= field.name %>').innerText = fileName;"
+                    />
+                    <span class="file-cta">
+                        <span class="file-icon">
+                        <i class="fas fa-upload"></i>
+                        </span>
+                        <span class="file-label">Choose a file…</span>
                     </span>
-                    <span class="file-label">Choose a file…</span>
-                </span>
-                <span class="file-name" id="filename-<%= field.name %>"></span>
-                </label>
-            </div>
+                    <span class="file-name" id="filename-<%= field.name %>"></span>
+                    </label>
+                </div>
 
-            <!-- CHECKBOX -->
-            <% } else if (field.type === 'checkbox') { %>
-            <label class="checkbox has-text-weight-bold"">
+                <!-- CHECKBOX -->
+                <% } else if (field.type === 'checkbox') { %>
+                <label class="checkbox has-text-weight-bold"">
+                    <input
+                        type="checkbox"
+                        name="<%= field.name %>"
+                        id="<%= field.name %>"
+                        <% if (field.value) { %>
+                            checked
+                        <% } %>
+                        <% if (field.required) { %>
+                            required
+                        <% } %>
+                    />
+                    <%= typeof __ === 'function' ? __(field.checkboxLabel) : field.checkboxLabel %>
+                </label>
+
+                <!-- Default input -->
+                <% } else { %>
                 <input
-                    type="checkbox"
+                    class="input"
+                    type="<%= field.type || 'text' %>"
+                    placeholder="<%= typeof __ === 'function' ? __(field.placeholder) : field.placeholder %>"
                     name="<%= field.name %>"
                     id="<%= field.name %>"
-                    <% if (field.value) { %>
-                        checked
-                    <% } %>
+                    value="<%= field.value %>"
                     <% if (field.required) { %>
                         required
                     <% } %>
                 />
-                <%= typeof __ === 'function' ? __(field.checkboxLabel) : field.checkboxLabel %>
-            </label>
-
-            <!-- Default input -->
-            <% } else { %>
-            <input
-                class="input"
-                type="<%= field.type || 'text' %>"
-                placeholder="<%= typeof __ === 'function' ? __(field.placeholder) : field.placeholder %>"
-                name="<%= field.name %>"
-                id="<%= field.name %>"
-                value="<%= field.value %>"
-                <% if (field.required) { %>
-                    required
                 <% } %>
-            />
+            </div>
+
+            <!-- Create option -->
+            <% if (field.showCreateOption) { %>
+                <div class="control">
+                    <button
+                        type="button"
+                        class="button is-secondary js-iframe-modal-button"
+                        data-src="<%= field.createOptionPath %>?iframe=true"
+                        data-title="<%= __(field.createOptionLabel) %>"
+                        data-onsubmit="refreshContractors"
+                    >
+                        <%= __(field.createOptionLabel) %>
+                    </button>
+                </div>
             <% } %>
         </div>
     </div>

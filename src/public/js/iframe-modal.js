@@ -39,6 +39,7 @@ function initButtons() {
         button.addEventListener('click', function () {
             // Initialize the iframe
             const iframe = document.createElement('iframe')
+            iframe.id = 'iframe-modal-content'
             iframe.src = this.dataset.src
             iframe.width = '100%'
             iframe.height = '500px'
@@ -59,7 +60,7 @@ function initButtons() {
             const modalBody = document.querySelector('.modal-card-body')
             modalBody.innerHTML = ''
             modalBody.appendChild(iframe)
-            
+
             // Set the modal title
             const modalTitle = document.querySelector('.modal-card-title')
             modalTitle.textContent = this.dataset.title
@@ -67,18 +68,23 @@ function initButtons() {
             // Open the modal
             const modal = document.querySelector('#iframe-modal')
             modal.classList.add('is-active')
+            modal.dataset.source = this.dataset.source
+            modal.dataset.onsubmit = this.dataset.onsubmit
 
             // Read actions dataset from the button and create buttons in the footer
-            const actions = JSON.parse(this.dataset.actions)
-            const modalFooter = document.querySelector('.modal-card-foot .buttons')
-            modalFooter.innerHTML = ''
-            actions.forEach((action) => {
-                const button = document.createElement('button')
-                button.className = `button ${action.className}`
-                button.textContent = action.label
-                button.onclick = window[action.handler]
-                modalFooter.appendChild(button)
-            })
+            const dataActions = this.dataset.actions
+            if (dataActions) {
+                const actions = JSON.parse(this.dataset.actions)
+                const modalFooter = document.querySelector('.modal-card-foot .buttons')
+                modalFooter.innerHTML = ''
+                actions.forEach((action) => {
+                    const button = document.createElement('button')
+                    button.className = `button ${action.className}`
+                    button.textContent = action.label
+                    button.onclick = window[action.handler]
+                    modalFooter.appendChild(button)
+                })
+            }
         })
     })
 }
@@ -106,11 +112,55 @@ function closeModal() {
 
 function printAll() {
     // Print iframe content
-    const iframe = document.querySelector('iframe')
+    const iframe = document.querySelector('#iframe-modal-content')
     iframe.contentWindow.print()
 }
 
 document.addEventListener('DOMContentLoaded', function () {
     insertModal()
     initButtons()
+
+    // listen for messages from iframes to close the modal
+    window.addEventListener('message', function (event) {
+        if (event.data.action === 'closeModal') {
+            const modal = document.querySelector('#iframe-modal')
+            const onsubmit = modal.dataset?.onsubmit
+
+            if (onsubmit && typeof window[onsubmit] === 'function') {
+                window[onsubmit]()
+            }
+        }
+    })
 })
+
+/**
+ * ---------------------------
+ * ------ MODAL ACTIONS ------
+ * ---------------------------
+ */
+
+window.refreshContractors = async function () {
+    const contractorsSelect = document.querySelector('select[name="contractorId"]')
+    const contractorList = await fetch('/contractors', {
+        headers: { Accept: 'application/json' }
+    }).then((res) => res.json())
+
+    // Clear existing options
+    contractorsSelect.innerHTML = ''
+    
+    // Populate new options
+    contractorList.forEach((contractor) => {
+        const option = document.createElement('option')
+        option.value = contractor.id
+        option.textContent = contractor.name
+        contractorsSelect.appendChild(option)
+    })
+
+    // Change the selected option to the first one
+    if (contractorList.length > 0) {
+        contractorsSelect.value = contractorList[0].id
+    }
+
+    // Close the modal
+    closeModal()
+}

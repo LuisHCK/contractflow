@@ -196,7 +196,7 @@ export const CONTRACTORS = {
     // Get all contractors
     GET_ALL: `
         SELECT * FROM contractors
-        ORDER BY name ASC;`,
+        ORDER BY id DESC;`,
 
     // Get a single contractor by ID
     GET: `

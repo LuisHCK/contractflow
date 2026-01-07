@@ -154,5 +154,6 @@
     "payments_stage_title": "Pagos para la etapa: {{name}}",
     "evidences_create_title": "Registrar evidencia",
     "payments_hide_totals_invoice": "Ocultar totales en la factura",
-    "payments_hide_totals_invoice_description": "Si está marcado, la factura no mostrará los totales de acumulado, este pago ni saldo pendiente."
+    "payments_hide_totals_invoice_description": "Si está marcado, la factura no mostrará los totales de acumulado, este pago ni saldo pendiente.",
+    "stages_create_new_contractor": "Crear nuevo contratista"
 }
