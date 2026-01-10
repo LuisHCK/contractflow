@@ -15,13 +15,14 @@ import passport from 'passport'
  * @returns {Promise<void>}
  */
 export const login = async (req, res, next) => {
+    const FORM_VIEW = 'app/login'
     try {
         // Handle login form submission
         if (req.method === 'POST') {
             return passport.authenticate('local', (err, user, _info) => {
                 // If an error occurs during authentication
                 if (!!err) {
-                    return res.render('generic/form-view', {
+                    return res.render(FORM_VIEW, {
                         title: req.__('auth_login_title'),
                         form: LOGIN_FORM,
                         messages: [
@@ -32,7 +33,7 @@ export const login = async (req, res, next) => {
 
                 // If user is not found or password is incorrect
                 if (!user) {
-                    return res.render('generic/form-view', {
+                    return res.render(FORM_VIEW, {
                         title: req.__('auth_login_title'),
                         form: LOGIN_FORM,
                         messages: [{ content: 'Invalid credentials', type: 'warning' }]
@@ -42,7 +43,7 @@ export const login = async (req, res, next) => {
                 // If user is found, log them in
                 req.logIn(user, (err) => {
                     if (err) {
-                        return res.render('generic/form-view', {
+                        return res.render(FORM_VIEW, {
                             title: req.__('auth_login_title'),
                             form: LOGIN_FORM,
                             messages: [{ content: 'Failed to log in', type: 'warning' }]
@@ -53,12 +54,12 @@ export const login = async (req, res, next) => {
             })(req, res, next)
         } else {
             // Render the login form
-            return res.render('generic/form-view', { title: req.__('auth_login_title'), form: LOGIN_FORM })
+            return res.render(FORM_VIEW, { title: req.__('auth_login_title'), form: LOGIN_FORM })
         }
     } catch (error) {
         console.error(`Error during login: ${error.message}`)
 
-        return res.render('generic/form-view', {
+        return res.render(FORM_VIEW, {
             title: req.__('auth_login_title'),
             form: LOGIN_FORM,
             messages: [

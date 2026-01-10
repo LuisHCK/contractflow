@@ -18,3 +18,48 @@ select {
 .mt-auto {
     margin-top: auto;
 }
+
+/* Landing Page Helpers */
+.is-min-height-screen {
+    min-height: 100vh;
+}
+
+.is-family-serif {
+    font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+}
+
+.text-balance {
+    text-wrap: balance;
+}
+
+.step-number {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.5rem;
+    border: 2px solid var(--bulma-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: monospace;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    background-color: var(--bulma-background);
+}
+
+.hero-background {
+    background-image:
+        linear-gradient(to right, rgba(0,0,0,0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0,0,0,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+}
+
+/* Custom spacing not in default Bulma */
+.py-12-custom { padding-top: 3rem; padding-bottom: 3rem; }
+.py-24-custom { padding-top: 6rem; padding-bottom: 6rem; }
+
+/* Auth pages */
+.login-card {
+    padding-top: 2.5rem;
+    padding-bottom: 2.5rem;
+}
