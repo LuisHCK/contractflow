@@ -6,7 +6,7 @@ import * as contractorsController from '@/controllers/contractors'
 import * as paymentsController from '@/controllers/payments'
 import * as paymentCategoriesController from '@/controllers/payment-categories'
 import * as evidencesController from '@/controllers/evidences'
-import { uploadFileMiddleware as uploadFileMiddleware } from '@/middlewares/upload'
+import { uploadFileMiddleware } from '@/middlewares/upload'
 import { ensureAuthenticated } from '@/middlewares/auth'
 import { logout } from '@/controllers/auth'
 

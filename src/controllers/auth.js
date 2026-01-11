@@ -21,7 +21,7 @@ export const login = async (req, res, next) => {
         if (req.method === 'POST') {
             return passport.authenticate('local', (err, user, _info) => {
                 // If an error occurs during authentication
-                if (!!err) {
+                if (err) {
                     return res.render(FORM_VIEW, {
                         title: req.__('auth_login_title'),
                         form: LOGIN_FORM,

@@ -94,7 +94,7 @@ export const updateStage = async (id, stage) => {
         const query = database.query(STAGES.UPDATE)
         const { changes } = query.run({ id, ...stage })
 
-        if (!!changes) {
+        if (changes) {
             return getStageById(id)
         }
 
