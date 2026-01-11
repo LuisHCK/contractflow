@@ -133,7 +133,7 @@ export const PAYMENTS = {
         );`,
 
     GET_ALL: `
-        SELECT * FROM payments WHERE stage_id = :stageId AND deleted = 0 ORDER BY date(date) ASC;`,
+        SELECT * FROM payments WHERE stage_id = :stageId AND deleted = 0 ORDER BY id DESC;`,
 
     GET_ALL_BY_PROJECT_ID: `
         SELECT * FROM payments p
