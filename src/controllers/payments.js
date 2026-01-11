@@ -44,7 +44,7 @@ export const index = async (req, res) => {
         const fields = PAYMENT_FORM.fields.map((field) => field.name)
         fields.push('actions')
 
-        res.render('generic/list-view', {
+        res.render('generic/table-view', {
             data,
             fields,
             title: req.__('payments_stage_title', { name: stage.name })
