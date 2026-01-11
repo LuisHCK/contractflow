@@ -61,14 +61,10 @@
                             <table class="table is-fullwidth is-striped is-hoverable is-narrow">
                                 <thead>
                                     <tr>
-                                        <th><%= __('payment_number', 'Payment #') %></th>
+                                        <th><%= __('payment_number', 'Payment') %></th>
                                         <th><%= __('invoice_amount') %></th>
-                                        <th><%= __('invoice_payment_date') %></th>
-                                        <th><%= __('invoice_payment_method') %></th>
-                                        <th><%= __('contractor_name') %></th>
-                                        <th><%= __('payment_categories_list_title') %></th>
-                                        <th><%= __('evidence_description') %></th>
-                                        <th><%= __('evidence_attachment') %></th>
+                                        <th><%= __('contractor_name', 'Contractor / Category') %></th>
+                                        <th><%= __('details', 'Details') %></th>
                                         <th><%= __('actions', 'Actions') %></th>
                                     </tr>
                                 </thead>
@@ -76,7 +72,14 @@
                                     <% payments.forEach(payment => { %>
                                         <tr>
                                             <td>
-                                                <%= __('payment_number', 'Payment #') %><%= payment.paymentNumber %>
+                                                <div class="has-text-weight-semibold">
+                                                    <%= __('payment_number', 'Payment #') %><%= payment.paymentNumber %>
+                                                </div>
+                                                <div class="mt-1">
+                                                    <span class="tag is-light is-size-7">
+                                                        <%= __('invoice_payment_date') %>: <%= payment.createdAt %>
+                                                    </span>
+                                                </div>
                                             </td>
                                             <td>
                                                 <span class="tag is-success">
@@ -84,38 +87,42 @@
                                                 </span>
                                             </td>
                                             <td>
-                                                <span class="tag">
-                                                    <%= payment.createdAt %>
-                                                </span>
+                                                <div>
+                                                    <span class="has-text-weight-semibold"><%= __('contractor_name') %></span><br>
+                                                    <%= payment.contractor?.name %>
+                                                </div>
+                                                <div class="mt-2">
+                                                    <span class="has-text-weight-semibold"><%= __('payment_categories_list_title') %></span><br>
+                                                    <%= payment.paymentCategory?.name %>
+                                                </div>
                                             </td>
                                             <td>
-                                                <span class="tag is-info">
-                                                    <%= payment.paymentMethod %>
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <%= payment.contractor?.name %>
-                                            </td>
-                                            <td>
-                                                <%= payment.paymentCategory?.name %>
-                                            </td>
-                                            <td>
-                                                <p><%= payment.description %></p>
-                                            </td>
-                                            <td>
-                                                <% if (payment.evidences?.length > 0) { %>
-                                                    <ul>
-                                                        <% payment.evidences.forEach(evidence => { %>
-                                                            <li>
-                                                                <a href="/<%= evidence.filePath %>" target="_blank">
-                                                                    <%= evidence.fileName %>
-                                                                </a>
-                                                            </li>
-                                                        <% }) %>
-                                                    </ul>
-                                                <% } else { %>
-                                                    <span class="tag is-light"><%= __('evidence_no_evidence', 'No evidence registered') %></span>
-                                                <% } %>
+                                                <div>
+                                                    <span class="has-text-weight-semibold"><%= __('invoice_payment_method') %></span><br>
+                                                    <span class="tag is-info is-light">
+                                                        <%= payment.paymentMethod %>
+                                                    </span>
+                                                </div>
+                                                <div class="mt-2">
+                                                    <span class="has-text-weight-semibold"><%= __('evidence_description') %></span><br>
+                                                    <p class="mb-1"><%= payment.description %></p>
+                                                </div>
+                                                <div class="mt-2">
+                                                    <span class="has-text-weight-semibold"><%= __('evidence_attachment') %></span><br>
+                                                    <% if (payment.evidences?.length > 0) { %>
+                                                        <ul>
+                                                            <% payment.evidences.forEach(evidence => { %>
+                                                                <li>
+                                                                    <a href="/<%= evidence.filePath %>" target="_blank">
+                                                                        <%= evidence.fileName %>
+                                                                    </a>
+                                                                </li>
+                                                            <% }) %>
+                                                        </ul>
+                                                    <% } else { %>
+                                                        <span class="tag is-light"><%= __('evidence_no_evidence', 'No evidence registered') %></span>
+                                                    <% } %>
+                                                </div>
                                             </td>
                                             <td class="is-nowrap">
                                                 <div class="buttons are-small">
