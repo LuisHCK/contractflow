@@ -74,7 +74,7 @@ export const STAGE_FORM = {
         {
             label: 'contractor_name',
             name: 'contractorId',
-            placeholder: 'stages_create_contractor_placeholder',
+            placeholder: 'payments_create_contractor_placeholder',
             required: true,
             type: 'select',
             options: [], // to be populated dynamically
@@ -117,7 +117,7 @@ export const PAYMENT_FORM = {
             type: 'select',
             options: [], // to be populated dynamically
             showCreateOption: true,
-            createOptionLabel: 'payments_create_new_contractor',
+            createOptionLabel: 'stages_create_new_contractor',
             createOptionPath: '/contractors/create',
             optionsSource: '/contractors'
         },
