@@ -1,6 +1,8 @@
 {
     "auth_login_title": "Iniciar sesión",
     "auth_login_message_continue": "Por favor inicia sesión para continuar",
+    "auth_login_error_authentication": "Ocurrió un error durante la autenticación",
+    "auth_login_invalid_credentials": "Credenciales inválidas",
     "contractors_list_title": "Contratistas",
     "contractors_list_description": "Lista de contratistas",
     "contractors_create_title": "Crear contratista",
@@ -167,6 +169,7 @@
     "payments_hide_totals_invoice": "Ocultar totales en la factura",
     "payments_hide_totals_invoice_description": "Si está marcado, la factura no mostrará los totales de acumulado, este pago ni saldo pendiente.",
     "stages_create_new_contractor": "Crear nuevo contratista",
+    "auth_logout_failed": "No se pudo cerrar sesión",
     "footer_privacy": "Privacidad",
     "footer_terms": "Términos",
     "footer_contact": "Contacto",

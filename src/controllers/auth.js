@@ -26,7 +26,7 @@ export const login = async (req, res, next) => {
                         title: req.__('auth_login_title'),
                         form: LOGIN_FORM,
                         messages: [
-                            { content: 'An error occurred during authentication', type: 'danger' }
+                            { content: req.__('auth_login_error_authentication'), type: 'danger' }
                         ]
                     })
                 }
@@ -36,7 +36,7 @@ export const login = async (req, res, next) => {
                     return res.render(FORM_VIEW, {
                         title: req.__('auth_login_title'),
                         form: LOGIN_FORM,
-                        messages: [{ content: 'Invalid credentials', type: 'warning' }]
+                        messages: [{ content: req.__('auth_login_invalid_credentials'), type: 'warning' }]
                     })
                 }
 
@@ -46,7 +46,7 @@ export const login = async (req, res, next) => {
                         return res.render(FORM_VIEW, {
                             title: req.__('auth_login_title'),
                             form: LOGIN_FORM,
-                            messages: [{ content: 'Failed to log in', type: 'warning' }]
+                            messages: [{ content: req.__('auth_login_invalid_credentials'), type: 'warning' }]
                         })
                     }
                     return res.redirect('/projects')
@@ -78,7 +78,7 @@ export const logout = async (req, res) => {
         req.logout((err) => {
             if (err) {
                 console.error(`Error during logout: ${err.message}`)
-                return res.status(500).json({ error: 'Failed to log out' })
+                return res.status(500).json({ error: req.__('auth_logout_failed') })
             }
 
             // Redirect to login page after successful logout

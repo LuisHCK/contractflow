@@ -1,6 +1,8 @@
     {
         "auth_login_title": "Login",
         "auth_login_message_continue": "Please log in to continue",
+        "auth_login_error_authentication": "An error occurred during authentication",
+        "auth_login_invalid_credentials": "Invalid credentials",
         "contractors_list_title": "Contractors",
         "contractors_list_description": "List of contractors",
         "contractors_create_title": "Create contractor",
@@ -170,6 +172,7 @@
         "payments_hide_totals_invoice": "Hide totals on invoice",
         "payments_hide_totals_invoice_description": "If checked, the invoice will not display the accrued, this payment, or balance due totals.",
         "stages_create_new_contractor": "Create new contractor",
+        "auth_logout_failed": "Failed to log out",
         "footer_privacy": "Privacy",
         "footer_terms": "Terms",
         "footer_contact": "Contact",

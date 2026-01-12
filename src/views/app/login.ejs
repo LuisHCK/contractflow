@@ -21,6 +21,7 @@
 
                                 <!-- Login Form Card -->
                                 <div class="box login-card">
+                                    <%- include('../partials/flash-messages', locals) %>
                                     <form method="post" action="/login">
                                         <div class="field">
                                             <label class="label" for="email">Email address</label>
