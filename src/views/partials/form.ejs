@@ -45,7 +45,7 @@
                             <% if (typeof option === 'object') { %>
                             <option
                                 value="<%= option.value %>"
-                                <%= field.value === option ? 'selected' : '' %>
+                                <%= field.value === option.value ? 'selected' : '' %>
                             >
                                 <%= typeof __ === 'function' ? __(option.label) : option.label %>
                             </option>

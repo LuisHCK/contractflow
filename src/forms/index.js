@@ -31,7 +31,13 @@ export const PROJECT_FORM = {
             name: 'status',
             type: 'select',
             required: true,
-            options: ['planned', 'in_progress', 'on_hold', 'canceled', 'delayed']
+            options: [
+                { label: 'projects_status_planned', value: 'planned' },
+                { label: 'projects_status_in_progress', value: 'in_progress' },
+                { label: 'projects_status_on_hold', value: 'on_hold' },
+                { label: 'projects_status_canceled', value: 'canceled' },
+                { label: 'projects_status_delayed', value: 'delayed' }
+            ]
         }
     ]
 }
@@ -133,7 +139,12 @@ export const PAYMENT_FORM = {
             placeholder: 'payments_create_payment_method_placeholder',
             required: true,
             type: 'select',
-            options: ['cash', 'credit_card', 'bank_transfer', 'check']
+            options: [
+                { label: 'payments_method_cash', value: 'cash' },
+                { label: 'payments_method_credit_card', value: 'credit_card' },
+                { label: 'payments_method_bank_transfer', value: 'bank_transfer' },
+                { label: 'payments_method_check', value: 'check' }
+            ]
         },
         {
             label: 'payments_create_category',
