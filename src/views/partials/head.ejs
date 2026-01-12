@@ -13,10 +13,49 @@
             ContractorPay | Streamline your payments, simplify your life
         <% } %>
     </title>
-    <meta name="description"
-        content="Plan, budget, and track projects with confidence. Create, manage, and pay contractors with ease.">
-    <meta name="keywords" content="contractor, pay, payment, project, budget, track, manage, create, pay, ease">
-    <meta name="author" content="ContractorPay">
+    <meta
+        name="description"
+        content="Plan, budget, and track projects with confidence. Create, manage, and pay contractors with ease."
+    />
+    <meta
+        name="keywords"
+        content="contractor, pay, payment, project, budget, track, manage, create, pay, ease"
+    />
+    <meta name="author" content="ContractorPay" />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#111827" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+
+    <!-- Open Graph / Social -->
+    <meta
+        property="og:title"
+        content="<%= locals.title || 'ContractorPay | Streamline your payments, simplify your life' %>"
+    />
+    <meta
+        property="og:description"
+        content="Plan, budget, and track projects with confidence. Create, manage, and pay contractors with ease."
+    />
+    <meta property="og:type" content="website" />
+    <% if (locals.ogUrl) { %>
+        <meta property="og:url" content="<%= locals.ogUrl %>" />
+    <% } %>
+    <meta property="og:image" content="/apple-touch-icon.png" />
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+        name="twitter:title"
+        content="<%= locals.title || 'ContractorPay | Streamline your payments, simplify your life' %>"
+    />
+    <meta
+        name="twitter:description"
+        content="Plan, budget, and track projects with confidence. Create, manage, and pay contractors with ease."
+    />
+    <meta name="twitter:image" content="/apple-touch-icon.png" />
+
+    <% if (locals.canonical) { %>
+        <link rel="canonical" href="<%= locals.canonical %>" />
+    <% } %>
 
     <!-- Load custom scripts -->
      <% if (locals.scripts) { %>
