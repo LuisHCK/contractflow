@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="<%= locals.theme || 'light' %>">
-<%
-    const TITLE = __(locals.title)
-%>
+<% const TITLE = __(locals.title) %>
 <%- include('../partials/head', {title: `ContractorPay | ${TITLE}`}) %>
 
     <body>
@@ -31,7 +29,7 @@
                     <h2 class="subtitle"><%= locals.description %></h2>
                 <% } %>
 
-                <div class="box">
+                <div>
                     <%- include('../partials/table', { data, fields }) %>
                 </div>
             </section>
