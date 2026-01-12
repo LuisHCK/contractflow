@@ -42,6 +42,17 @@
         "overview_total_stages": "Total Stages",
         "overview_status": "Status",
         "index_title": "Welcome to ContractorPay",
+        "index_hero_title": "Project payments, simplified",
+        "index_hero_subtitle": "Track your projects and contractor payments in one place. Professional financial management built for modern teams.",
+        "index_cta_get_started": "Get Started",
+        "index_how_it_works_title": "How it works",
+        "index_how_it_works_subtitle": "Three simple steps to better payment tracking",
+        "index_how_it_works_step1_title": "Setup",
+        "index_how_it_works_step1_description": "Add your projects and contractors in minutes. Import from your existing tools or start fresh.",
+        "index_how_it_works_step2_title": "Track",
+        "index_how_it_works_step2_description": "Monitor project progress and payment milestones in real-time with automated notifications.",
+        "index_how_it_works_step3_title": "Pay",
+        "index_how_it_works_step3_description": "Process payments securely and maintain complete financial records for your business.",
         "invoice_title": "Payment Receipt",
         "invoice_receipt_number": "Receipt #:",
         "invoice_payment_date": "Payment Date:",
@@ -158,5 +169,9 @@
         "print": "Print",
         "payments_hide_totals_invoice": "Hide totals on invoice",
         "payments_hide_totals_invoice_description": "If checked, the invoice will not display the accrued, this payment, or balance due totals.",
-        "stages_create_new_contractor": "Create new contractor"
+        "stages_create_new_contractor": "Create new contractor",
+        "footer_privacy": "Privacy",
+        "footer_terms": "Terms",
+        "footer_contact": "Contact",
+        "footer_copyright": "© 2026 ContractorPay. All rights reserved."
     }

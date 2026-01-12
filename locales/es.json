@@ -39,6 +39,17 @@
     "overview_total_stages": "Total de etapas",
     "overview_status": "Estado",
     "index_title": "Bienvenido a ContractorPay",
+    "index_hero_title": "Pagos de proyectos, simplificados",
+    "index_hero_subtitle": "Administra tus proyectos y pagos a contratistas en un solo lugar. Gestión financiera profesional para equipos modernos.",
+    "index_cta_get_started": "Comenzar",
+    "index_how_it_works_title": "Cómo funciona",
+    "index_how_it_works_subtitle": "Tres pasos sencillos para un mejor seguimiento de pagos",
+    "index_how_it_works_step1_title": "Configura",
+    "index_how_it_works_step1_description": "Agrega tus proyectos y contratistas en minutos. Importa desde tus herramientas actuales o comienza desde cero.",
+    "index_how_it_works_step2_title": "Supervisa",
+    "index_how_it_works_step2_description": "Monitorea el progreso del proyecto y los hitos de pago en tiempo real con notificaciones automatizadas.",
+    "index_how_it_works_step3_title": "Paga",
+    "index_how_it_works_step3_description": "Procesa pagos de forma segura y mantén registros financieros completos para tu negocio.",
     "invoice_title": "Recibo de pago",
     "invoice_receipt_number": "Recibo n.º:",
     "invoice_payment_date": "Fecha de pago:",
@@ -155,5 +166,9 @@
     "evidences_create_title": "Registrar evidencia",
     "payments_hide_totals_invoice": "Ocultar totales en la factura",
     "payments_hide_totals_invoice_description": "Si está marcado, la factura no mostrará los totales de acumulado, este pago ni saldo pendiente.",
-    "stages_create_new_contractor": "Crear nuevo contratista"
+    "stages_create_new_contractor": "Crear nuevo contratista",
+    "footer_privacy": "Privacidad",
+    "footer_terms": "Términos",
+    "footer_contact": "Contacto",
+    "footer_copyright": "© 2026 ContractorPay. Todos los derechos reservados."
 }
