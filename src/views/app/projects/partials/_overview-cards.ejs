@@ -3,7 +3,7 @@
         <div class="box h-full">
             <p class="subtitle is-6 mb-3"><%= __('overview_estimated_cost') %></p>
             <h4 class="title is-5">
-                $<%= formatToCurrency(project.estimatedCost) %>
+                <%= formatToCurrency(project.estimatedCost) %>
             </h4>
         </div>
     </div>
@@ -11,7 +11,7 @@
         <div class="box h-full">
             <p class="subtitle is-6 mb-3"><%= __('overview_actual_cost') %></p>
             <h4 class="title is-5">
-                $<%= formatToCurrency(project.actualCost) %>
+                <%= formatToCurrency(project.actualCost) %>
             </h4>
         </div>
     </div>

@@ -63,7 +63,7 @@
         "index_how_it_works_step3_description": "Process payments securely and maintain complete financial records for your business.",
         "invoice_title": "Payment Receipt",
         "invoice_receipt_number": "Receipt #:",
-        "invoice_payment_date": "Payment Date:",
+        "invoice_payment_date": "Payment Date",
         "invoice_amount": "Amount:",
         "invoice_in_words": "In words:",
         "invoice_received_from": "Received from:",
