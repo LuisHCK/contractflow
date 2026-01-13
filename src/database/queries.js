@@ -270,3 +270,35 @@ export const EVIDENCES = {
         JOIN stage s ON py.stage_id = s.id
         WHERE py.id = :paymentId;`
 }
+
+export const SETTINGS = {
+    GET: `
+        SELECT * FROM settings WHERE key = :key;`,
+
+    GET_ALL: `
+        SELECT * FROM settings;`,
+
+    GET_ALL_ACTIVE: `
+        SELECT * FROM settings WHERE active = 1;`,
+
+    ADD_OR_UPDATE: `
+        INSERT INTO settings (
+            key, value, details, active, created_by
+        )
+        VALUES (
+            :key, :value, :details, :active, :createdBy
+        )
+        ON CONFLICT(key) DO UPDATE SET
+            value = excluded.value,
+            details = excluded.details,
+            active = excluded.active,
+            updated_at = CURRENT_TIMESTAMP;`,
+
+    UPDATE: `
+        UPDATE settings
+        SET value = :value,
+            details = :details,
+            active = :active,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = :id;`
+}

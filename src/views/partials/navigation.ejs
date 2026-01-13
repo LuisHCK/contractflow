@@ -31,6 +31,8 @@
                 <div class="navbar-dropdown">
                     <a href="/payment-categories" class="navbar-item"><%= __('nav_paymentCategories') %></a>
 
+                    <a href="/settings" class="navbar-item"><%= __('nav_settings_currency') %></a>
+
                     <!-- Admin link -->
                     <% if (locals.user && locals.user.role === 'admin') { %>
                     <a href="/admin" class="navbar-item"><%= __('nav_admin') %></a>

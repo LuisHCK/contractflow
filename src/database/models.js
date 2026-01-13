@@ -78,3 +78,16 @@ export class Payment {
         this.payer = payment.payer ?? ''
     }
 }
+
+export class Setting {
+    constructor(setting) {
+        this.id = setting.id
+        this.key = setting.key
+        this.value = setting.value
+        this.details = setting.details ?? ''
+        this.active = Boolean(setting.active ?? 1)
+        this.createdBy = setting.createdBy || setting.created_by || null
+        this.createdAt = setting.createdAt || setting.created_at || null
+        this.updatedAt = setting.updatedAt || setting.updated_at || null
+    }
+}

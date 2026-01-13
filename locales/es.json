@@ -155,5 +155,16 @@
     "evidences_create_title": "Registrar evidencia",
     "payments_hide_totals_invoice": "Ocultar totales en la factura",
     "payments_hide_totals_invoice_description": "Si está marcado, la factura no mostrará los totales de acumulado, este pago ni saldo pendiente.",
-    "stages_create_new_contractor": "Crear nuevo contratista"
+    "stages_create_new_contractor": "Crear nuevo contratista",
+    "system_settings_page_title": "Configuración del sistema",
+    "system_settings_group_general_title": "General",
+    "system_settings_group_general_description": "Configuraciones globales de la aplicación.",
+    "system_settings_currency_title": "Moneda del sistema",
+    "system_settings_currency_label": "Moneda",
+    "system_settings_currency_placeholder": "por ejemplo, USD, EUR, MXN",
+    "system_settings_currency_submit_label": "Guardar moneda",
+    "system_settings_currency_error": "La moneda es obligatoria",
+    "system_settings_saved_successfully": "Configuración guardada correctamente.",
+    "system_settings_submit_label": "Guardar configuración",
+    "nav_settings_currency": "Configuración del sistema"
 }

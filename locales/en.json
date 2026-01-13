@@ -158,5 +158,16 @@
         "print": "Print",
         "payments_hide_totals_invoice": "Hide totals on invoice",
         "payments_hide_totals_invoice_description": "If checked, the invoice will not display the accrued, this payment, or balance due totals.",
-        "stages_create_new_contractor": "Create new contractor"
+        "stages_create_new_contractor": "Create new contractor",
+        "system_settings_page_title": "System settings",
+        "system_settings_group_general_title": "General",
+        "system_settings_group_general_description": "Global application settings.",
+        "system_settings_currency_title": "System currency",
+        "system_settings_currency_label": "Currency",
+        "system_settings_currency_placeholder": "e.g. USD, EUR, MXN",
+        "system_settings_currency_submit_label": "Save currency",
+        "system_settings_currency_error": "Currency is required",
+        "system_settings_saved_successfully": "Settings saved successfully.",
+        "system_settings_submit_label": "Save settings",
+        "nav_settings_currency": "System settings"
     }

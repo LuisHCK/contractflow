@@ -234,3 +234,14 @@ export const LOGIN_FORM = {
         }
     ]
 }
+
+export const SYSTEM_SETTINGS_CURRENCY_FORM = {
+    fields: [
+        {
+            label: 'system_settings_currency_label',
+            name: 'currency',
+            placeholder: 'system_settings_currency_placeholder',
+            required: true
+        }
+    ]
+}

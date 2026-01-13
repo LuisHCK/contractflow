@@ -6,6 +6,7 @@ import * as contractorsController from '@/controllers/contractors'
 import * as paymentsController from '@/controllers/payments'
 import * as paymentCategoriesController from '@/controllers/payment-categories'
 import * as evidencesController from '@/controllers/evidences'
+import * as systemSettingsController from '@/controllers/system-settings'
 import { uploadFileMiddleware as uploadFileMiddleware } from '@/middlewares/upload'
 import { ensureAuthenticated } from '@/middlewares/auth'
 import { logout } from '@/controllers/auth'
@@ -85,6 +86,12 @@ router.post(
     uploadFileMiddleware.single('attachment'),
     evidencesController.create
 )
+
+/**
+ * SYSTEM SETTINGS
+ */
+router.get('/settings', systemSettingsController.index)
+router.post('/settings', systemSettingsController.index)
 
 /**
  * SESSION
