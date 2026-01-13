@@ -1,20 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@600&display=swap');
 @import 'https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css';
 
-/* Override Bulma default fonts */
+
 :root {
-    --bulma-family-primary: 'Source Sans 3', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
-    --bulma-family-secondary: 'Source Serif 4', ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+    --bulma-family-primary: 'Open Sans', sans-serif;
 }
 
-/* Apply Source Sans 3 as default sans font */
-html, body, .has-text-weight-normal, .has-text-weight-bold, .has-text-weight-light {
-    font-family: var(--bulma-family-primary) !important;
-}
-
-/* Use Source Serif 4 for .is-family-serif */
-.is-family-serif {
-    font-family: var(--bulma-family-secondary) !important;
-}
 
 /* Overrides */
 .select,
