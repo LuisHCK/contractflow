@@ -1,6 +1,8 @@
 import { database } from '@/database'
 import { STAGES } from '@/database/queries'
 import { formatToCurrency } from '@/utils/money'
+import { format } from 'date-fns'
+import { DATE_FORMAT } from '@/config/constants'
 
 export class Stage {
     constructor(stage) {
@@ -22,6 +24,20 @@ export class Stage {
     get formattedEstimatedCost() {
         return formatToCurrency(this.estimatedCost)
     }
+}
+
+const formatDateValue = (value) => {
+    if (!value) {
+        return null
+    }
+
+    const date = new Date(value)
+
+    if (Number.isNaN(date.getTime())) {
+        return value
+    }
+
+    return format(date, DATE_FORMAT)
 }
 
 /**
@@ -139,5 +155,50 @@ export const deleteStageById = async (stageId) => {
     } catch (error) {
         console.error(`Error soft deleting stage: ${error.message}`)
         return false
+    }
+}
+
+export const getStageReportSummary = async (stageId) => {
+    try {
+        const query = database.query(STAGES.REPORT_SUMMARY)
+        const summary = query.get({ stageId })
+
+        if (!summary) {
+            return null
+        }
+
+        const estimatedCost = Number(summary.estimated_cost) || 0
+        const totalPaid = Number(summary.total_paid) || 0
+        const outstandingBalance = Number(summary.outstanding_balance) || 0
+        const progress = Number(summary.progress_percentage) || 0
+
+        return {
+            project: {
+                id: summary.project_id,
+                name: summary.project_name,
+                status: summary.project_status,
+                description: summary.project_description
+            },
+            stage: {
+                id: summary.stage_id,
+                name: summary.stage_name,
+                description: summary.stage_description,
+                estimatedCost,
+                formattedEstimatedCost: formatToCurrency(estimatedCost),
+                startDate: formatDateValue(summary.stage_start_date),
+                endDate: formatDateValue(summary.stage_end_date)
+            },
+            totals: {
+                totalPaid,
+                formattedTotalPaid: formatToCurrency(totalPaid),
+                outstandingBalance,
+                formattedOutstandingBalance: formatToCurrency(outstandingBalance),
+                paymentsCount: summary.payments_count || 0,
+                progress
+            }
+        }
+    } catch (error) {
+        console.error(`Error fetching stage report summary: ${error.message}`)
+        return null
     }
 }

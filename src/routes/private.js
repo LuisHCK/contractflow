@@ -29,6 +29,7 @@ router.post('/projects/edit/:id', projectController.edit)
  */
 router.get('/projects/show/:id/stages/show', stageController.index)
 router.get('/projects/show/:id/stages/show/:stageId', stageController.show)
+router.get('/projects/show/:id/stages/print/:stageId', stageController.print)
 router.get('/projects/show/:id/stages/create', stageController.create)
 router.post('/projects/show/:id/stages/create', stageController.create)
 router.get('/projects/show/:id/stages/edit/:stageId', stageController.edit)

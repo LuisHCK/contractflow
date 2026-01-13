@@ -120,7 +120,35 @@ export const STAGES = {
     SOFT_DELETE: `
         UPDATE stage
         SET deleted = 1
-        WHERE id = :id;`
+        WHERE id = :id;`,
+
+    REPORT_SUMMARY: `
+        SELECT 
+            s.id AS stage_id,
+            s.name AS stage_name,
+            s.description AS stage_description,
+            s.estimated_cost AS estimated_cost,
+            s.start_date AS stage_start_date,
+            s.end_date AS stage_end_date,
+            p.id AS project_id,
+            p.name AS project_name,
+            p.status AS project_status,
+            p.description AS project_description,
+            COALESCE(SUM(py.amount), 0) AS total_paid,
+            COUNT(py.id) AS payments_count,
+            ROUND(
+                CASE 
+                    WHEN s.estimated_cost = 0 THEN 0
+                    ELSE (COALESCE(SUM(py.amount), 0) * 100.0) / s.estimated_cost
+                END,
+                1
+            ) AS progress_percentage,
+            (s.estimated_cost - COALESCE(SUM(py.amount), 0)) AS outstanding_balance
+        FROM stage s
+        JOIN projects p ON s.project_id = p.id
+        LEFT JOIN payments py ON s.id = py.stage_id AND py.deleted = 0
+        WHERE s.id = :stageId AND s.deleted = 0
+        GROUP BY s.id;`
 }
 
 export const PAYMENTS = {
@@ -166,7 +194,25 @@ export const PAYMENTS = {
     SOFT_DELETE: `
         UPDATE payments
         SET deleted = 1
-        WHERE id = :id;`
+        WHERE id = :id;`,
+
+    REPORT_BY_STAGE: `
+        SELECT 
+            py.id,
+            py.amount,
+            py.date,
+            py.payer,
+            py.payment_method,
+            py.description,
+            py.balance,
+            py.created_at,
+            COALESCE(c.name, '') AS contractor_name,
+            COALESCE(pc.name, '') AS payment_category_name
+        FROM payments py
+        LEFT JOIN contractors c ON py.contractor_id = c.id
+        LEFT JOIN payment_categories pc ON py.payment_category_id = pc.id
+        WHERE py.stage_id = :stageId AND py.deleted = 0
+        ORDER BY date(py.date) ASC, py.id ASC;`
 }
 
 export const PAYMENT_CATEGORIES = {
