@@ -6,6 +6,10 @@
     --bulma-family-primary: 'Open Sans', sans-serif;
 }
 
+.title {
+    font-weight: 500 !important;
+}
+
 
 /* Overrides */
 .select,
