@@ -92,23 +92,35 @@
                                                     <%= payment.contractor?.name %>
                                                 </div>
                                                 <div class="mt-2">
-                                                    <span class="has-text-weight-semibold"><%= __('payment_categories_list_title') %></span><br>
+                                                    <span class="has-text-weight-semibold">
+                                                        <%= __('payment_categories_list_title') %>
+                                                    </span>
+                                                    <br>
                                                     <%= payment.paymentCategory?.name %>
                                                 </div>
                                             </td>
                                             <td>
                                                 <div>
-                                                    <span class="has-text-weight-semibold"><%= __('invoice_payment_method') %></span><br>
+                                                    <span class="has-text-weight-semibold">
+                                                        <%= __('invoice_payment_method') %>
+                                                    </span>
+                                                    <br>
                                                     <span class="tag is-info is-light">
                                                         <%= payment.paymentMethod %>
                                                     </span>
                                                 </div>
                                                 <div class="mt-2">
-                                                    <span class="has-text-weight-semibold"><%= __('evidence_description') %></span><br>
+                                                    <span class="has-text-weight-semibold">
+                                                        <%= __('evidence_description') %>
+                                                    </span>
+                                                    <br>
                                                     <p class="mb-1"><%= payment.description %></p>
                                                 </div>
                                                 <div class="mt-2">
-                                                    <span class="has-text-weight-semibold"><%= __('evidence_attachment') %></span><br>
+                                                    <span class="has-text-weight-semibold">
+                                                        <%= __('evidence_attachment') %>
+                                                    </span>
+                                                    <br>
                                                     <% if (payment.evidences?.length > 0) { %>
                                                         <ul>
                                                             <% payment.evidences.forEach(evidence => { %>
@@ -120,7 +132,9 @@
                                                             <% }) %>
                                                         </ul>
                                                     <% } else { %>
-                                                        <span class="tag is-light"><%= __('evidence_no_evidence', 'No evidence registered') %></span>
+                                                        <span class="tag is-light">
+                                                            <%= __('evidence_no_evidence', 'No evidence registered') %>
+                                                        </span>
                                                     <% } %>
                                                 </div>
                                             </td>

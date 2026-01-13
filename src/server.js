@@ -4,6 +4,7 @@ import bodyParser from 'body-parser'
 import cors from 'cors'
 import path from 'path'
 import cookieParser from 'cookie-parser'
+import helmet from 'helmet'
 import i18n from 'i18n'
 import privateRouter from './routes/private'
 import publicRouter from './routes/public'
@@ -13,15 +14,42 @@ import session from 'express-session'
 import initializePassport from './auth/passport'
 import { setLocals } from './middlewares/auth'
 import { BunSQLiteStore } from './auth/bun-sqlite-store'
+import { formatToCurrency } from './utils/money'
 const app = express()
 const localesDirectory = path.join(process.cwd(), 'locales')
+
+const cspDirectives = {
+    defaultSrc: ["'self'"],
+    scriptSrc: ["'self'", "'unsafe-inline'"],
+    styleSrc: ["'self'", "'unsafe-inline'", 'https://cdn.jsdelivr.net'],
+    imgSrc: ["'self'", 'data:', 'https://cdn.jsdelivr.net'],
+    fontSrc: ["'self'", 'https://cdn.jsdelivr.net'],
+    connectSrc: ["'self'"],
+    frameSrc: ["'self'"],
+    frameAncestors: ["'self'"],
+    formAction: ["'self'"],
+    baseUri: ["'self'"],
+    objectSrc: ["'none'"]
+}
 
 // Initialize database
 dbInit()
 
+// Basic security hardening
+app.disable('x-powered-by')
+
 // Initialize EJS template engine
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, '/views'))
+app.use(
+    helmet({
+        contentSecurityPolicy: {
+            directives: cspDirectives
+        },
+        crossOriginEmbedderPolicy: false,
+        referrerPolicy: { policy: 'strict-origin-when-cross-origin' }
+    })
+)
 app.use(cors())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -43,6 +71,9 @@ app.use((req, res, next) => {
     next()
 })
 
+// Make formatToCurrency available in all EJS templates
+app.locals.formatToCurrency = formatToCurrency
+
 // Serve static files
 app.use(express.static(path.join(__dirname, '/public')))
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')))
@@ -57,7 +88,10 @@ app.use(
         resave: false,
         saveUninitialized: false,
         cookie: {
-            maxAge: 1000 * 60 * 60 * 24 // 1 day
+            maxAge: 1000 * 60 * 60 * 24, // 1 day
+            httpOnly: true,
+            sameSite: 'lax',
+            secure: process.env.NODE_ENV === 'production'
         }
     })
 )

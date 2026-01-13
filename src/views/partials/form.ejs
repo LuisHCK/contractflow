@@ -135,7 +135,10 @@
     </div>
     <% }) %>
 
-    <div>
+    <div class="has-text-right">
+        <button type="button" class="button is-secondary" onclick="window.history.back()">
+            Cancel
+        </button>
         <button class="button is-primary" type="submit">
             <%= __(locals.submitLabel || 'submit') %>
         </button>
