@@ -12,14 +12,14 @@
                         <div class="columns is-centered">
                             <div class="column is-8 has-text-centered">
                                 <h1 class="title is-1 is-size-2-mobile is-family-serif text-balance mb-6">
-                                    Project payments, simplified
+                                    <%= __('index_hero_title') %>
                                 </h1>
                                 <p class="subtitle is-4 is-size-5-mobile has-text-grey text-balance mb-6" style="line-height: 1.6;">
-                                    Track your projects and contractor payments in one place. Professional financial management built for modern teams.
+                                    <%= __('index_hero_subtitle') %>
                                 </p>
                                 <div class="buttons is-centered mt-6">
                                     <a href="/projects" class="button is-dark is-large">
-                                        <span>Get Started</span>
+                                        <span><%= __('index_cta_get_started') %></span>
                                         <span class="icon is-small ml-1">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                 <path d="M5 12h14"></path>
@@ -39,10 +39,10 @@
                 <div class="container is-max-widescreen">
                     <div class="has-text-centered mb-6">
                         <h2 class="title is-2 is-family-serif">
-                            How it works
+                            <%= __('index_how_it_works_title') %>
                         </h2>
                         <p class="subtitle has-text-grey">
-                            Three simple steps to better payment tracking
+                            <%= __('index_how_it_works_subtitle') %>
                         </p>
                     </div>
 
@@ -52,9 +52,9 @@
                             <div class="step-number">
                                 1
                             </div>
-                            <h3 class="title is-4 is-family-serif">Setup</h3>
+                            <h3 class="title is-4 is-family-serif"><%= __('index_how_it_works_step1_title') %></h3>
                             <p class="content has-text-grey">
-                                Add your projects and contractors in minutes. Import from your existing tools or start fresh.
+                                <%= __('index_how_it_works_step1_description') %>
                             </p>
                         </div>
 
@@ -63,9 +63,9 @@
                             <div class="step-number">
                                 2
                             </div>
-                            <h3 class="title is-4 is-family-serif">Track</h3>
+                            <h3 class="title is-4 is-family-serif"><%= __('index_how_it_works_step2_title') %></h3>
                             <p class="content has-text-grey">
-                                Monitor project progress and payment milestones in real-time with automated notifications.
+                                <%= __('index_how_it_works_step2_description') %>
                             </p>
                         </div>
 
@@ -74,9 +74,9 @@
                             <div class="step-number">
                                 3
                             </div>
-                            <h3 class="title is-4 is-family-serif">Pay</h3>
+                            <h3 class="title is-4 is-family-serif"><%= __('index_how_it_works_step3_title') %></h3>
                             <p class="content has-text-grey">
-                                Process payments securely and maintain complete financial records for your business.
+                                <%= __('index_how_it_works_step3_description') %>
                             </p>
                         </div>
                     </div>
@@ -89,13 +89,13 @@
                 <div class="columns is-vcentered">
                     <div class="column">
                         <div class="is-flex is-align-items-center" style="gap: 1.5rem;">
-                            <a href="#" class="has-text-grey hover:has-text-black">Privacy</a>
-                            <a href="#" class="has-text-grey hover:has-text-black">Terms</a>
-                            <a href="#" class="has-text-grey hover:has-text-black">Contact</a>
+                            <a href="#" class="has-text-grey hover:has-text-black"><%= __('footer_privacy') %></a>
+                            <a href="#" class="has-text-grey hover:has-text-black"><%= __('footer_terms') %></a>
+                            <a href="#" class="has-text-grey hover:has-text-black"><%= __('footer_contact') %></a>
                         </div>
                     </div>
                     <div class="column is-narrow">
-                        <p class="is-size-7 has-text-grey">© 2026 ContractorPay. All rights reserved.</p>
+                        <p class="is-size-7 has-text-grey"><%= __('footer_copyright') %></p>
                     </div>
                 </div>
             </div>

@@ -4,10 +4,12 @@
 
     <body>
         <%- include('../partials/navigation') %>
-        <main class="container is-max-desktop py-6">
+        <main class="container is-max-widescreen py-6">
             <nav class="breadcrumb is-small" aria-label="breadcrumbs">
                 <ul>
-                    <li><a href="/">Home</a></li>
+                    <li><a href="/">
+                        <%= __('breadcrumb_home') %>
+                    </a></li>
                     <li class="is-active">
                         <a href="#" aria-current="page" class="has-text-dark"> <%= locals.title %> </a>
                     </li>

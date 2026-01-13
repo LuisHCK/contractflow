@@ -42,7 +42,7 @@
                     <div class="navbar-item">
                         <div class="dropdown is-hoverable">
                             <div class="dropdown-trigger">
-                                <button class="button is-small" aria-haspopup="true" aria-controls="dropdown-menu-lang">
+                                <button class="navbar-link" aria-haspopup="true" aria-controls="dropdown-menu-lang">
                                     <span><%= __('nav_language') %></span>
                                 </button>
                             </div>
@@ -64,12 +64,12 @@
                 <div class="buttons">
                     <% if (locals.user) { %>
                     <form action="/logout" method="post">
-                        <button class="button is-seconary" type="submit">
+                        <button class="button is-seconary is-small" type="submit">
                             <strong><%= __('nav_logout') %></strong>
                         </button>
                     </form>
                     <% } else { %>
-                    <a class="button is-primary" href="/login">
+                    <a class="button is-seconary is-small" href="/login">
                         <strong><%= __('nav_login') %></strong>
                     </a>
                     <% } %>

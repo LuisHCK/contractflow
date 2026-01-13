@@ -3,36 +3,31 @@
 <%- include('../partials/head', {title: `ContractorPay | ${locals.title}`}) %>
     <body>
         <% if (locals.showNavigation === undefined || locals.showNavigation) { %>
-        <%- include('../partials/navigation') %>
+            <%- include('../partials/navigation') %>
         <% } %>
-            <main class="container is-max-desktop py-6 px-4">
-                <%- include('../partials/flash-messages', locals) %>
+        <main class="container is-max-widescreen py-6 px-4">
+            <%- include('../partials/flash-messages', locals) %>
 
-                <% if (locals.showNavigation === undefined || locals.showNavigation) { %>
-                <h1 class="title is-3">
-                    <%= __(locals.title) %>
-                </h1>
-                <% } %>
-
-                <div class="box">
-
-                    <% if (form.error) { %>
-                        <div class="notification is-danger" id="alert">
-                            <button
-                                class="delete"
-                                onclick="
-                                    const alert = document.getElementById('alert');
-                                    alert.parentNode.removeChild(alert);
-                                "
-                            >
-                            </button>
-                            <%= __('form_error') %> <%= form.error %>
-                        </div>
-                    <% } %>
-
-                    <%- include('../partials/form', form) %>
+            <% if (locals.showNavigation === undefined || locals.showNavigation) { %>
+            <h1 class="title is-3">
+                <%= __(locals.title) %>
+            </h1>
+            <% } %>
+            <% if (form.error) { %>
+                <div class="notification is-danger" id="alert">
+                    <button
+                        class="delete"
+                        onclick="
+                            const alert = document.getElementById('alert');
+                            alert.parentNode.removeChild(alert);
+                        "
+                    >
+                    </button>
+                    <%= __('form_error') %> <%= form.error %>
                 </div>
-            </main>
-    </body>
+            <% } %>
 
+            <%- include('../partials/form', form) %>
+        </main>
+    </body>
 </html>

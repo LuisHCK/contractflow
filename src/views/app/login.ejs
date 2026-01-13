@@ -3,34 +3,34 @@
     <%- include('../partials/head') %>
     <body>
         <%- include('../partials/navigation') %>
-
         <main>
             <!-- Login Section -->
             <section class="hero is-fullheight-with-navbar hero-background">
                 <div class="hero-body">
-                    <div class="container is-max-desktop">
+                    <div class="container is-max-widescreen">
                         <div class="columns is-centered">
                             <div class="column is-8-tablet is-6-desktop">
                                 <!-- Header -->
                                 <div class="has-text-centered mb-5">
-                                    <h1 class="title is-3 is-family-serif">Welcome back</h1>
+                                    <h1 class="title is-3 is-family-serif"><%= __('auth_login_heading') %></h1>
                                     <p class="subtitle is-6 has-text-grey">
-                                        Sign in to your ContractorPay account
+                                        <%= __('auth_login_subtitle') %>
                                     </p>
                                 </div>
 
                                 <!-- Login Form Card -->
                                 <div class="box login-card">
+                                    <%- include('../partials/flash-messages', locals) %>
                                     <form method="post" action="/login">
                                         <div class="field">
-                                            <label class="label" for="email">Email address</label>
+                                            <label class="label" for="email"><%= __('login_email') %></label>
                                             <div class="control">
                                                 <input
                                                     id="email"
                                                     name="email"
                                                     type="email"
                                                     class="input"
-                                                    placeholder="you@example.com"
+                                                    placeholder="<%= __('login_email_placeholder') %>"
                                                     required
                                                 />
                                             </div>
@@ -44,7 +44,7 @@
                                                     name="password"
                                                     type="password"
                                                     class="input"
-                                                    placeholder="Enter your password"
+                                                    placeholder="<%= __('login_password_placeholder') %>"
                                                     required
                                                 />
                                             </div>
@@ -61,7 +61,7 @@
                                                     type="submit"
                                                     class="button is-dark is-fullwidth"
                                                 >
-                                                    Sign in
+                                                    <%= __('auth_login_button_sign_in') %>
                                                 </button>
                                             </div>
                                         </div>
@@ -70,9 +70,9 @@
 
                                 <!-- Help text -->
                                 <p class="has-text-centered is-size-7 has-text-grey mt-4">
-                                    Need access to ContractorPay?
+                                    <%= __('auth_login_help_text') %>
                                     <a href="#" class="has-text-dark">
-                                        &nbsp;Contact your administrator
+                                        &nbsp;<%= __('auth_login_help_contact_admin') %>
                                     </a>
                                 </p>
                             </div>
@@ -87,14 +87,14 @@
                 <div class="columns is-vcentered">
                     <div class="column">
                         <div class="is-flex is-align-items-center" style="gap: 1.5rem">
-                            <a href="#" class="has-text-grey hover:has-text-black">Privacy</a>
-                            <a href="#" class="has-text-grey hover:has-text-black">Terms</a>
-                            <a href="#" class="has-text-grey hover:has-text-black">Contact</a>
+                            <a href="#" class="has-text-grey hover:has-text-black"><%= __('footer_privacy') %></a>
+                            <a href="#" class="has-text-grey hover:has-text-black"><%= __('footer_terms') %></a>
+                            <a href="#" class="has-text-grey hover:has-text-black"><%= __('footer_contact') %></a>
                         </div>
                     </div>
                     <div class="column is-narrow">
                         <p class="is-size-7 has-text-grey">
-                            © 2026 ContractorPay. All rights reserved.
+                            <%= __('footer_copyright') %>
                         </p>
                     </div>
                 </div>

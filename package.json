@@ -4,7 +4,8 @@
     "type": "module",
     "private": true,
     "scripts": {
-        "dev": "bun --bun --watch ./src/server.js"
+        "dev": "bun --bun --watch ./src/server.js",
+        "lint": "oxlint . --ext .ts,.tsx --fix"
     },
     "devDependencies": {
         "@types/bun": "latest"
@@ -19,8 +20,10 @@
         "ejs": "3.1.10",
         "express": "5.2.1",
         "express-session": "1.18.2",
+        "helmet": "^8.1.0",
         "i18n": "^0.15.3",
         "multer": "^2.0.2",
+        "oxlint": "^1.38.0",
         "passport": "0.7.0",
         "passport-local": "1.0.0"
     }

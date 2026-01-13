@@ -120,7 +120,7 @@ class BaseModel {
      * @param {number|string} id - The unique identifier of the record to be deleted.
      * @returns {{ deletedId: number|string }} An object containing the ID of the deleted record.
      */
-    delete(id) {
+    delete(_id) {
         database.query(`DELETE FROM ${BaseModel.tableName} WHERE id = ?`).run(this.id)
         return { deletedId: this.id }
     }

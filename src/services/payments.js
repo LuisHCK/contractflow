@@ -223,6 +223,37 @@ export const getTotalPayedAmount = async (stageId) => {
     }
 }
 
+export const getStagePaymentsForReport = async (stageId) => {
+    try {
+        const query = database.query(PAYMENTS.REPORT_BY_STAGE)
+        const rows = query.all({ stageId })
+
+        return rows.map((row) => {
+            const rawDate = row.date || row.created_at
+            const parsedDate = rawDate ? new Date(rawDate) : null
+            const date = parsedDate && !Number.isNaN(parsedDate.getTime())
+                ? format(parsedDate, DATE_FORMAT)
+                : rawDate
+
+            return {
+                id: row.id,
+                paymentNumber: row.id.toString().padStart(6, '0'),
+                amount: row.amount,
+                paymentMethod: row.payment_method,
+                description: row.description,
+                payer: row.payer,
+                balance: row.balance,
+                contractorName: row.contractor_name,
+                paymentCategoryName: row.payment_category_name,
+                date
+            }
+        })
+    } catch (error) {
+        console.error(`Error fetching payments for stage report: ${error.message}`)
+        return []
+    }
+}
+
 /**
  * Soft delete a payment by setting its deleted flag.
  * @param {string|number} paymentId - The unique identifier of the payment.

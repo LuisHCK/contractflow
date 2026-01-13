@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="<%= locals.theme || 'light' %>">
+<%- include('../../partials/head', { title: `ContractorPay | ${stage.name} ${__('stages_report_title', 'Stage payments report')}` }) %>
+
+<body>
+    <%- include('../../partials/navigation') %>
+
+    <main class="container is-max-widescreen py-6 px-4">
+        <section class="is-flex is-justify-content-space-between is-align-items-start mb-5">
+            <div class="mr-5">
+                <p class="heading is-size-7 has-text-grey"><%= project.name %></p>
+                <h1 class="title is-2 is-family-sans-serif">
+                    <%= __('stages_report_title', 'Stage payments report') %>
+                </h1>
+                <p class="subtitle is-4 has-text-weight-semibold"><%= stage.name %></p>
+                <% if (stage.description) { %>
+                    <p class="is-size-6"><%= stage.description %></p>
+                <% } %>
+            </div>
+            <div class="buttons is-flex is-flex-direction-column is-align-items-flex-end">
+                <a href="/projects/show/<%= project.id %>/stages/show/<%= stage.id %>" class="button is-light mb-2">
+                    <%= __('back', 'Back to stage') %>
+                </a>
+                <button type="button" class="button is-primary" onclick="window.print()">
+                    <%= __('print_report', 'Print report') %>
+                </button>
+            </div>
+        </section>
+
+        <section class="mb-5">
+            <div class="columns is-multiline">
+                <div class="column is-3">
+                    <div class="box">
+                        <p class="heading"><%= __('estimated_budget', 'Estimated budget') %></p>
+                        <p class="title is-4"><%= stage.formattedEstimatedCost %></p>
+                        <p class="is-size-7 has-text-grey mt-2">
+                            <%= __('stages_report_stage_dates', 'Timeline') %>: 
+                            <span><%= stage.startDate || __('stages_report_not_defined', 'Not defined') %></span>
+                            <span> - </span>
+                            <span><%= stage.endDate || __('stages_report_not_defined', 'Not defined') %></span>
+                        </p>
+                    </div>
+                </div>
+                <div class="column is-3">
+                    <div class="box">
+                        <p class="heading"><%= __('invoice_total_amount', 'Total paid') %></p>
+                        <p class="title is-4"><%= totals.formattedTotalPaid %></p>
+                        <p class="is-size-7 has-text-grey mt-2">
+                            <%= __('payments_count', 'Registered payments') %>: <%= totals.paymentsCount %>
+                        </p>
+                    </div>
+                </div>
+                <div class="column is-3">
+                    <div class="box">
+                        <p class="heading"><%= __('balance', 'Outstanding balance') %></p>
+                        <p class="title is-4 <%= totals.outstandingBalance > 0 ? 'has-text-danger' : 'has-text-success' %>">
+                            <%= totals.formattedOutstandingBalance %>
+                        </p>
+                        <p class="is-size-7 has-text-grey mt-2">
+                            <%= __('payments_balance_hint', 'Amount pending to complete the stage') %>
+                        </p>
+                    </div>
+                </div>
+                <div class="column is-3">
+                    <div class="box">
+                        <p class="heading"><%= __('progress', 'Progress') %></p>
+                        <p class="title is-4"><%= totals.progress %>%</p>
+                        <progress class="progress is-success mt-2" value="<%= totals.progress %>" max="100"></progress>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="box mb-6">
+            <div class="columns is-variable is-5">
+                <div class="column">
+                    <p class="heading"><%= __('projects_show_project_info', 'Project information') %></p>
+                    <p class="title is-5 mb-1"><%= project.name %></p>
+                    <% if (project.description) { %>
+                        <p class="is-size-6"><%= project.description %></p>
+                    <% } %>
+                </div>
+                <div class="column is-3">
+                    <p class="heading"><%= __('projects_status', 'Status') %></p>
+                    <span class="tag is-info is-light">
+                        <%= project.status || __('stages_report_not_defined', 'Not defined') %>
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="title is-5"><%= __('payments_stage_title', 'Payments') %></h2>
+            <% if (payments.length === 0) { %>
+                <div class="notification is-warning mt-4">
+                    <%= __('stages_no_payments', 'No payments registered for this stage.') %>
+                </div>
+            <% } else { %>
+                <div class="table-container mt-4">
+                    <table class="table is-fullwidth is-striped is-hoverable is-narrow">
+                        <thead>
+                            <tr>
+                                <th><%= __('payment_number', 'Payment') %></th>
+                                <th><%= __('invoice_payment_date') %></th>
+                                <th><%= __('contractor_name', 'Contractor') %> / <%= __('payment_categories_list_title') %></th>
+                                <th><%= __('invoice_payment_method') %></th>
+                                <th><%= __('invoice_amount') %></th>
+                                <th><%= __('balance', 'Balance') %></th>
+                                <th><%= __('details', 'Details') %></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% payments.forEach(payment => { %>
+                                <tr>
+                                    <td class="has-text-weight-semibold">#<%= payment.paymentNumber %></td>
+                                    <td><%= payment.date %></td>
+                                    <td>
+                                        <div>
+                                            <span class="has-text-weight-semibold"><%= __('contractor_name', 'Contractor') %>:</span>
+                                            <br>
+                                            <%= payment.contractorName || __('stages_report_not_defined', 'Not defined') %>
+                                        </div>
+                                        <div class="mt-1">
+                                            <span class="has-text-weight-semibold"><%= __('payment_categories_list_title') %>:</span>
+                                            <br>
+                                            <%= payment.paymentCategoryName || __('stages_report_not_defined', 'Not defined') %>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="tag is-info is-light"><%= payment.paymentMethod %></span>
+                                    </td>
+                                    <td>
+                                        <span class="has-text-weight-semibold"><%= formatToCurrency(payment.amount) %></span>
+                                    </td>
+                                    <td>
+                                        <span class="tag is-light is-size-7">
+                                            <%= formatToCurrency(payment.balance || 0) %>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <% if (payment.payer) { %>
+                                            <p class="mb-1">
+                                                <span class="has-text-weight-semibold"><%= __('payer', 'Payer') %>:</span>
+                                                <%= payment.payer %>
+                                            </p>
+                                        <% } %>
+                                        <% if (payment.description) { %>
+                                            <p><%= payment.description %></p>
+                                        <% } else { %>
+                                            <span class="has-text-grey-light">
+                                                <%= __('no_description', 'No description provided') %>
+                                            </span>
+                                        <% } %>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            <% } %>
+        </section>
+    </main>
+</body>
+
+</html>

@@ -5,7 +5,7 @@
     <body>
         <%- include('../../partials/navigation') %>
 
-        <main class="container is-max-desktop py-6 px-4">
+        <main class="container is-max-widescreen py-6 px-4">
             <nav class="breadcrumb is-small" aria-label="breadcrumbs">
                 <ul>
                     <li><a href="/"> <%= __('breadcrumb_home') %> </a></li>
@@ -39,9 +39,8 @@
                     </a>
                 </div>
 
-                <div class="box">
-                    <%- include('partials/_stages', { stages, project }) %>
-                </div>
+                <!-- Table -->
+                <%- include('partials/_stages', { stages, project }) %>
             </section>
         </main>
     </body>

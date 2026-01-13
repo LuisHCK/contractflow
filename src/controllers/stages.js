@@ -1,9 +1,15 @@
 import { STAGE_FORM } from '@/forms'
 import { formatOptions, populateForm } from '@/forms/utils'
-import { getAllPayments } from '@/services/payments'
+import { getAllPayments, getStagePaymentsForReport } from '@/services/payments'
 import { getProjectById } from '@/services/projects'
 import { getAll as getAllContractors } from '@/services/contractors'
-import { createStage, getStageById, updateStage, deleteStageById } from '@/services/stages'
+import {
+    createStage,
+    getStageById,
+    updateStage,
+    deleteStageById,
+    getStageReportSummary
+} from '@/services/stages'
 
 export const index = async (_req, res) => {
     try {
@@ -34,6 +40,35 @@ export const show = async (req, res) => {
         return res
             .status(500)
             .send('An error occurred while fetching stage. Please try again later.')
+    }
+}
+
+export const print = async (req, res) => {
+    try {
+        const { params } = req
+        const summary = await getStageReportSummary(params.stageId)
+
+        if (!summary?.stage?.id) {
+            return res.status(404).send('Stage not found')
+        }
+
+        if (summary.project?.id && Number(summary.project.id) !== Number(params.id)) {
+            return res.status(404).send('Stage not found')
+        }
+
+        const payments = await getStagePaymentsForReport(params.stageId)
+
+        return res.render('app/stages/print', {
+            project: summary.project,
+            stage: summary.stage,
+            totals: summary.totals,
+            payments
+        })
+    } catch (error) {
+        console.error(`[StagesController.print] Error generating report: ${error}`)
+        return res
+            .status(500)
+            .send('An error occurred while generating the report. Please try again later.')
     }
 }
 

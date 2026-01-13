@@ -17,18 +17,22 @@
                 <td><%= project.name %></td>
                 <td><%= project.description %></td>
                 <td>
-                    <span class="tag is-info is-capitalized"><%= __(`projects_status_${project.status}`) %></span>
+                    <span class="tag is-info is-capitalized">
+                        <%= __(`projects_status_${project.status}`) %>
+                    </span>
                 </td>
                 <td>
-                    <span class="tag is-dark">$<%= project.estimatedCost %></span>
+                    <span class="tag is-dark"><%= formatToCurrency(project.estimatedCost) %></span>
                 </td>
                 <td>
-                    <span class="tag is-info">$<%= project.actualCost %></span>
+                    <span class="tag is-info"><%= formatToCurrency(project.actualCost) %></span>
                 </td>
                 <td>
                     <div class="field is-grouped is-justify-content-flex-end">
                         <p class="control">
-                            <a class="button is-primary is-small" href="/projects/show/<%= project.id %>"><%= __('projects_list_view') %></a>
+                            <a class="button is-primary is-small" href="/projects/show/<%= project.id %>">
+                                <%= __('projects_list_view') %>
+                            </a>
                         </p>
                     </div>
                 </td>
