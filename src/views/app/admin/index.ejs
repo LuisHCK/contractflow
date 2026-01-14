@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="<%= locale %>" data-theme="<%= locals.theme || 'light' %>">
+    <%- include('../../partials/head', { title: 'Admin Panel - ContractorPay' }) %>
+
+    <body>
+        <%- include('../../partials/navigation') %>
+
+        <main class="container is-max-widescreen py-6 px-4">
+            <nav class="breadcrumb is-small" aria-label="breadcrumbs">
+                <ul>
+                    <li><a href="/"><%= __('breadcrumb_home') %></a></li>
+                    <li class="is-active">
+                        <a href="#" aria-current="page" class="has-text-dark">Admin</a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="mb-6">
+                <h1 class="title is-1"><%= __('admin_panel_title') %></h1>
+                <p class="subtitle"><%= __('admin_panel_subtitle') %></p>
+            </div>
+
+            <%- include('admin/partials/_summary') %>
+
+            <%- include('admin/partials/_users') %>
+
+            <%- include('admin/partials/_deleted-elements') %>
+        </main>
+    </body>
+</html>

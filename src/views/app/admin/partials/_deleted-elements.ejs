@@ -1,0 +1,115 @@
+<section class="mb-6">
+    <h2 class="title is-4 mb-4"><%= __('admin_deleted_title') %></h2>
+
+    <!-- Deleted Stages -->
+    <div class="mb-5">
+        <h3 class="title is-5 mb-3">
+            <span class="icon-text">
+                <span class="icon has-text-warning">
+                    <!-- trash icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                </span>
+                <span><%= __('admin_deleted_stages') %> (<%= deletedStages.length %>)</span>
+            </span>
+        </h3>
+        <div class="box">
+            <% if (deletedStages.length === 0) { %>
+                <div class="has-text-centered py-4">
+                    <p class="has-text-grey"><%= __('admin_deleted_stages_no_data') %></p>
+                </div>
+            <% } else { %>
+                <div class="table-container">
+                    <table class="table is-fullwidth is-striped is-hoverable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th><%= __('stages_name') %></th>
+                                <th><%= __('projects_title') %></th>
+                                <th><%= __('stages_estimated_cost') %></th>
+                                <th><%= __('project_created') %></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% deletedStages.forEach(stage => { %>
+                                <tr>
+                                    <td><%= stage.id %></td>
+                                    <td><%= stage.name %></td>
+                                    <td><%= stage.project_name %></td>
+                                    <td>$<%= stage.estimated_cost.toLocaleString() %></td>
+                                    <td>
+                                        <% if (stage.created_at) { %>
+                                            <%= new Date(stage.created_at).toLocaleDateString() %>
+                                        <% } else { %>
+                                            -
+                                        <% } %>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            <% } %>
+        </div>
+    </div>
+
+    <!-- Deleted Payments -->
+    <div>
+        <h3 class="title is-5 mb-3">
+            <span class="icon-text">
+                <span class="icon has-text-danger">
+                    <!-- trash icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                </span>
+                <span><%= __('admin_deleted_payments') %> (<%= deletedPayments.length %>)</span>
+            </span>
+        </h3>
+        <div class="box">
+            <% if (deletedPayments.length === 0) { %>
+                <div class="has-text-centered py-4">
+                    <p class="has-text-grey"><%= __('admin_deleted_payments_no_data') %></p>
+                </div>
+            <% } else { %>
+                <div class="table-container">
+                    <table class="table is-fullwidth is-striped is-hoverable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th><%= __('invoice_amount') %></th>
+                                <th><%= __('payer') %></th>
+                                <th><%= __('stages_name') %></th>
+                                <th><%= __('projects_title') %></th>
+                                <th><%= __('invoice_payment_date') %></th>
+                                <th><%= __('deleted_at') %></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% deletedPayments.forEach(payment => { %>
+                                <tr>
+                                    <td><%= payment.id %></td>
+                                    <td class="has-text-weight-semibold">$<%= payment.amount.toLocaleString() %></td>
+                                    <td><%= payment.payer %></td>
+                                    <td><%= payment.stage_name %></td>
+                                    <td><%= payment.project_name %></td>
+                                    <td>
+                                        <% if (payment.date) { %>
+                                            <%= new Date(payment.date).toLocaleDateString() %>
+                                        <% } else { %>
+                                            -
+                                        <% } %>
+                                    </td>
+                                    <td>
+                                        <% if (payment.created_at) { %>
+                                            <%= new Date(payment.created_at).toLocaleDateString() %>
+                                        <% } else { %>
+                                            -
+                                        <% } %>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</section>

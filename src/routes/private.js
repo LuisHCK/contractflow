@@ -7,6 +7,7 @@ import * as paymentsController from '@/controllers/payments'
 import * as paymentCategoriesController from '@/controllers/payment-categories'
 import * as evidencesController from '@/controllers/evidences'
 import * as systemSettingsController from '@/controllers/system-settings'
+import * as adminController from '@/controllers/admin'
 import { uploadFileMiddleware } from '@/middlewares/upload'
 import { ensureAuthenticated } from '@/middlewares/auth'
 import { logout } from '@/controllers/auth'
@@ -93,6 +94,11 @@ router.post(
  */
 router.get('/settings', systemSettingsController.index)
 router.post('/settings', systemSettingsController.index)
+
+/**
+ * ADMIN
+ */
+router.get('/admin', adminController.index)
 
 /**
  * SESSION

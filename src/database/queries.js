@@ -348,3 +348,36 @@ export const SETTINGS = {
             updated_at = CURRENT_TIMESTAMP
         WHERE id = :id;`
 }
+
+export const ADMIN = {
+    COUNT_USERS: `
+        SELECT COUNT(*) AS count FROM users;`,
+
+    COUNT_PROJECTS: `
+        SELECT COUNT(*) AS count FROM projects;`,
+
+    COUNT_CONTRACTORS: `
+        SELECT COUNT(*) AS count FROM contractors;`,
+
+    GET_ALL_USERS: `
+        SELECT id, name, email, role, active 
+        FROM users 
+        ORDER BY id DESC;`,
+
+    GET_DELETED_STAGES: `
+        SELECT s.id, s.name, s.project_id, s.estimated_cost, s.deleted,
+               p.name AS project_name, p.created_at
+        FROM stage s
+        JOIN projects p ON s.project_id = p.id
+        WHERE s.deleted = 1
+        ORDER BY s.id DESC;`,
+
+    GET_DELETED_PAYMENTS: `
+        SELECT py.id, py.amount, py.date, py.payer, py.deleted, py.created_at,
+               s.name AS stage_name, p.name AS project_name
+        FROM payments py
+        JOIN stage s ON py.stage_id = s.id
+        JOIN projects p ON s.project_id = p.id
+        WHERE py.deleted = 1
+        ORDER BY py.id DESC;`
+}
