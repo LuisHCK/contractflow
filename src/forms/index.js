@@ -256,3 +256,44 @@ export const SYSTEM_SETTINGS_CURRENCY_FORM = {
         }
     ]
 }
+
+export const USER_FORM = {
+    fields: [
+        {
+            label: 'name',
+            name: 'name',
+            placeholder: 'user_create_name_placeholder',
+            required: true
+        },
+        {
+            label: 'email',
+            name: 'email',
+            placeholder: 'user_create_email_placeholder',
+            type: 'email',
+            required: true
+        },
+        {
+            label: 'login_password',
+            name: 'password',
+            placeholder: 'user_create_password_placeholder',
+            hint: 'user_create_password_hint',
+            type: 'password',
+            required: true
+        },
+        {
+            label: 'role',
+            name: 'role',
+            type: 'select',
+            options: [
+                { label: 'user', value: 'user' },
+                { label: 'admin', value: 'admin' }
+            ],
+            required: true
+        },
+        {
+            label: 'active',
+            name: 'active',
+            type: 'checkbox'
+        }
+    ]
+}

@@ -1,15 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@600&display=swap');
 @import 'https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css';
 
-
 :root {
     --bulma-family-primary: 'Open Sans', sans-serif;
+    --checkbox-size: 18px;
 }
 
 .title {
     font-weight: 500 !important;
 }
-
 
 /* Overrides */
 .select,
@@ -36,7 +35,7 @@ select {
 }
 
 .is-family-serif {
-    font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+    font-family: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
 }
 
 .text-balance {
@@ -60,17 +59,41 @@ select {
 
 .hero-background {
     background-image:
-        linear-gradient(to right, rgba(0,0,0,0.03) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(0,0,0,0.03) 1px, transparent 1px);
+        linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
     background-size: 60px 60px;
 }
 
 /* Custom spacing not in default Bulma */
-.py-12-custom { padding-top: 3rem; padding-bottom: 3rem; }
-.py-24-custom { padding-top: 6rem; padding-bottom: 6rem; }
+.py-12-custom {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+}
+.py-24-custom {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+}
 
 /* Auth pages */
 .login-card {
     padding-top: 2.5rem;
     padding-bottom: 2.5rem;
+}
+
+/* Custom Bulma checkbox size override */
+input[type='checkbox'],
+.checkbox input[type='checkbox'] {
+    width: var(--checkbox-size);
+    height: var(--checkbox-size);
+    min-width: var(--checkbox-size);
+    min-height: var(--checkbox-size);
+    max-width: var(--checkbox-size);
+    max-height: var(--checkbox-size);
+}
+
+.checkbox {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
 }

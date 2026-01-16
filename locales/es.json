@@ -165,6 +165,7 @@
     "address": "Dirección",
     "actions": "Acciones",
     "submit": "Guardar",
+    "role":"Rol",
     "stages_no_payments": "No hay pagos registrados para esta etapa.",
     "payment_number": "Pago n.º ",
     "print_report": "Imprimir reporte",
@@ -220,8 +221,18 @@
     "admin_deleted_payments": "Pagos eliminados",
     "admin_deleted_payments_no_data": "No hay pagos eliminados",
     "deleted_at": "Eliminado el",
+    "admin_users_manage": "Gestionar",
+    "users_create_title": "Crear usuario",
+    "users_create_error": "No se pudo crear el usuario",
+    "user": "Usuario",
+    "admin": "Administrador",
+    "change": "Cambiar",
+    "user_create_name_placeholder": "Nombre completo",
+    "user_create_email_placeholder": "Correo electrónico",
+    "user_create_password_placeholder": "Contraseña",
     "footer_privacy": "Privacidad",
     "footer_terms": "Términos",
     "footer_contact": "Contacto",
-    "footer_copyright": "© 2026 ContractorPay. Todos los derechos reservados."
+    "footer_copyright": "© 2026 ContractorPay. Todos los derechos reservados.",
+    "users_edit_password_placeholder": "Dejar en blanco para mantener la contraseña actual"
 }

@@ -21,11 +21,16 @@ export const populateForm = ({ form = {}, data = {}, error = '' }) => {
                 if (!field.options?.length) {
                     field.options = data[field.name] || []
                 }
+                // Set the selected value from data (so selects are pre-populated)
+                value = data[field.name]
             }
             // Check if the field is a checkbox
             else if (field.type === 'checkbox') {
                 // Set the checked property based on the data value
-                field.checked = data[field.name] === 'true'
+                const dataFieldValue = data[field.name]
+                field.checked = Boolean(dataFieldValue)
+                // For uniformity also expose a boolean value
+                value = field.checked
             }
             // Check if the field is a radio button
             else if (field.type === 'radio') {
@@ -37,6 +42,10 @@ export const populateForm = ({ form = {}, data = {}, error = '' }) => {
             }
             // add generic field value
             else {
+                value = data[field.name]
+            }
+            // Ensure value is set for select fields even if earlier branches didn't
+            if (value === undefined && data && Object.prototype.hasOwnProperty.call(data, field.name)) {
                 value = data[field.name]
             }
             return { ...field, value }

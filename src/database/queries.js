@@ -7,10 +7,10 @@ export const USERS = {
 
     ADD: `
         INSERT INTO users (
-            password, email, role, active, name
+            password, email, role, active, name, updated_at
         )
         VALUES (
-            :password, :email, :role, :active, :name
+            :password, :email, :role, :active, :name, CURRENT_TIMESTAMP
         );`,
 
     COUNT: `
@@ -21,6 +21,14 @@ export const USERS = {
         SET password = :password,
             email = :email,
             role = :role,
+            name = :name,
+            active = :active,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = :id;`,
+
+    UPDATE_ROLE: `
+        UPDATE users
+        SET role = :role,
             updated_at = CURRENT_TIMESTAMP
         WHERE id = :id;`,
 

@@ -9,8 +9,8 @@
     <% fields.map(field => { %>
     <div class="field-wrapper mb-4">
         <label class="label" for="<%= field.name %>">
-            <%= __(field.label) %>
-            <% if (field.required) { %>
+            <%= field.type !== 'checkbox' ? __(field.label) : '' %>
+            <% if (field.required && field.type !== 'checkbox') { %>
                 *
             <% } %>
         </label>
@@ -86,20 +86,22 @@
 
                 <!-- CHECKBOX -->
                 <% } else if (field.type === 'checkbox') { %>
-                <label class="checkbox has-text-weight-bold"">
-                    <input
-                        type="checkbox"
-                        name="<%= field.name %>"
-                        id="<%= field.name %>"
-                        <% if (field.value) { %>
-                            checked
-                        <% } %>
-                        <% if (field.required) { %>
-                            required
-                        <% } %>
-                    />
-                    <%= __(field.checkboxLabel) %>
-                </label>
+                <div class="checkboxes">
+                    <label class="checkbox has-text-weight-bold">
+                        <input
+                            type="checkbox"
+                            name="<%= field.name %>"
+                            id="<%= field.name %>"
+                            <% if (field.value) { %>
+                                checked
+                            <% } %>
+                            <% if (field.required) { %>
+                                required
+                            <% } %>
+                        />
+                        <%= __(field.label) %>
+                    </label>
+                </div>
 
                 <!-- Default input -->
                 <% } else { %>

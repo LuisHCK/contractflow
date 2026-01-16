@@ -1,6 +1,7 @@
 import { database } from '@/database'
 import { ADMIN } from '@/database/queries'
 import { User } from '@/database/models'
+import { USERS } from '@/database/queries'
 
 export const index = async (_req, res) => {
     try {
@@ -34,5 +35,44 @@ export const index = async (_req, res) => {
         return res
             .status(500)
             .send('An error occurred while fetching admin data. Please try again later.')
+    }
+}
+
+/**
+ * Change a user's role. Only accessible to admin users.
+ */
+export const changeUserRole = async (req, res) => {
+    try {
+        const requester = req.user
+        if (!requester || requester.role !== 'admin') {
+            req.session.messages = ['Unauthorized']
+            return res.status(403).redirect('/admin')
+        }
+
+        const targetId = Number(req.params.id)
+        const { role } = req.body
+
+        // Basic validation
+        const allowedRoles = ['admin', 'user']
+        if (!allowedRoles.includes(role)) {
+            req.session.messages = ['Invalid role']
+            return res.status(400).redirect('/admin')
+        }
+
+        if (requester.id === targetId && role !== 'admin') {
+            // Prevent an admin from demoting themselves
+            req.session.messages = ['You cannot change your own admin role']
+            return res.status(400).redirect('/admin')
+        }
+
+        const query = database.query(USERS.UPDATE_ROLE)
+        query.run({ id: targetId, role })
+
+        req.session.messages = ['User role updated']
+        return res.redirect('/admin')
+    } catch (error) {
+        console.error(`Error updating user role: ${error.message}`)
+        req.session.messages = ['An error occurred while updating the role']
+        return res.status(500).redirect('/admin')
     }
 }
