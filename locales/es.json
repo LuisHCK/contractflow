@@ -215,6 +215,8 @@
     "inactive": "Inactivo",
     "status": "Estado",
     "admin_deleted_title": "Elementos eliminados (soft delete)",
+    "admin_deleted_projects": "Proyectos eliminados",
+    "admin_deleted_projects_no_data": "No hay proyectos eliminados",
     "admin_deleted_stages": "Etapas eliminadas",
     "admin_deleted_stages_no_data": "No hay etapas eliminadas",
     "project_created": "Proyecto creado",

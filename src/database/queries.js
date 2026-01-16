@@ -52,6 +52,7 @@ export const PROJECTS = {
         projects p 
         LEFT JOIN stage s ON p.id = s.project_id AND s.deleted = 0
         LEFT JOIN payments py ON p.id = s.project_id AND s.id = py.stage_id AND py.deleted = 0
+        WHERE p.deleted = 0
         GROUP BY 
         p.id;`,
 
@@ -79,7 +80,7 @@ export const PROJECTS = {
             LEFT JOIN stage s ON p.id = s.project_id AND s.deleted = 0
             LEFT JOIN payments py ON p.id = s.project_id AND s.id = py.stage_id AND py.deleted = 0
         WHERE 
-            p.id = :id 
+            p.id = :id AND p.deleted = 0
         GROUP BY 
             p.id;`,
 
@@ -92,7 +93,17 @@ export const PROJECTS = {
             end_date = :endDate,
             updated_at = CURRENT_TIMESTAMP
         WHERE id = :id;
-    `
+    `,
+
+    SOFT_DELETE: `
+        UPDATE projects
+        SET deleted = 1
+        WHERE id = :id;`,
+
+    RECOVER: `
+        UPDATE projects
+        SET deleted = 0
+        WHERE id = :id;`
 }
 
 export const STAGES = {
@@ -381,6 +392,9 @@ export const ADMIN = {
         SELECT id, name, email, role, active 
         FROM users 
         ORDER BY id DESC;`,
+
+    GET_DELETED_PROJECTS: `
+        SELECT * FROM projects WHERE deleted = 1 ORDER BY id DESC;`,
 
     GET_DELETED_STAGES: `
         SELECT s.id, s.name, s.project_id, s.estimated_cost, s.deleted,

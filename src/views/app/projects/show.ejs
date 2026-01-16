@@ -18,7 +18,29 @@
 
             <div class="is-flex is-justify-content-space-between is-align-items-center">
                 <h1 class="title is-1"><%= project.name %></h1>
-                <a href="/projects/edit/<%= project.id %>" class="button is-primary"> <%= __('projects_edit') %> </a>
+                <div class="dropdown is-right is-hoverable">
+                    <div class="dropdown-trigger">
+                        <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+                            <span><%= __('actions') %></span>
+                            <span class="icon is-small">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </span>
+                        </button>
+                    </div>
+                    <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                        <div class="dropdown-content">
+                            <a href="/projects/edit/<%= project.id %>" class="dropdown-item">
+                                <%= __('projects_edit') %>
+                            </a>
+                            <hr class="dropdown-divider">
+                            <form action="/projects/delete/<%= project.id %>" method="POST" onsubmit="return confirm('Are you sure you want to archive this project?');">
+                                <button type="submit" class="dropdown-item has-text-danger" style="background:none;border:none;width:100%;text-align:left;cursor:pointer;">
+                                    Archive
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <h2 class="subtitle"><%= project.description %></h2>

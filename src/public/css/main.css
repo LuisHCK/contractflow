@@ -4,6 +4,24 @@
 :root {
     --bulma-family-primary: 'Open Sans', sans-serif;
     --checkbox-size: 18px;
+    --bulma-primary-h: 25deg;
+    --bulma-primary-s: 66%;
+    --bulma-primary-l: 83%;
+    --bulma-link-h: 189deg;
+    --bulma-link-s: 79%;
+    --bulma-link-l: 50%;
+    --bulma-info-h: 174deg;
+    --bulma-info-s: 20%;
+    --bulma-info-l: 68%;
+    --bulma-success-h: 171deg;
+    --bulma-success-s: 48%;
+    --bulma-success-l: 69%;
+    --bulma-warning-h: 43deg;
+    --bulma-warning-s: 72%;
+    --bulma-warning-l: 79%;
+    --bulma-danger-h: 16deg;
+    --bulma-danger-l: 67%;
+    --bulma-radius: 0.25em;
 }
 
 .title {
@@ -96,4 +114,16 @@ input[type='checkbox'],
     flex-direction: row;
     align-items: center;
     gap: 0.5rem;
+}
+
+.button {
+    --bulma-button-padding-horizontal: 0.7em;
+}
+
+.title {
+    --bulma-title-weight: 600;
+}
+
+.input {
+    --bulma-input-radius: 0.25rem;
 }

@@ -1,6 +1,74 @@
 <section class="mb-6">
     <h2 class="title is-4 mb-4"><%= __('admin_deleted_title') %></h2>
 
+    <!-- Deleted Projects -->
+    <div class="mb-5">
+        <h3 class="title is-5 mb-3">
+            <span class="icon-text">
+                <span class="icon has-text-info">
+                    <!-- trash icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                </span>
+                <span><%= __('admin_deleted_projects') %> (<%= deletedProjects.length %>)</span>
+            </span>
+        </h3>
+        <div class="box">
+            <% if (deletedProjects.length === 0) { %>
+                <div class="has-text-centered py-4">
+                    <p class="has-text-grey"><%= __('admin_deleted_projects_no_data') %></p>
+                </div>
+            <% } else { %>
+                <div class="table-container">
+                    <table class="table is-fullwidth is-striped is-hoverable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th><%= __('projects_list_name') %></th>
+                                <th><%= __('projects_list_description') %></th>
+                                <th><%= __('projects_list_status') %></th>
+                                <th><%= __('created_by') %></th>
+                                <th><%= __('deleted_at') %></th>
+                                <th style="width: 110px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% deletedProjects.forEach(project => { %>
+                                <tr>
+                                    <td><%= project.id %></td>
+                                    <td><%= project.name %></td>
+                                    <td><%= project.description %></td>
+                                    <td>
+                                        <span class="tag is-light"><%= project.status %></span>
+                                    </td>
+                                    <td><%= project.created_by %></td>
+                                    <td>
+                                        <% if (project.updated_at) { %>
+                                            <%= new Date(project.updated_at).toLocaleDateString() %>
+                                        <% } else { %>
+                                            -
+                                        <% } %>
+                                    </td>
+                                    <td>
+                                        <form method="POST" action="/admin/recover-project/<%= project.id %>" style="display:inline">
+                                            <button class="button is-small is-success" type="submit">
+                                                <span class="icon is-small"><i class="fas fa-undo"></i></span>
+                                                <span>Recover</span>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            <% } %>
+        </div>
+    </div>
+
     <!-- Deleted Stages -->
     <div class="mb-5">
         <h3 class="title is-5 mb-3">

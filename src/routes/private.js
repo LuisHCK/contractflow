@@ -26,6 +26,7 @@ router.get('/projects/create', projectController.create)
 router.post('/projects/create', projectController.create)
 router.get('/projects/edit/:id', projectController.edit)
 router.post('/projects/edit/:id', projectController.edit)
+router.post('/projects/delete/:id', projectController.deleteProject)
 
 /**
  * STAGES
@@ -102,6 +103,7 @@ router.post('/settings', systemSettingsController.index)
 
 router.get('/admin', adminController.index)
 router.post('/admin/users/:id/role', adminController.changeUserRole)
+router.post('/admin/recover-project/:id', adminController.recoverProject)
 router.post('/admin/recover-stage/:id', adminController.recoverStage)
 router.post('/admin/recover-payment/:id', adminController.recoverPayment)
 

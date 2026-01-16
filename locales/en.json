@@ -218,6 +218,8 @@
         "inactive": "Inactive",
         "status": "Status",
         "admin_deleted_title": "Soft-Deleted Elements",
+        "admin_deleted_projects": "Deleted Projects",
+        "admin_deleted_projects_no_data": "No deleted projects",
         "admin_deleted_stages": "Deleted Stages",
         "admin_deleted_stages_no_data": "No deleted stages",
         "project_created": "Project Created",

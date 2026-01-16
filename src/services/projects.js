@@ -71,3 +71,35 @@ export const updateProject = async (id, project = {}) => {
         return null
     }
 }
+
+/**
+ * Soft delete a project by setting its deleted flag.
+ * @param {number|string} id - The unique identifier of the project.
+ * @returns {Promise<boolean>} True if a row was updated, false otherwise.
+ */
+export const deleteProjectById = async (id) => {
+    try {
+        const query = database.query(PROJECTS.SOFT_DELETE)
+        const result = query.run({ id })
+        return result.changes > 0
+    } catch (error) {
+        console.error(`Error soft deleting project: ${error.message}`)
+        return false
+    }
+}
+
+/**
+ * Recover a soft-deleted project by setting its deleted flag to 0.
+ * @param {number|string} id - The unique identifier of the project.
+ * @returns {Promise<boolean>} True if a row was updated, false otherwise.
+ */
+export const recoverProjectById = async (id) => {
+    try {
+        const query = database.query(PROJECTS.RECOVER)
+        const result = query.run({ id })
+        return result.changes > 0
+    } catch (error) {
+        console.error(`Error recovering project: ${error.message}`)
+        return false
+    }
+}

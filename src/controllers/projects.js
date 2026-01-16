@@ -1,6 +1,6 @@
 import { PAYMENT_FORM, PROJECT_FORM } from '@/forms'
 import { getAllPayments } from '@/services/payments'
-import { createProject, getAllProjects, getProjectById, updateProject } from '@/services/projects'
+import { createProject, getAllProjects, getProjectById, updateProject, deleteProjectById } from '@/services/projects'
 import { getStageById, getStagesByProject } from '@/services/stages'
 import { format } from 'date-fns'
 import { DATE_FORMAT } from '@/config/constants'
@@ -151,5 +151,32 @@ export const showStagePayments = async (req, res) => {
         })
     } catch (error) {
         res.status(500).json({ message: error.message })
+    }
+}
+
+/**
+ * Soft deletes a project and redirects to the projects list.
+ *
+ * @async
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ */
+export const deleteProject = async (req, res) => {
+    try {
+        const { id } = req.params
+        const project = await getProjectById(id)
+
+        if (!project) {
+            return res.status(404).send('Project not found')
+        }
+
+        await deleteProjectById(id)
+
+        return res.redirect('/projects')
+    } catch (error) {
+        console.error(`Error deleting project: ${error}`)
+        return res
+            .status(500)
+            .send('An error occurred while deleting the project. Please try again later.')
     }
 }

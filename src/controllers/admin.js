@@ -1,45 +1,10 @@
-import { recoverStageById } from '@/services/stages'
-import { recoverPaymentById } from '@/services/payments'
-
-// Recover a deleted stage
-export const recoverStage = async (req, res) => {
-    try {
-        const { id } = req.params
-        const success = await recoverStageById(id)
-        if (success) {
-            req.session.messages = ['Stage recovered successfully']
-        } else {
-            req.session.messages = ['Failed to recover stage']
-        }
-        return res.redirect('/admin')
-    } catch (error) {
-        console.error(`Error recovering stage: ${error.message}`)
-        req.session.messages = ['An error occurred while recovering the stage']
-        return res.status(500).redirect('/admin')
-    }
-}
-
-// Recover a deleted payment
-export const recoverPayment = async (req, res) => {
-    try {
-        const { id } = req.params
-        const success = await recoverPaymentById(id)
-        if (success) {
-            req.session.messages = ['Payment recovered successfully']
-        } else {
-            req.session.messages = ['Failed to recover payment']
-        }
-        return res.redirect('/admin')
-    } catch (error) {
-        console.error(`Error recovering payment: ${error.message}`)
-        req.session.messages = ['An error occurred while recovering the payment']
-        return res.status(500).redirect('/admin')
-    }
-}
 import { database } from '@/database'
 import { ADMIN } from '@/database/queries'
 import { User } from '@/database/models'
 import { USERS } from '@/database/queries'
+import { recoverStageById } from '@/services/stages'
+import { recoverPaymentById } from '@/services/payments'
+import { recoverProjectById } from '@/services/projects'
 
 export const index = async (_req, res) => {
     try {
@@ -59,12 +24,14 @@ export const index = async (_req, res) => {
         const users = usersData.map(user => new User(user))
 
         // Get soft-deleted elements
+        const deletedProjects = database.query(ADMIN.GET_DELETED_PROJECTS).all()
         const deletedStages = database.query(ADMIN.GET_DELETED_STAGES).all()
         const deletedPayments = database.query(ADMIN.GET_DELETED_PAYMENTS).all()
 
         res.render('app/admin/index', {
             summary,
             users,
+            deletedProjects,
             deletedStages,
             deletedPayments
         })
@@ -111,6 +78,60 @@ export const changeUserRole = async (req, res) => {
     } catch (error) {
         console.error(`Error updating user role: ${error.message}`)
         req.session.messages = ['An error occurred while updating the role']
+        return res.status(500).redirect('/admin')
+    }
+}
+
+// Recover a deleted project
+export const recoverProject = async (req, res) => {
+    try {
+        const { id } = req.params
+        const success = await recoverProjectById(id)
+        if (success) {
+            req.session.messages = ['Project recovered successfully']
+        } else {
+            req.session.messages = ['Failed to recover project']
+        }
+        return res.redirect('/admin')
+    } catch (error) {
+        console.error(`Error recovering project: ${error.message}`)
+        req.session.messages = ['An error occurred while recovering the project']
+        return res.status(500).redirect('/admin')
+    }
+}
+
+// Recover a deleted stage
+export const recoverStage = async (req, res) => {
+    try {
+        const { id } = req.params
+        const success = await recoverStageById(id)
+        if (success) {
+            req.session.messages = ['Stage recovered successfully']
+        } else {
+            req.session.messages = ['Failed to recover stage']
+        }
+        return res.redirect('/admin')
+    } catch (error) {
+        console.error(`Error recovering stage: ${error.message}`)
+        req.session.messages = ['An error occurred while recovering the stage']
+        return res.status(500).redirect('/admin')
+    }
+}
+
+// Recover a deleted payment
+export const recoverPayment = async (req, res) => {
+    try {
+        const { id } = req.params
+        const success = await recoverPaymentById(id)
+        if (success) {
+            req.session.messages = ['Payment recovered successfully']
+        } else {
+            req.session.messages = ['Failed to recover payment']
+        }
+        return res.redirect('/admin')
+    } catch (error) {
+        console.error(`Error recovering payment: ${error.message}`)
+        req.session.messages = ['An error occurred while recovering the payment']
         return res.status(500).redirect('/admin')
     }
 }
