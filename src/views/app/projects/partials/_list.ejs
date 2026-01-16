@@ -1,54 +1,52 @@
 
-<div class="table-container">
-    <table class="table is-striped is-hoverable is-fullwidth">
-        <thead>
-            <tr>
-                <th><%= __('projects_list_name') %></th>
-                <th><%= __('projects_list_description') %></th>
-                <th><%= __('projects_list_status') %></th>
-                <th><%= __('projects_list_estimated_cost') %></th>
-                <th><%= __('projects_list_payed') %></th>
-                <th><%= __('projects_list_actions') %></th>
-            </tr>
-        </thead>
-        <tbody>
-        <% projects.forEach(project => { %>
-            <tr>
-                <td><%= project.name %></td>
-                <td><%= project.description %></td>
-                <td>
-                    <span class="tag is-info is-capitalized">
-                        <%= __(`projects_status_${project.status}`) %>
-                    </span>
-                </td>
-                <td>
-                    <span class="tag is-dark"><%= formatToCurrency(project.estimatedCost) %></span>
-                </td>
-                <td>
-                    <span class="tag is-info"><%= formatToCurrency(project.actualCost) %></span>
-                </td>
-                <td>
-                    <div class="field is-grouped is-justify-content-flex-end">
-                        <p class="control">
-                            <a class="button is-primary is-small" href="/projects/show/<%= project.id %>">
-                                <%= __('projects_list_view') %>
-                            </a>
-                        </p>
+<div class="projects-grid">
+    <% projects.forEach(project => { %>
+        <div class="card project-card">
+            <div class="card-content">
+                <div class="media mb-2">
+                    <div class="media-content">
+                        <div class="is-flex is-justify-content-space-between is-align-items-start">
+                            <p class="title is-5 mb-0"><%= project.name %></p>
+                            <span class="tag is-info is-capitalized is-light">
+                                <%= __(`projects_status_${project.status}`) %>
+                            </span>
+                        </div>
                     </div>
-                </td>
-            </tr>
-        <% }); %>
+                </div>
 
-        <!-- No projects message -->
-        <% if (projects.length === 0) { %>
-            <tr>
-                <td colspan="6">
-                    <div class="notification is-warning has-text-centered">
-                        <%= __('projects_list_no_projects') %>
+                <div class="content mb-4">
+                    <p class="has-text-grey is-size-6 mb-4 line-clamp-2">
+                        <%= project.description %>
+                    </p>
+                    
+                    <div class="level is-mobile mb-0">
+                        <div class="level-left mr-5">
+                            <div>
+                                <p class="heading has-text-grey-light mb-0"><%= __('projects_list_estimated_cost') %></p>
+                                <p class="title is-6"><%= formatToCurrency(project.estimatedCost) %></p>
+                            </div>
+                        </div>
+                        <div class="level-left">
+                            <div>
+                                <p class="heading has-text-grey-light mb-0"><%= __('projects_list_payed') %></p>
+                                <p class="title is-6 has-text-success"><%= formatToCurrency(project.actualCost) %></p>
+                            </div>
+                        </div>
                     </div>
-                </td>
-            </tr>
-        <% } %>
-        </tbody>
-    </table>
+                </div>
+            </div>
+            <footer class="card-footer">
+                <a href="/projects/show/<%= project.id %>" class="card-footer-item has-text-primary has-text-weight-bold">
+                    <%= __('projects_list_view') %>
+                </a>
+            </footer>
+        </div>
+    <% }); %>
+
+    <!-- No projects message -->
+    <% if (projects.length === 0) { %>
+        <div class="notification is-warning has-text-centered w-full">
+            <%= __('projects_list_no_projects') %>
+        </div>
+    <% } %>
 </div>
