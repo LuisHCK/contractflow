@@ -39,7 +39,7 @@
                         <% } %>
                         value=""
                     >
-                        <option value=""><%= __(field.placeholder) %></option>
+                        <option value="" disabled><%= __(field.placeholder) %></option>
                         <% field.options.forEach((option, index) => { %>
                             <!-- Handle object options -->
                             <% if (typeof option === 'object') { %>

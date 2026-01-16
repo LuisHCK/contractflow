@@ -284,6 +284,7 @@ export const USER_FORM = {
             label: 'role',
             name: 'role',
             type: 'select',
+            placeholder: 'user_create_role_placeholder',
             options: [
                 { label: 'user', value: 'user' },
                 { label: 'admin', value: 'admin' }

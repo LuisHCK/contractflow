@@ -1,3 +1,41 @@
+import { recoverStageById } from '@/services/stages'
+import { recoverPaymentById } from '@/services/payments'
+
+// Recover a deleted stage
+export const recoverStage = async (req, res) => {
+    try {
+        const { id } = req.params
+        const success = await recoverStageById(id)
+        if (success) {
+            req.session.messages = ['Stage recovered successfully']
+        } else {
+            req.session.messages = ['Failed to recover stage']
+        }
+        return res.redirect('/admin')
+    } catch (error) {
+        console.error(`Error recovering stage: ${error.message}`)
+        req.session.messages = ['An error occurred while recovering the stage']
+        return res.status(500).redirect('/admin')
+    }
+}
+
+// Recover a deleted payment
+export const recoverPayment = async (req, res) => {
+    try {
+        const { id } = req.params
+        const success = await recoverPaymentById(id)
+        if (success) {
+            req.session.messages = ['Payment recovered successfully']
+        } else {
+            req.session.messages = ['Failed to recover payment']
+        }
+        return res.redirect('/admin')
+    } catch (error) {
+        console.error(`Error recovering payment: ${error.message}`)
+        req.session.messages = ['An error occurred while recovering the payment']
+        return res.status(500).redirect('/admin')
+    }
+}
 import { database } from '@/database'
 import { ADMIN } from '@/database/queries'
 import { User } from '@/database/models'

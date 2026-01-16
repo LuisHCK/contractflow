@@ -31,6 +31,7 @@
                                 <th><%= __('projects_title') %></th>
                                 <th><%= __('stages_estimated_cost') %></th>
                                 <th><%= __('project_created') %></th>
+                                <th style="width: 110px;"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -46,6 +47,14 @@
                                         <% } else { %>
                                             -
                                         <% } %>
+                                    </td>
+                                    <td>
+                                        <form method="POST" action="/admin/recover-stage/<%= stage.id %>" style="display:inline">
+                                            <button class="button is-small is-success" type="submit">
+                                                <span class="icon is-small"><i class="fas fa-undo"></i></span>
+                                                <span>Recover</span>
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>
                             <% }) %>
@@ -88,6 +97,7 @@
                                 <th><%= __('projects_title') %></th>
                                 <th><%= __('invoice_payment_date') %></th>
                                 <th><%= __('deleted_at') %></th>
+                                <th style="width: 110px;"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -111,6 +121,14 @@
                                         <% } else { %>
                                             -
                                         <% } %>
+                                    </td>
+                                    <td>
+                                        <form method="POST" action="/admin/recover-payment/<%= payment.id %>" style="display:inline">
+                                            <button class="button is-small is-success" type="submit">
+                                                <span class="icon is-small"><i class="fas fa-undo"></i></span>
+                                                <span>Recover</span>
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>
                             <% }) %>

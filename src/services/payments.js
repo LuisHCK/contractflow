@@ -1,3 +1,18 @@
+/**
+ * Recover a soft-deleted payment by setting its deleted flag to 0.
+ * @param {string|number} paymentId - The unique identifier of the payment.
+ * @returns {Promise<boolean>} True if a row was updated, false otherwise.
+ */
+export const recoverPaymentById = async (paymentId) => {
+    try {
+        const query = database.query(PAYMENTS.RECOVER)
+        const result = query.run({ id: paymentId })
+        return result.changes > 0
+    } catch (error) {
+        console.error(`Error recovering payment: ${error.message}`)
+        return false
+    }
+}
 import { database } from '@/database'
 import { PAYMENTS, PROJECTS } from '@/database/queries'
 import { getById as getContractorById } from './contractors'

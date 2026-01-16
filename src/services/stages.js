@@ -1,3 +1,18 @@
+/**
+ * Recover a soft-deleted stage by setting its deleted flag to 0.
+ * @param {number|string} stageId - The unique identifier of the stage.
+ * @returns {Promise<boolean>} True if a row was updated, false otherwise.
+ */
+export const recoverStageById = async (stageId) => {
+    try {
+        const query = database.query(STAGES.RECOVER)
+        const result = query.run({ id: stageId })
+        return result.changes > 0
+    } catch (error) {
+        console.error(`Error recovering stage: ${error.message}`)
+        return false
+    }
+}
 import { database } from '@/database'
 import { STAGES } from '@/database/queries'
 import { formatToCurrency } from '@/utils/money'

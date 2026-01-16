@@ -234,5 +234,6 @@
     "footer_terms": "Términos",
     "footer_contact": "Contacto",
     "footer_copyright": "© 2026 ContractorPay. Todos los derechos reservados.",
-    "users_edit_password_placeholder": "Dejar en blanco para mantener la contraseña actual"
+    "users_edit_password_placeholder": "Dejar en blanco para mantener la contraseña actual",
+    "user_create_role_placeholder": "Selecciona un rol"
 }

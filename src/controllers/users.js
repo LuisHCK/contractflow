@@ -88,8 +88,6 @@ export const edit = async (req, res) => {
                 return res.status(404).json({ error: 'User not found' })
             }
 
-            console.log('USER DATA', user)
-
             // Make a copy of the form and make password optional for edit
             const populated = populateForm({ form: USER_FORM, data: user })
             populated.fields = populated.fields.map((f) => {

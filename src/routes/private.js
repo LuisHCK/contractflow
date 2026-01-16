@@ -99,8 +99,11 @@ router.post('/settings', systemSettingsController.index)
 /**
  * ADMIN
  */
+
 router.get('/admin', adminController.index)
 router.post('/admin/users/:id/role', adminController.changeUserRole)
+router.post('/admin/recover-stage/:id', adminController.recoverStage)
+router.post('/admin/recover-payment/:id', adminController.recoverPayment)
 
 /**
  * USERS (admin)

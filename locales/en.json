@@ -237,5 +237,6 @@
         "footer_terms": "Terms",
         "footer_contact": "Contact",
         "footer_copyright": "© 2026 ContractorPay. All rights reserved.",
-        "users_edit_password_placeholder": "Leave blank to keep current password"
+        "users_edit_password_placeholder": "Leave blank to keep current password",
+        "user_create_role_placeholder": "Select a role"
     }

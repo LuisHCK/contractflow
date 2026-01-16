@@ -130,6 +130,11 @@ export const STAGES = {
         SET deleted = 1
         WHERE id = :id;`,
 
+        RECOVER: `
+            UPDATE stage
+            SET deleted = 0
+            WHERE id = :id;`,
+
     REPORT_SUMMARY: `
         SELECT 
             s.id AS stage_id,
@@ -203,6 +208,11 @@ export const PAYMENTS = {
         UPDATE payments
         SET deleted = 1
         WHERE id = :id;`,
+
+        RECOVER: `
+            UPDATE payments
+            SET deleted = 0
+            WHERE id = :id;`,
 
     REPORT_BY_STAGE: `
         SELECT 
