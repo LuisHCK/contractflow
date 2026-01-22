@@ -10,12 +10,12 @@ import * as systemSettingsController from '@/controllers/system-settings'
 import * as adminController from '@/controllers/admin'
 import * as usersController from '@/controllers/users'
 import { uploadFileMiddleware } from '@/middlewares/upload'
-import { ensureAuthenticated } from '@/middlewares/auth'
+import { authenticateToken } from '@/middlewares/jwt'
 import { logout } from '@/controllers/auth'
 
 const router = express.Router()
 
-router.use(ensureAuthenticated)
+router.use(authenticateToken)
 
 /**
  * PROJECTS

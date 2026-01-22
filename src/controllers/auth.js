@@ -1,11 +1,13 @@
 import { LOGIN_FORM } from '@/forms'
-import passport from 'passport'
+import * as jose from 'jose'
+import { getUserByEmail } from '@/services/users'
 
 /**
  * Handles user login requests.
  *
- * - If the request method is POST, attempts to authenticate the user using Passport's 'local' strategy.
- *   On success, redirects to '/projects'. On failure, redirects to '/login' and enables failure messages.
+ * - If the request method is POST, attempts to authenticate the user.
+ *   On success, generates a JWT, sets it as a cookie, and redirects to '/projects'.
+ *   On failure, renders the login form with an error message.
  * - If the request method is not POST, renders the login form.
  *
  * @async
@@ -14,77 +16,64 @@ import passport from 'passport'
  * @param {import('express').Response} res - Express response object.
  * @returns {Promise<void>}
  */
-export const login = async (req, res, next) => {
+export const login = async (req, res) => {
     const FORM_VIEW = 'app/login'
     try {
-        // Handle login form submission
         if (req.method === 'POST') {
-            return passport.authenticate('local', (err, user, _info) => {
-                // If an error occurs during authentication
-                if (err) {
-                    return res.render(FORM_VIEW, {
-                        title: req.__('auth_login_title'),
-                        form: LOGIN_FORM,
-                        messages: [
-                            { content: req.__('auth_login_error_authentication'), type: 'danger' }
-                        ]
-                    })
-                }
+            const { email, password } = req.body
+            const user = await getUserByEmail(email)
 
-                // If user is not found or password is incorrect
-                if (!user) {
-                    return res.render(FORM_VIEW, {
-                        title: req.__('auth_login_title'),
-                        form: LOGIN_FORM,
-                        messages: [{ content: req.__('auth_login_invalid_credentials'), type: 'warning' }]
-                    })
-                }
-
-                // If user is found, log them in
-                req.logIn(user, (err) => {
-                    console.error(`Login error: ${err}`)
-                    if (err) {
-                        return res.render(FORM_VIEW, {
-                            title: req.__('auth_login_title'),
-                            form: LOGIN_FORM,
-                            messages: [{ content: req.__('auth_login_invalid_credentials'), type: 'warning' }]
-                        })
-                    }
-                    return res.redirect('/projects')
+            if (!user) {
+                return res.render(FORM_VIEW, {
+                    title: req.__('auth_login_title'),
+                    form: LOGIN_FORM,
+                    messages: [{ content: req.__('auth_login_invalid_credentials'), type: 'danger' }]
                 })
-            })(req, res, next)
+            }
+
+            const isMatch = await Bun.password.verify(password, user.password)
+
+            if (!isMatch) {
+                return res.render(FORM_VIEW, {
+                    title: req.__('auth_login_title'),
+                    form: LOGIN_FORM,
+                    messages: [{ content: req.__('auth_login_invalid_credentials'), type: 'warning' }]
+                })
+            }
+
+            const secret = new TextEncoder().encode(process.env.SECRET_KEY)
+            const alg = 'HS256'
+            const token = await new jose.SignJWT({ id: user.id, role: user.role })
+                .setProtectedHeader({ alg })
+                .setExpirationTime('1d')
+                .setIssuedAt()
+                .sign(secret)
+
+            res.cookie('token', token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax',
+                maxAge: 1000 * 60 * 60 * 24 // 1 day
+            })
+
+            return res.redirect('/projects')
         } else {
-            // Render the login form
             return res.render(FORM_VIEW, { title: req.__('auth_login_title'), form: LOGIN_FORM })
         }
     } catch (error) {
         console.error(`Error during login: ${error.message}`)
-
         return res.render(FORM_VIEW, {
             title: req.__('auth_login_title'),
             form: LOGIN_FORM,
-            messages: [
-                {
-                    content: req.__('auth_login_message_continue'),
-                    type: 'info'
-                }
-            ]
+            messages: [{ content: req.__('auth_login_invalid_credentials'), type: 'warning' }]
         })
     }
 }
 
 export const logout = async (req, res) => {
     try {
-        // Log the user out
-        req.logout((err) => {
-            if (err) {
-                console.error(`Error during logout: ${err.message}`)
-                return res.status(500).json({ error: req.__('auth_logout_failed') })
-            }
-
-            // Redirect to login page after successful logout
-            res.redirect('/login')
-        })
+        res.clearCookie('token')
+        res.redirect('/login')
     } catch (error) {
         console.error(`Error during logout: ${error.message}`)
         res.redirect('/?error=logout_failed')

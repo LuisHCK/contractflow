@@ -9,12 +9,8 @@ import i18n from 'i18n'
 import privateRouter from './routes/private'
 import publicRouter from './routes/public'
 import { init as dbInit } from './database'
-import passport from 'passport'
-import session from 'express-session'
-import initializePassport from './auth/passport'
-import { setLocals } from './middlewares/auth'
-import { BunSQLiteStore } from './auth/bun-sqlite-store'
 import { formatToCurrency } from './utils/money'
+import { setUser } from './middlewares/jwt'
 const app = express()
 const localesDirectory = path.join(process.cwd(), 'locales')
 
@@ -50,16 +46,16 @@ app.disable('x-powered-by')
 // Initialize EJS template engine
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, '/views'))
-app.use(
-    helmet({
-        contentSecurityPolicy: {
-            directives: cspDirectives
-        },
-        crossOriginEmbedderPolicy: false,
-        referrerPolicy: { policy: 'strict-origin-when-cross-origin' }
-    })
-)
-app.use(cors())
+// app.use(
+//     helmet({
+//         contentSecurityPolicy: {
+//             directives: cspDirectives
+//         },
+//         crossOriginEmbedderPolicy: false,
+//         referrerPolicy: { policy: 'strict-origin-when-cross-origin' }
+//     })
+// )
+// app.use(cors())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser())
@@ -87,26 +83,7 @@ app.locals.formatToCurrency = formatToCurrency
 app.use(express.static(path.join(__dirname, '/public')))
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')))
 
-// Initialize passport
-initializePassport(passport)
-
-app.use(
-    session({
-        store: new BunSQLiteStore(), // Store session in SQLite database
-        secret: process.env.SECRET_KEY,
-        resave: false,
-        saveUninitialized: false,
-        cookie: {
-            maxAge: 1000 * 60 * 60 * 24, // 1 day
-            httpOnly: true,
-            sameSite: 'lax',
-            secure: process.env.NODE_ENV === 'production'
-        }
-    })
-)
-app.use(passport.initialize())
-app.use(passport.session())
-app.use(setLocals)
+app.use(setUser)
 
 app.get('/lang/:locale', (req, res) => {
     const { locale } = req.params
