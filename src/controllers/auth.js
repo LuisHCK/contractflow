@@ -42,6 +42,7 @@ export const login = async (req, res, next) => {
 
                 // If user is found, log them in
                 req.logIn(user, (err) => {
+                    console.error(`Login error: ${err}`)
                     if (err) {
                         return res.render(FORM_VIEW, {
                             title: req.__('auth_login_title'),
