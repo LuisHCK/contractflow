@@ -5,7 +5,8 @@
     "private": true,
     "scripts": {
         "dev": "bun --bun --watch ./src/server.js",
-        "lint": "oxlint . --ext .ts,.tsx --fix"
+        "lint": "oxlint . --ext .ts,.tsx --fix",
+        "password-reset": "bun password-reset.js"
     },
     "devDependencies": {
         "@types/bun": "latest"

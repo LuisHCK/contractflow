@@ -35,3 +35,34 @@ To run the application in development mode:
 
 ```bash
 bun run dev
+```
+
+### Password Reset CLI Tool
+
+For administrative purposes, you can reset user passwords directly from the command line:
+
+```bash
+bun password-reset.js <email> <new-password>
+```
+
+Or using npm scripts:
+
+```bash
+bun run password-reset <email> <new-password>
+```
+
+**Examples:**
+
+```bash
+# Reset password for a specific user
+bun password-reset.js user@example.com newSecurePass123
+
+# Using the npm script
+bun run password-reset admin@company.com Admin2026!
+```
+
+**Security Notes:**
+- This tool is for server-side administrative use only
+- Never expose this functionality via an API endpoint
+- Passwords must be at least 6 characters long
+- Passwords are hashed using Argon2i before storage
