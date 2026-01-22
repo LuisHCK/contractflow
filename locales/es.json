@@ -1,4 +1,6 @@
 {
+    "site_slogan": "Agiliza tus pagos, simplifica tu vida",
+    "site_description": "Planifica, presupuesta y rastrea proyectos con confianza. Crea, gestiona y paga a contratistas con facilidad.",
     "auth_login_title": "Iniciar sesión",
     "auth_login_message_continue": "Por favor inicia sesión para continuar",
     "auth_login_error_authentication": "Ocurrió un error durante la autenticación",

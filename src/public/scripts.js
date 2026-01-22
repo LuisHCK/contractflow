@@ -47,4 +47,18 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         })
     }
+
+    // Automatic print
+    const urlParams = new URLSearchParams(window.location.search)
+    if (urlParams.get('print') === 'true') {
+        window.print()
+    }
+
+    // Print button
+    const printButton = document.getElementById('print-button')
+    if (printButton) {
+        printButton.addEventListener('click', () => {
+            window.print()
+        })
+    }
 })

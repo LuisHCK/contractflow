@@ -82,6 +82,13 @@
         <% } %>
 
         <% } %>
+
+
+        <div class="has-text-centered mt-5 is-hidden-print">
+            <button type="button" class="button is-primary is-ghost" id="print-button">
+                <%= __('print_report', 'Print report') %>
+            </button>
+        </div>
     </body>
 
     <style>
@@ -118,13 +125,4 @@
             border-bottom: 1px dashed rgb(100, 100, 100);
         }
     </style>
-
-    <script>
-        window.addEventListener('DOMContentLoaded', function() {
-            const params = new URLSearchParams(window.location.search);
-            if (params.get('autoprint') === 'true') {
-                window.print();
-            }
-        });
-    </script>
 </html>

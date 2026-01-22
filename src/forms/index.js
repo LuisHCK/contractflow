@@ -155,7 +155,7 @@ export const PAYMENT_FORM = {
             options: [] // to be populated dynamically
         },
         {
-            checkboxLabel: 'payments_hide_totals_invoice',
+            label: 'payments_hide_totals_invoice',
             name: 'hideTotalsInvoice',
             type: 'checkbox',
             description: 'payments_hide_totals_invoice_description'

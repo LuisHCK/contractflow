@@ -10,12 +10,12 @@
         <% if (locals.title) { %>
             <%= locals.title %>
         <% } else { %>
-            ContractorPay | Streamline your payments, simplify your life
+            ContractorPay | <%= __('site_slogan') %>
         <% } %>
     </title>
     <meta
         name="description"
-        content="Plan, budget, and track projects with confidence. Create, manage, and pay contractors with ease."
+        content="<%= __('site_description') %>"
     />
     <meta
         name="keywords"
@@ -29,11 +29,11 @@
     <!-- Open Graph / Social -->
     <meta
         property="og:title"
-        content="<%= locals.title || 'ContractorPay | Streamline your payments, simplify your life' %>"
+        content="<%= locals.title || 'ContractorPay | ' + __('site_slogan') %>"
     />
     <meta
         property="og:description"
-        content="Plan, budget, and track projects with confidence. Create, manage, and pay contractors with ease."
+        content="<%= __('site_description') %>"
     />
     <meta property="og:type" content="website" />
     <% if (locals.ogUrl) { %>
@@ -45,11 +45,11 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta
         name="twitter:title"
-        content="<%= locals.title || 'ContractorPay | Streamline your payments, simplify your life' %>"
+        content="<%= locals.title || 'ContractorPay | ' + __('site_slogan') %>"
     />
     <meta
         name="twitter:description"
-        content="Plan, budget, and track projects with confidence. Create, manage, and pay contractors with ease."
+        content="<%= __('site_description') %>"
     />
     <meta name="twitter:image" content="/apple-touch-icon.png" />
 
@@ -72,7 +72,7 @@
     <link rel="stylesheet" href="/css/main.css" />
 
     <!-- Fonts -->
-     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3&family=Source+Serif+4:opsz@8..60&display=swap" rel="stylesheet">
     

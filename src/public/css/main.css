@@ -178,3 +178,9 @@ input[type='checkbox'],
 .input {
     --bulma-input-radius: 0.25rem;
 }
+
+.is-hidden-print {
+    @media print {
+        display: none !important;
+    }
+}

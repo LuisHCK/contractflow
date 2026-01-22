@@ -140,11 +140,11 @@
                                             </td>
                                             <td class="is-nowrap">
                                                 <div class="buttons are-small is-flex is-flex-direction-column is-align-items-flex-end">
-                                                    <a href="/payments/print/<%= payment.id %>" class="button is-link is-light">
-                                                        <%= __('print', 'Print') %>
+                                                    <a href="/payments/print/<%= payment.id %>?print=true" class="button is-link is-light">
+                                                        <%= __('print') %>
                                                     </a>
                                                     <a href="/payments/show/<%= payment.id %>/evidences/create" class="button is-info is-light">
-                                                        <%= __('evidences_create_title', 'Register evidence') %>
+                                                        <%= __('evidences_create_title') %>
                                                     </a>
                                                 </div>
                                             </td>

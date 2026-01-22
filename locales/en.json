@@ -1,5 +1,7 @@
     {
-        "auth_login_title": "Login",
+        "site_slogan": "Streamline your payments, simplify your life",
+    "site_description": "Plan, budget, and track projects with confidence. Create, manage, and pay contractors with ease.",
+    "auth_login_title": "Login",
         "auth_login_message_continue": "Please log in to continue",
         "auth_login_error_authentication": "An error occurred during authentication",
         "auth_login_invalid_credentials": "Invalid credentials",
