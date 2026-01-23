@@ -11,6 +11,8 @@ import publicRouter from './routes/public'
 import { init as dbInit } from './database'
 import { formatToCurrency } from './utils/money'
 import { setUser } from './middlewares/jwt'
+import { flash } from './middlewares/flash'
+
 const app = express()
 const localesDirectory = path.join(process.cwd(), 'locales')
 
@@ -46,16 +48,16 @@ app.disable('x-powered-by')
 // Initialize EJS template engine
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, '/views'))
-// app.use(
-//     helmet({
-//         contentSecurityPolicy: {
-//             directives: cspDirectives
-//         },
-//         crossOriginEmbedderPolicy: false,
-//         referrerPolicy: { policy: 'strict-origin-when-cross-origin' }
-//     })
-// )
-// app.use(cors())
+app.use(
+    helmet({
+        contentSecurityPolicy: {
+            directives: cspDirectives
+        },
+        crossOriginEmbedderPolicy: false,
+        referrerPolicy: { policy: 'strict-origin-when-cross-origin' }
+    })
+)
+app.use(cors())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser())
@@ -84,6 +86,7 @@ app.use(express.static(path.join(__dirname, '/public')))
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')))
 
 app.use(setUser)
+app.use(flash)
 
 app.get('/lang/:locale', (req, res) => {
     const { locale } = req.params

@@ -50,7 +50,7 @@ export const changeUserRole = async (req, res) => {
     try {
         const requester = req.user
         if (!requester || requester.role !== 'admin') {
-            req.session.messages = ['Unauthorized']
+            req.flash('danger', 'Unauthorized')
             return res.status(403).redirect('/admin')
         }
 
@@ -60,24 +60,24 @@ export const changeUserRole = async (req, res) => {
         // Basic validation
         const allowedRoles = ['admin', 'user']
         if (!allowedRoles.includes(role)) {
-            req.session.messages = ['Invalid role']
+            req.flash('warning', 'Invalid role')
             return res.status(400).redirect('/admin')
         }
 
         if (requester.id === targetId && role !== 'admin') {
             // Prevent an admin from demoting themselves
-            req.session.messages = ['You cannot change your own admin role']
+            req.flash('warning', 'You cannot change your own admin role')
             return res.status(400).redirect('/admin')
         }
 
         const query = database.query(USERS.UPDATE_ROLE)
         query.run({ id: targetId, role })
 
-        req.session.messages = ['User role updated']
+        req.flash('success', 'User role updated')
         return res.redirect('/admin')
     } catch (error) {
         console.error(`Error updating user role: ${error.message}`)
-        req.session.messages = ['An error occurred while updating the role']
+        req.flash('danger', 'An error occurred while updating the role')
         return res.status(500).redirect('/admin')
     }
 }
@@ -88,14 +88,14 @@ export const recoverProject = async (req, res) => {
         const { id } = req.params
         const success = await recoverProjectById(id)
         if (success) {
-            req.session.messages = ['Project recovered successfully']
+            req.flash('success', 'Project recovered successfully')
         } else {
-            req.session.messages = ['Failed to recover project']
+            req.flash('danger', 'Failed to recover project')
         }
         return res.redirect('/admin')
     } catch (error) {
         console.error(`Error recovering project: ${error.message}`)
-        req.session.messages = ['An error occurred while recovering the project']
+        req.flash('danger', 'An error occurred while recovering the project')
         return res.status(500).redirect('/admin')
     }
 }
@@ -106,14 +106,14 @@ export const recoverStage = async (req, res) => {
         const { id } = req.params
         const success = await recoverStageById(id)
         if (success) {
-            req.session.messages = ['Stage recovered successfully']
+            req.flash('success', 'Stage recovered successfully')
         } else {
-            req.session.messages = ['Failed to recover stage']
+            req.flash('danger', 'Failed to recover stage')
         }
         return res.redirect('/admin')
     } catch (error) {
         console.error(`Error recovering stage: ${error.message}`)
-        req.session.messages = ['An error occurred while recovering the stage']
+        req.flash('danger', 'An error occurred while recovering the stage')
         return res.status(500).redirect('/admin')
     }
 }
@@ -124,14 +124,14 @@ export const recoverPayment = async (req, res) => {
         const { id } = req.params
         const success = await recoverPaymentById(id)
         if (success) {
-            req.session.messages = ['Payment recovered successfully']
+            req.flash('success', 'Payment recovered successfully')
         } else {
-            req.session.messages = ['Failed to recover payment']
+            req.flash('danger', 'Failed to recover payment')
         }
         return res.redirect('/admin')
     } catch (error) {
         console.error(`Error recovering payment: ${error.message}`)
-        req.session.messages = ['An error occurred while recovering the payment']
+        req.flash('danger', 'An error occurred while recovering the payment')
         return res.status(500).redirect('/admin')
     }
 }

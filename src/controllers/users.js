@@ -13,7 +13,7 @@ export const create = async (req, res) => {
         // Authorization: only admin users can access
         const requester = req.user
         if (!requester || requester.role !== 'admin') {
-            req.session.messages = ['Unauthorized']
+            req.flash('danger', 'Unauthorized')
             return res.status(403).redirect('/')
         }
 
@@ -76,7 +76,7 @@ export const edit = async (req, res) => {
         // Authorization: only admin users can access
         const requester = req.user
         if (!requester || requester.role !== 'admin') {
-            req.session.messages = ['Unauthorized']
+            req.flash('danger', 'Unauthorized')
             return res.status(403).redirect('/')
         }
 
@@ -147,7 +147,7 @@ export const edit = async (req, res) => {
         }
 
         // Redirect back to admin users list
-        req.session.messages = ['User updated']
+        req.flash('success', 'User updated')
         return res.redirect('/admin')
     } catch (error) {
         console.error(error)
