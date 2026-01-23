@@ -6,6 +6,7 @@
         enctype="multipart/form-data"
     <% } %>
 >
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
     <% fields.map(field => { %>
     <div class="field-wrapper mb-4">
         <label class="label" for="<%= field.name %>">

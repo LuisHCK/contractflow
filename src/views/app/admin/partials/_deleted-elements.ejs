@@ -54,6 +54,7 @@
                                     </td>
                                     <td>
                                         <form method="POST" action="/admin/recover-project/<%= project.id %>" style="display:inline">
+                                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                                             <button class="button is-small is-success" type="submit">
                                                 <span class="icon is-small"><i class="fas fa-undo"></i></span>
                                                 <span>Recover</span>
@@ -118,6 +119,7 @@
                                     </td>
                                     <td>
                                         <form method="POST" action="/admin/recover-stage/<%= stage.id %>" style="display:inline">
+                                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                                             <button class="button is-small is-success" type="submit">
                                                 <span class="icon is-small"><i class="fas fa-undo"></i></span>
                                                 <span>Recover</span>
@@ -192,6 +194,7 @@
                                     </td>
                                     <td>
                                         <form method="POST" action="/admin/recover-payment/<%= payment.id %>" style="display:inline">
+                                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                                             <button class="button is-small is-success" type="submit">
                                                 <span class="icon is-small"><i class="fas fa-undo"></i></span>
                                                 <span>Recover</span>

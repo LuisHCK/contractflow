@@ -64,6 +64,7 @@
                 <div class="buttons">
                     <% if (locals.user) { %>
                     <form action="/logout" method="post">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                         <button class="button is-seconary is-small" type="submit">
                             <strong><%= __('nav_logout') %></strong>
                         </button>

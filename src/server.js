@@ -6,12 +6,14 @@ import path from 'path'
 import cookieParser from 'cookie-parser'
 import helmet from 'helmet'
 import i18n from 'i18n'
+import csrf from '@dr.pogodin/csurf'
 import privateRouter from './routes/private'
 import publicRouter from './routes/public'
 import { init as dbInit } from './database'
 import { formatToCurrency } from './utils/money'
 import { setUser } from './middlewares/jwt'
 import { flash } from './middlewares/flash'
+import { globalLimiter } from './middlewares/rate-limit'
 
 const app = express()
 const localesDirectory = path.join(process.cwd(), 'locales')
@@ -44,6 +46,8 @@ dbInit()
 
 // Basic security hardening
 app.disable('x-powered-by')
+// Trust proxy (required for rate limiting behind proxies)
+app.set('trust proxy', 1)
 
 // Initialize EJS template engine
 app.set('view engine', 'ejs')
@@ -57,10 +61,21 @@ app.use(
         referrerPolicy: { policy: 'strict-origin-when-cross-origin' }
     })
 )
-app.use(cors())
+app.use(globalLimiter)
+app.use(
+    cors({
+        origin: process.env.ALLOWED_ORIGINS?.split(',') || 'http://localhost:3000',
+        optionsSuccessStatus: 200
+    })
+)
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser())
+app.use(csrf({ cookie: true }))
+app.use((req, res, next) => {
+    res.locals.csrfToken = req.csrfToken()
+    next()
+})
 
 i18n.configure({
     locales: ['en', 'es'],
@@ -105,7 +120,17 @@ app.use(privateRouter)
 
 // Handle 404 errors
 app.use((_req, res, _next) => {
-    res.render('generic/404', { title: '404 - Not Found' })
+    res.status(404).render('generic/404', { title: '404 - Not Found' })
+})
+
+// Global Error Handler
+app.use((err, req, res, next) => {
+    if (err.code === 'EBADCSRFTOKEN') {
+        return res.status(403).send('Invalid CSRF Token')
+    }
+
+    console.error(err)
+    res.status(500).send('Internal Server Error')
 })
 
 const port = process.env.PORT || 3000

@@ -36,6 +36,7 @@
                 <% } %>
 
                 <form action="/settings" method="post" class="form">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                     <% groups.forEach(group => { %>
                         <div class="box mb-5">
                             <h2 class="title is-4 mb-2"><%= group.title %></h2>
