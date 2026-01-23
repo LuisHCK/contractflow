@@ -107,6 +107,10 @@ router.post('/admin/recover-project/:id', adminController.recoverProject)
 router.post('/admin/recover-stage/:id', adminController.recoverStage)
 router.post('/admin/recover-payment/:id', adminController.recoverPayment)
 
+// ADMIN DATA EXPORT/IMPORT
+router.get('/admin/export', adminController.exportData)
+router.post('/admin/import', uploadFileMiddleware.fields([{ name: 'data', maxCount: 1 }]), adminController.importData)
+
 /**
  * USERS (admin)
  */
