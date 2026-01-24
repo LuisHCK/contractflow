@@ -103,7 +103,8 @@ export const exportData = async (req, res) => {
 
         res.setHeader('Content-Disposition', 'attachment; filename="export.json"')
         res.setHeader('Content-Type', 'application/json')
-        res.status(200).send(JSON.stringify(exportObj, null, 2))
+        const exportData = JSONSerializer(exportObj)
+        res.status(200).send(JSON.stringify(exportData, null, 2))
     } catch (error) {
         console.error('Export error:', error)
         res.status(500).send('Failed to export data')
@@ -116,6 +117,7 @@ import { USERS } from '@/database/queries'
 import { recoverStageById } from '@/services/stages'
 import { recoverPaymentById } from '@/services/payments'
 import { recoverProjectById } from '@/services/projects'
+import JSONSerializer from '@/utils/json-serializer'
 
 export const index = async (_req, res) => {
     try {
