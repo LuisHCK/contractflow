@@ -1,17 +1,29 @@
 import rateLimit from 'express-rate-limit'
 
-export const globalLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    limit: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
-    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-    message: 'Too many requests from this IP, please try again after 15 minutes'
-})
+const FIFTEEN_MINUTES_IN_MS = 15 * 60 * 1000
 
-export const authLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    limit: 5, // Limit each IP to 5 login requests per `window`
-    standardHeaders: true,
-    legacyHeaders: false,
-    message: 'Too many login attempts from this IP, please try again after 15 minutes'
-})
+const buildParkingHandler = windowMs => (req, res, _next, options) => {
+    const retryAfterMinutes = Math.max(1, Math.ceil(windowMs / 60000))
+    const limit = req.rateLimit?.limit ?? null
+    const translate = key => (typeof res.__ === 'function' ? res.__(key) : key)
+
+    res.status(options.statusCode).render('generic/rate-limit', {
+        title: translate('rate_limit_meta_title'),
+        retryAfterMinutes,
+        rateLimitLimit: limit,
+        rateLimitedPath: req.originalUrl
+    })
+}
+
+const createLimiter = ({ limit, windowMs = FIFTEEN_MINUTES_IN_MS }) =>
+    rateLimit({
+        windowMs,
+        limit,
+        standardHeaders: true,
+        legacyHeaders: false,
+        handler: buildParkingHandler(windowMs)
+    })
+
+export const globalLimiter = createLimiter({ limit: 100 })
+
+export const authLimiter = createLimiter({ limit: 5 })

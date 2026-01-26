@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="<%= locale || 'en' %>">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="robots" content="noindex" />
+        <title><%= title || __('rate_limit_meta_title') %></title>
+        <meta name="description" content="<%= __('site_description') %>" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
+        />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            :root {
+                color-scheme: dark;
+            }
+
+            body {
+                min-height: 100vh;
+                margin: 0;
+                font-family: 'Source Sans 3', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                background: radial-gradient(circle at 20% 20%, rgba(15, 118, 255, 0.35), transparent 45%),
+                    radial-gradient(circle at 80% 0%, rgba(240, 82, 173, 0.25), transparent 40%),
+                    linear-gradient(135deg, #0f172a, #0b1120 70%);
+                display: flex;
+                align-items: stretch;
+                color: #f8fafc;
+            }
+
+            .rate-limit-hero {
+                width: 100%;
+                background: transparent;
+            }
+
+            .rate-limit-surface {
+                background: rgba(15, 23, 42, 0.65);
+                border-radius: 32px;
+                padding: 3rem;
+                box-shadow: 0 25px 60px rgba(8, 15, 40, 0.45);
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                backdrop-filter: blur(18px);
+            }
+
+            .rate-limit-info {
+                background: rgba(15, 23, 42, 0.85);
+                border-radius: 24px;
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                padding: 2rem;
+                height: 100%;
+            }
+
+            .rate-limit-stat {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-top: 1.25rem;
+                padding-top: 1.25rem;
+                border-top: 1px solid rgba(255, 255, 255, 0.08);
+            }
+
+            .rate-limit-stat:first-of-type {
+                margin-top: 0;
+                padding-top: 0;
+                border-top: none;
+            }
+
+            .rate-limit-label {
+                font-size: 0.95rem;
+                color: rgba(248, 250, 252, 0.7);
+            }
+
+            .rate-limit-value {
+                font-size: 1.35rem;
+                font-weight: 600;
+            }
+
+            .rate-limit-path {
+                font-size: 0.95rem;
+                background: rgba(15, 23, 42, 0.95);
+                border-radius: 12px;
+                padding: 0.35rem 0.75rem;
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                display: inline-block;
+                margin-top: 0.35rem;
+                word-break: break-all;
+            }
+
+            .rate-limit-tag {
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+                font-weight: 600;
+                font-size: 0.75rem;
+            }
+
+            @media screen and (max-width: 768px) {
+                .rate-limit-surface {
+                    padding: 2rem;
+                }
+
+                .buttons .button {
+                    width: 100%;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <section class="hero is-fullheight rate-limit-hero">
+            <div class="hero-body">
+                <div class="container">
+                    <div class="rate-limit-surface">
+                        <div class="columns is-variable is-6 is-vcentered is-multiline">
+                            <div class="column is-12-mobile is-7-desktop">
+                                <span class="tag is-warning is-light rate-limit-tag"><%= __('rate_limit_badge') %></span>
+                                <h1 class="title has-text-white mt-4 mb-3">
+                                    <%= __('rate_limit_title') %>
+                                </h1>
+                                <p class="subtitle has-text-white-bis is-size-5">
+                                    <%= __('rate_limit_subtitle') %>
+                                </p>
+                                <p class="has-text-white-bis mt-5">
+                                    <%= __('rate_limit_wait_time', retryAfterMinutes) %>
+                                </p>
+                                <p class="has-text-white-ter is-size-6 mt-3">
+                                    <%= __('rate_limit_support_note') %>
+                                </p>
+                                <div class="buttons mt-5">
+                                    <button class="button is-primary is-medium" onclick="window.location.reload()">
+                                        <%= __('rate_limit_actions_retry') %>
+                                    </button>
+                                    <button class="button is-light is-medium" onclick="window.history.back()">
+                                        <%= __('rate_limit_actions_back') %>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="column is-12-mobile is-5-desktop">
+                                <div class="rate-limit-info">
+                                    <p class="title is-4 has-text-white">
+                                        <%= __('rate_limit_card_title') %>
+                                    </p>
+                                    <p class="has-text-white-ter">
+                                        <%= __('rate_limit_card_description') %>
+                                    </p>
+                                    <% if (rateLimitLimit) { %>
+                                        <div class="rate-limit-stat">
+                                            <span class="rate-limit-label">
+                                                <%= __('rate_limit_card_limit_label') %>
+                                            </span>
+                                            <span class="rate-limit-value"><%= rateLimitLimit %></span>
+                                        </div>
+                                    <% } %>
+                                    <div class="rate-limit-stat">
+                                        <span class="rate-limit-label">
+                                            <%= __('rate_limit_card_window_label') %>
+                                        </span>
+                                        <span class="rate-limit-value"><%= retryAfterMinutes %> min</span>
+                                    </div>
+                                    <% if (rateLimitedPath) { %>
+                                        <div class="rate-limit-stat">
+                                            <span class="rate-limit-label">
+                                                <%= __('rate_limit_card_path_label') %>
+                                            </span>
+                                            <span class="rate-limit-path"><%= rateLimitedPath %></span>
+                                        </div>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </body>
+</html>

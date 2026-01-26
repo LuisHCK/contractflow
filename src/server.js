@@ -61,21 +61,7 @@ app.use(
         referrerPolicy: { policy: 'strict-origin-when-cross-origin' }
     })
 )
-app.use(globalLimiter)
-app.use(
-    cors({
-        origin: process.env.ALLOWED_ORIGINS?.split(',') || 'http://localhost:3000',
-        optionsSuccessStatus: 200
-    })
-)
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser())
-app.use(csrf({ cookie: true }))
-app.use((req, res, next) => {
-    res.locals.csrfToken = req.csrfToken()
-    next()
-})
 
 i18n.configure({
     locales: ['en', 'es'],
@@ -90,6 +76,21 @@ app.use(i18n.init)
 app.use((req, res, next) => {
     res.locals.__ = res.__
     res.locals.locale = req.getLocale()
+    next()
+})
+
+app.use(globalLimiter)
+app.use(
+    cors({
+        origin: process.env.ALLOWED_ORIGINS?.split(',') || 'http://localhost:3000',
+        optionsSuccessStatus: 200
+    })
+)
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(csrf({ cookie: true }))
+app.use((req, res, next) => {
+    res.locals.csrfToken = req.csrfToken()
     next()
 })
 

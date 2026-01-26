@@ -247,5 +247,18 @@
         "footer_contact": "Contact",
         "footer_copyright": "© 2026 ContractorPay. All rights reserved.",
         "users_edit_password_placeholder": "Leave blank to keep current password",
-        "user_create_role_placeholder": "Select a role"
+        "user_create_role_placeholder": "Select a role",
+        "rate_limit_meta_title": "You're on a short break",
+        "rate_limit_badge": "Traffic pause",
+        "rate_limit_title": "We hit the pause button",
+        "rate_limit_subtitle": "Too many requests reached ContractorPay from your browser, so we slowed things down to keep everything safe.",
+        "rate_limit_wait_time": "Please wait about %s minutes and then refresh.",
+        "rate_limit_support_note": "If you think this is a mistake, share this screen with your workspace admin.",
+        "rate_limit_actions_retry": "Refresh now",
+        "rate_limit_actions_back": "Go back",
+        "rate_limit_card_title": "What happened?",
+        "rate_limit_card_description": "Our safety systems limit how many requests can run inside a short window.",
+        "rate_limit_card_limit_label": "Request limit",
+        "rate_limit_card_window_label": "Time window",
+        "rate_limit_card_path_label": "Last request"
     }

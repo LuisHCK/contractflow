@@ -244,5 +244,18 @@
     "footer_contact": "Contacto",
     "footer_copyright": "© 2026 ContractorPay. Todos los derechos reservados.",
     "users_edit_password_placeholder": "Dejar en blanco para mantener la contraseña actual",
-    "user_create_role_placeholder": "Selecciona un rol"
+    "user_create_role_placeholder": "Selecciona un rol",
+    "rate_limit_meta_title": "Estamos tomando una breve pausa",
+    "rate_limit_badge": "Tráfico pausado",
+    "rate_limit_title": "Hicimos una pausa rápida",
+    "rate_limit_subtitle": "Recibimos demasiadas solicitudes desde tu navegador, así que bajamos el ritmo para mantener todo seguro.",
+    "rate_limit_wait_time": "Espera unos %s minutos y vuelve a actualizar.",
+    "rate_limit_support_note": "Si crees que es un error, comparte esta pantalla con tu administrador.",
+    "rate_limit_actions_retry": "Actualizar ahora",
+    "rate_limit_actions_back": "Volver",
+    "rate_limit_card_title": "¿Qué ocurrió?",
+    "rate_limit_card_description": "Nuestros sistemas limitan cuántas solicitudes pueden ejecutarse en una ventana corta.",
+    "rate_limit_card_limit_label": "Límite de solicitudes",
+    "rate_limit_card_window_label": "Ventana de tiempo",
+    "rate_limit_card_path_label": "Última ruta"
 }
