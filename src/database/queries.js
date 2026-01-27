@@ -93,8 +93,8 @@ export const PROJECTS = {
         SET name = $1,
             description = $2,
             start_date = $3,
-            status = $4,
-            end_date = $5,
+            end_date = $4,
+            status = $5,
             updated_at = CURRENT_TIMESTAMP
         WHERE id = $6;
     `,
@@ -181,7 +181,7 @@ export const STAGES = {
         JOIN projects p ON s.project_id = p.id
         LEFT JOIN payments py ON s.id = py.stage_id AND py.deleted = false
         WHERE s.id = $1 AND s.deleted = false
-        GROUP BY s.id;`
+        GROUP BY s.id, p.id, p.name, p.status, p.description;`
 }
 
 export const PAYMENTS = {

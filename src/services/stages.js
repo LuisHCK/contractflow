@@ -1,3 +1,10 @@
+import { database } from '@/database'
+import { STAGES } from '@/database/queries'
+import { formatToCurrency } from '@/utils/money'
+import { format } from 'date-fns'
+import { DATE_FORMAT } from '@/config/constants'
+import { formatToISOString } from '@/utils/date'
+
 /**
  * Recover a soft-deleted stage by setting its deleted flag to 0.
  * @param {number|string} stageId - The unique identifier of the stage.
@@ -14,12 +21,6 @@ export const recoverStageById = async (stageId) => {
         return false
     }
 }
-import { database } from '@/database'
-import { STAGES } from '@/database/queries'
-import { formatToCurrency } from '@/utils/money'
-import { format } from 'date-fns'
-import { DATE_FORMAT } from '@/config/constants'
-import { formatToISOString } from '@/utils/date'
 
 export class Stage {
     constructor(stage) {
