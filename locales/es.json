@@ -234,6 +234,7 @@
     "admin_deleted_payments": "Pagos eliminados",
     "admin_deleted_payments_no_data": "No hay pagos eliminados",
     "deleted_at": "Eliminado el",
+    "admin_deleted_recover": "Recuperar",
     "admin_users_manage": "Gestionar",
     "users_create_title": "Crear usuario",
     "users_create_error": "No se pudo crear el usuario",

@@ -237,6 +237,7 @@
         "admin_deleted_payments": "Deleted Payments",
         "admin_deleted_payments_no_data": "No deleted payments",
         "deleted_at": "Deleted At",
+        "admin_deleted_recover": "Recover",
         "admin_users_manage": "Manage",
         "users_create_title": "Create user",
         "users_create_error": "Failed to create user",
