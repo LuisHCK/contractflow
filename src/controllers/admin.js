@@ -15,8 +15,9 @@ export const importData = async (req, res) => {
         }
 
         const filePath = req.files.data[0].path
-        const fileObj = 
-        await Bun.file(filePath).json()
+        const importObj = await Bun.file(filePath).json()
+
+        console.log(importObj)
 
         // Insert Contractors
         const contractorIdMap = {}
@@ -31,8 +32,15 @@ export const importData = async (req, res) => {
         const paymentCategoryIdMap = {}
         for (const cat of importObj.paymentCategories || []) {
             const { id, ...fields } = cat
-            const result = database.query('INSERT INTO payment_categories (name, description) VALUES (:name, :description)').run(fields)
-            paymentCategoryIdMap[id] = result.lastInsertRowid
+
+            const existingCategory = database.query('SELECT id FROM payment_categories WHERE name = :name').get({ name: fields.name })
+
+            if (existingCategory) {
+                paymentCategoryIdMap[id] = existingCategory.id
+            } else {
+                const result = database.query('INSERT INTO payment_categories (name, description) VALUES (:name, :description)').run(fields)
+                paymentCategoryIdMap[id] = result.lastInsertRowid
+            }
         }
 
         // Insert Projects
