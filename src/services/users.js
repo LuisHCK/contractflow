@@ -36,8 +36,8 @@ export const hashPassword = async (password) => {
  */
 export const getUserByEmail = async (email) => {
     try {
-        const query = database.query(USERS.FIND_BY_EMAIL)
-        const user = query.get({ email })
+        const rows = await database.unsafe(USERS.FIND_BY_EMAIL, [email])
+        const user = rows?.[0]
 
         if (!user) {
             console.log(`User with email ${email} not found`)
@@ -62,8 +62,8 @@ export const getUserByEmail = async (email) => {
  */
 export const getUserById = async (id) => {
     try {
-        const query = database.query(USERS.GET)
-        const user = query.get({ id })
+        const rows = await database.unsafe(USERS.GET, [id])
+        const user = rows?.[0]
 
         if (!user) {
             console.log(`User with id ${id} not found`)
@@ -92,8 +92,8 @@ export const getUserById = async (id) => {
 export const seedAdminUser = async () => {
     try {
         // Check if theres no users in the database
-        const countQuery = database.query(USERS.COUNT)
-        const { count } = countQuery.get()
+        const countRows = await database.unsafe(USERS.COUNT)
+        const { count } = countRows?.[0] || { count: 0 }
 
         if (count > 0) {
             console.log('Database already seeded with admin user')
@@ -107,17 +107,15 @@ export const seedAdminUser = async () => {
 
         console.info('Seeding admin user...')
 
-        const query = database.query(USERS.ADD)
+        const rows = await database.unsafe(USERS.ADD, [
+            await hashPassword(ADMIN_PASSWORD),
+            ADMIN_EMAIL,
+            'admin',
+            true,
+            'admin'
+        ])
 
-        const user = query.run({
-            name: 'admin',
-            email: ADMIN_EMAIL,
-            password: await hashPassword(ADMIN_PASSWORD),
-            role: 'admin',
-            active: 1
-        })
-
-        if (!user) {
+        if (!rows || rows.length === 0) {
             console.warn('Admin user already exists')
         }
 

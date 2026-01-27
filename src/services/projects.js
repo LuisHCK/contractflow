@@ -1,6 +1,7 @@
 import { database } from '@/database'
 import { Project } from '@/database/models'
 import { PROJECTS } from '@/database/queries'
+import { formatToISOString } from '@/utils/date'
 
 /**
  * Get all existing projects
@@ -8,8 +9,7 @@ import { PROJECTS } from '@/database/queries'
  */
 export const getAllProjects = async () => {
     try {
-        const query = database.query(PROJECTS.GET_ALL)
-        const projects = query.all()
+        const projects = await database.unsafe(PROJECTS.GET_ALL)
         return projects.map((project) => new Project(project))
     } catch (error) {
         console.error(`Error fetching projects: ${error.message}`)
@@ -24,8 +24,8 @@ export const getAllProjects = async () => {
  */
 export const getProjectById = async (id) => {
     try {
-        const query = database.query(PROJECTS.GET)
-        const project = query.get({ id })
+        const rows = await database.unsafe(PROJECTS.GET, [id])
+        const project = rows?.[0]
         return new Project(project)
     } catch (error) {
         console.error(`Error fetching project: ${error.message}`)
@@ -40,18 +40,23 @@ export const getProjectById = async (id) => {
  */
 export const createProject = async (project = {}) => {
     try {
-        const query = database.query(PROJECTS.ADD)
-
-        const { lastInsertRowid } = query.run(project)
-
-        console.log(`Project created with id ${lastInsertRowid}`)
-
-        return { ...project, id: lastInsertRowid }
+        const rows = await database.unsafe(PROJECTS.ADD, [
+            project.name,
+            project.description,
+            formatToISOString(project.startDate),
+            formatToISOString(project.endDate),
+            project.status,
+            project.createdBy
+        ])
+        const id = rows?.[0]?.id
+        console.log(`Project created with id ${id}`)
+        return { ...project, id }
     } catch (error) {
         console.error(`Error creating project!: ${error}`)
         return null
     }
 }
+
 /**
  * Update project
  * @param {number} id Project id
@@ -60,11 +65,14 @@ export const createProject = async (project = {}) => {
  */
 export const updateProject = async (id, project = {}) => {
     try {
-        const query = database.query(PROJECTS.UPDATE)
-        query.run({
-            id,
-            ...project
-        })
+        await database.unsafe(PROJECTS.UPDATE, [
+            project.name,
+            project.description,
+            formatToISOString(project.startDate),
+            formatToISOString(project.endDate),
+            project.status,
+            id
+        ])
         return new Project({ ...project, id })
     } catch (error) {
         console.error(`Error updating project: ${error.message}`)
@@ -79,9 +87,10 @@ export const updateProject = async (id, project = {}) => {
  */
 export const deleteProjectById = async (id) => {
     try {
-        const query = database.query(PROJECTS.SOFT_DELETE)
-        const result = query.run({ id })
-        return result.changes > 0
+        const project = await getProjectById(id)
+        if (!project) return false
+        await database.unsafe(PROJECTS.SOFT_DELETE, [id])
+        return true
     } catch (error) {
         console.error(`Error soft deleting project: ${error.message}`)
         return false
@@ -95,9 +104,10 @@ export const deleteProjectById = async (id) => {
  */
 export const recoverProjectById = async (id) => {
     try {
-        const query = database.query(PROJECTS.RECOVER)
-        const result = query.run({ id })
-        return result.changes > 0
+        const project = await getProjectById(id)
+        if (!project) return false
+        await database.unsafe(PROJECTS.RECOVER, [id])
+        return true
     } catch (error) {
         console.error(`Error recovering project: ${error.message}`)
         return false

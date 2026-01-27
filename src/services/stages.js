@@ -5,9 +5,10 @@
  */
 export const recoverStageById = async (stageId) => {
     try {
-        const query = database.query(STAGES.RECOVER)
-        const result = query.run({ id: stageId })
-        return result.changes > 0
+        const existing = await getStageById(stageId)
+        if (!existing?.id) return false
+        await database.unsafe(STAGES.RECOVER, [stageId])
+        return true
     } catch (error) {
         console.error(`Error recovering stage: ${error.message}`)
         return false
@@ -18,6 +19,7 @@ import { STAGES } from '@/database/queries'
 import { formatToCurrency } from '@/utils/money'
 import { format } from 'date-fns'
 import { DATE_FORMAT } from '@/config/constants'
+import { formatToISOString } from '@/utils/date'
 
 export class Stage {
     constructor(stage) {
@@ -62,8 +64,8 @@ const formatDateValue = (value) => {
  */
 export const getStageById = async (id) => {
     try {
-        const query = database.query(STAGES.GET)
-        const stage = query.get({ id })
+        const rows = await database.unsafe(STAGES.GET, [id])
+        const stage = rows?.[0]
         return new Stage(stage)
     } catch (error) {
         console.error(`Error fetching stage by id: ${error.message}`)
@@ -79,10 +81,7 @@ export const getStageById = async (id) => {
  */
 export const getStagesByProject = async (projectId) => {
     try {
-        const query = database.query(STAGES.GET_ALL)
-        const stages = query.all({
-            projectId
-        })
+        const stages = await database.unsafe(STAGES.GET_ALL, [projectId])
         return stages.map((stage) => new Stage(stage))
     } catch (error) {
         console.error(`Error fetching stages by project: ${error.message}`)
@@ -97,17 +96,19 @@ export const getStagesByProject = async (projectId) => {
  */
 export const createStage = async (stage) => {
     try {
-        const query = database.query(STAGES.ADD)
-        const { lastInsertRowid } = query.run({ ...stage })
-
-        if (!lastInsertRowid) {
-            return null
-        }
-
-        return new Stage({
-            id: lastInsertRowid,
-            ...stage
-        })
+        const rows = await database.unsafe(STAGES.ADD, [
+            stage.projectId,
+            stage.name,
+            stage.estimatedCost,
+            stage.createdBy,
+            formatToISOString(stage.startDate),
+            formatToISOString(stage.endDate),
+            stage.description,
+            stage.contractorId
+        ])
+        const id = rows?.[0]?.id
+        if (!id) return null
+        return new Stage({ id, ...stage })
     } catch (error) {
         console.error(`Error creating stage: ${error.message}`)
         return null
@@ -122,14 +123,17 @@ export const createStage = async (stage) => {
  */
 export const updateStage = async (id, stage) => {
     try {
-        const query = database.query(STAGES.UPDATE)
-        const { changes } = query.run({ id, ...stage })
-
-        if (changes) {
-            return getStageById(id)
-        }
-
-        return null
+        const rows = await database.unsafe(STAGES.UPDATE, [
+            stage.name,
+            stage.estimatedCost,
+            formatToISOString(stage.startDate),
+            formatToISOString(stage.endDate),
+            stage.description,
+            stage.contractorId,
+            id
+        ])
+        if (!rows || rows.length === 0) return null
+        return getStageById(id)
     } catch (error) {
         console.error(`Error updating stage: ${error.message}`)
         return null
@@ -148,9 +152,8 @@ export const updateStage = async (id, stage) => {
  */
 export const getProjectId = async (stageId) => {
     try {
-        const query = database.query(STAGES.GET_PROJECT_ID)
-        const { projectId } = query.get({ stageId })
-        return projectId
+        const rows = await database.unsafe(STAGES.GET_PROJECT_ID, [stageId])
+        return rows?.[0]?.project_id || rows?.[0]?.projectId || null
     } catch (error) {
         console.error(`Error fetching project ID: ${error.message}`)
         return null
@@ -164,9 +167,10 @@ export const getProjectId = async (stageId) => {
  */
 export const deleteStageById = async (stageId) => {
     try {
-        const query = database.query(STAGES.SOFT_DELETE)
-        const result = query.run({ id: stageId })
-        return result.changes > 0
+        const stage = await getStageById(stageId)
+        if (!stage?.id) return false
+        await database.unsafe(STAGES.SOFT_DELETE, [stageId])
+        return true
     } catch (error) {
         console.error(`Error soft deleting stage: ${error.message}`)
         return false
@@ -175,8 +179,8 @@ export const deleteStageById = async (stageId) => {
 
 export const getStageReportSummary = async (stageId) => {
     try {
-        const query = database.query(STAGES.REPORT_SUMMARY)
-        const summary = query.get({ stageId })
+        const rows = await database.unsafe(STAGES.REPORT_SUMMARY, [stageId])
+        const summary = rows?.[0]
 
         if (!summary) {
             return null

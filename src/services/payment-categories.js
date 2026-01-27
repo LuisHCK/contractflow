@@ -15,9 +15,8 @@ export class PaymentCategory {
  */
 export const getAll = async () => {
     try {
-        const query = database.query(PAYMENT_CATEGORIES.GET_ALL).as(PaymentCategory)
-        const categories = query.all()
-        return categories
+        const rows = await database.unsafe(PAYMENT_CATEGORIES.GET_ALL)
+        return rows.map((row) => new PaymentCategory(row))
     } catch (error) {
         console.error(`Error fetching payment categories: ${error.message}`)
         return []
@@ -31,8 +30,8 @@ export const getAll = async () => {
  */
 export const getById = async (id) => {
     try {
-        const query = database.query(PAYMENT_CATEGORIES.GET)
-        const category = query.get({ id })
+        const rows = await database.unsafe(PAYMENT_CATEGORIES.GET, [id])
+        const category = rows?.[0]
         return category ? new PaymentCategory(category) : null
     } catch (error) {
         console.error(`Error fetching payment category: ${error.message}`)
@@ -47,9 +46,13 @@ export const getById = async (id) => {
  */
 export const create = async (category = {}) => {
     try {
-        const query = database.query(PAYMENT_CATEGORIES.ADD)
-        const { lastInsertRowid } = query.run({ ...category })
-        return new PaymentCategory({ ...category, id: lastInsertRowid })
+        const rows = await database.unsafe(PAYMENT_CATEGORIES.ADD, [
+            category.name,
+            category.description
+        ])
+        const id = rows?.[0]?.id
+        if (!id) return null
+        return new PaymentCategory({ ...category, id })
     } catch (error) {
         console.error(`Error creating payment category: ${error.message}`)
         return null
@@ -58,9 +61,13 @@ export const create = async (category = {}) => {
 
 export const createOrUpdate = async (category = {}) => {
     try {
-        const query = database.query(PAYMENT_CATEGORIES.ADD_OR_UPDATE)
-        const { lastInsertRowid } = query.run({ ...category })
-        return new PaymentCategory({ ...category, id: lastInsertRowid })
+        await database.unsafe(PAYMENT_CATEGORIES.ADD_OR_UPDATE, [
+            category.name,
+            category.description
+        ])
+        const rows = await database.unsafe('SELECT id, name, description FROM payment_categories WHERE name = $1', [category.name])
+        const found = rows?.[0]
+        return found ? new PaymentCategory(found) : null
     } catch (error) {
         console.error(`Error creating or updating payment category: ${error.message}`)
         return null
@@ -75,8 +82,11 @@ export const createOrUpdate = async (category = {}) => {
  */
 export const update = async (id, category = {}) => {
     try {
-        const query = database.query(PAYMENT_CATEGORIES.UPDATE)
-        query.run({ id, ...category })
+        await database.unsafe(PAYMENT_CATEGORIES.UPDATE, [
+            category.name,
+            category.description,
+            id
+        ])
         return new PaymentCategory({ ...category, id })
     } catch (error) {
         console.error(`Error updating payment category: ${error.message}`)

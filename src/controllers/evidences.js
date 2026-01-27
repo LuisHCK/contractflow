@@ -64,7 +64,7 @@ export const create = async (req, res) => {
             type,
             description,
             filePath: req.file.path,
-            createdBy: 1 // Replace with actual user ID
+            createdBy: req.user.id
         })
 
         const projectId = await getPaymentProject(paymentId)

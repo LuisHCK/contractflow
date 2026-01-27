@@ -9,8 +9,8 @@ import { Setting } from '@/database/models'
  */
 export const getSettingByKey = async (key) => {
     try {
-        const query = database.query(SETTINGS.GET)
-        const row = query.get({ key })
+        const rows = await database.unsafe(SETTINGS.GET, [key])
+        const row = rows?.[0]
         return row ? new Setting(row) : null
     } catch (error) {
         console.error(`Error fetching setting by key: ${error.message}`)
@@ -28,8 +28,7 @@ export const getAllSettings = async (options = {}) => {
 
     try {
         const sql = activeOnly ? SETTINGS.GET_ALL_ACTIVE : SETTINGS.GET_ALL
-        const query = database.query(sql)
-        const rows = query.all()
+        const rows = await database.unsafe(sql)
         return rows.map((row) => new Setting(row))
     } catch (error) {
         console.error(`Error fetching settings: ${error.message}`)
@@ -51,14 +50,13 @@ export const setSetting = async (payload) => {
     }
 
     try {
-        const query = database.query(SETTINGS.ADD_OR_UPDATE)
-        query.run({
+        await database.unsafe(SETTINGS.ADD_OR_UPDATE, [
             key,
             value,
             details,
-            active: active ? 1 : 0,
-            createdBy: userId ?? null
-        })
+            Boolean(active),
+            userId ?? null
+        ])
         return true
     } catch (error) {
         console.error(`Error setting setting value: ${error.message}`)
@@ -76,13 +74,12 @@ export const updateSettingById = async (id, changes = {}) => {
     const { value = null, details = '', active = true } = changes
 
     try {
-        const query = database.query(SETTINGS.UPDATE)
-        query.run({
-            id,
+        await database.unsafe(SETTINGS.UPDATE, [
             value,
             details,
-            active: active ? 1 : 0
-        })
+            Boolean(active),
+            id
+        ])
 
         const updated = await getSettingById(id)
         return updated
@@ -99,8 +96,8 @@ export const updateSettingById = async (id, changes = {}) => {
  */
 export const getSettingById = async (id) => {
     try {
-        const query = database.query(`${SETTINGS.GET_ALL} WHERE id = :id`)
-        const row = query.get({ id })
+        const rows = await database.unsafe('SELECT * FROM settings WHERE id = $1', [id])
+        const row = rows?.[0]
         return row ? new Setting(row) : null
     } catch (error) {
         console.error(`Error fetching setting by id: ${error.message}`)

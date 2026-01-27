@@ -119,13 +119,14 @@ export const update = async (req, res) => {
         if (!existingContractor) {
             return res.status(404).json({ error: 'Contractor not found' })
         }
-        // Update the contractor in the database
-        const query = database.query(CONTRACTORS.UPDATE)
-        const { changes } = query.run({ ...existingContractor, id, name, email, phone, address })
-
-        if (changes === 0) {
-            return res.status(404).json({ error: 'Contractor not found' })
-        }
+        // Update the contractor in the database (Postgres)
+        await database.unsafe(CONTRACTORS.UPDATE, [
+            name,
+            email,
+            phone,
+            address,
+            id
+        ])
 
         res.status(200).json({ id, name, email, phone, address })
     } catch (error) {
@@ -138,11 +139,11 @@ export const update = async (req, res) => {
 export const remove = async (req, res) => {
     const { id } = req.params
     try {
-        const query = database.query(CONTRACTORS.DELETE)
-        const { changes } = query.run({ id })
-        if (changes === 0) {
+        const existing = await contractorService.getById(id)
+        if (!existing) {
             return res.status(404).json({ error: 'Contractor not found' })
         }
+        await database.unsafe(CONTRACTORS.DELETE, [id])
         res.status(200).json({ message: 'Contractor deleted successfully' })
     } catch (error) {
         console.error(`Error deleting contractor: ${error.message}`)

@@ -3,9 +3,8 @@ import { CONTRACTORS } from '@/database/queries'
 
 export const getAll = async () => {
     try {
-        const query = database.query(CONTRACTORS.GET_ALL)
-        const contractors = query.all()
-        return contractors
+        const rows = await database.unsafe(CONTRACTORS.GET_ALL)
+        return rows
     } catch (error) {
         console.error(`Error fetching contractors: ${error.message}`)
         return []
@@ -14,9 +13,8 @@ export const getAll = async () => {
 
 export const getById = async (id) => {
     try {
-        const query = database.query(CONTRACTORS.GET)
-        const contractor = query.get({ id })
-        return contractor
+        const rows = await database.unsafe(CONTRACTORS.GET, [id])
+        return rows?.[0] || null
     } catch (error) {
         console.error(`Error fetching contractor: ${error.message}`)
         return null
@@ -25,9 +23,15 @@ export const getById = async (id) => {
 
 export const create = async (contractor) => {
     try {
-        const query = database.query(CONTRACTORS.ADD)
-        const { lastInsertRowid } = query.run(contractor)
-        return { ...contractor, id: lastInsertRowid }
+        const rows = await database.unsafe(CONTRACTORS.ADD, [
+            contractor.name,
+            contractor.email,
+            contractor.phone,
+            contractor.address
+        ])
+        const id = rows?.[0]?.id
+        if (!id) return null
+        return { ...contractor, id }
     } catch (error) {
         console.error(`Error creating contractor: ${error.message}`)
         return null
@@ -36,8 +40,13 @@ export const create = async (contractor) => {
 
 export const update = async (id, contractor) => {
     try {
-        const query = database.query(CONTRACTORS.UPDATE)
-        query.run({ ...contractor, id })
+        await database.unsafe(CONTRACTORS.UPDATE, [
+            contractor.name,
+            contractor.email,
+            contractor.phone,
+            contractor.address,
+            id
+        ])
         return { ...contractor, id }
     } catch (error) {
         console.error(`Error updating contractor: ${error.message}`)
@@ -47,9 +56,8 @@ export const update = async (id, contractor) => {
 
 export const getProjects = async (id) => {
     try {
-        const query = database.query(CONTRACTORS.PROJECTS)
-        const projects = query.all({ id })
-        return projects
+        const rows = await database.unsafe(CONTRACTORS.PROJECTS, [id])
+        return rows
     } catch (error) {
         console.error(`Error fetching contractor projects: ${error.message}`)
         return []

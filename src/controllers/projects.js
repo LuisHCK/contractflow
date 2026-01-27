@@ -21,7 +21,7 @@ export const create = async (req, res) => {
     if (req.method === 'POST') {
         const { body } = req
 
-        const project = await createProject({ ...body, createdBy: 1 })
+        const project = await createProject({ ...body, createdBy: req.user.id })
 
         if (!project?.id) {
             return res.redirect('/projects/create?error=true')

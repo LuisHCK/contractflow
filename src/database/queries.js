@@ -3,37 +3,40 @@ export const USERS = {
         SELECT * FROM users;`,
 
     GET: `
-        SELECT * FROM users WHERE id = :id;`,
+        SELECT * FROM users WHERE id = $1;`,
 
     ADD: `
         INSERT INTO users (
             password, email, role, active, name, updated_at
         )
         VALUES (
-            :password, :email, :role, :active, :name, CURRENT_TIMESTAMP
-        );`,
+            $1, $2, $3, $4, $5, CURRENT_TIMESTAMP
+        )
+        RETURNING id;`,
 
     COUNT: `
         SELECT COUNT(*) AS count FROM users;`,
 
     UPDATE: `
         UPDATE users
-        SET password = :password,
-            email = :email,
-            role = :role,
-            name = :name,
-            active = :active,
+        SET password = $1,
+            email = $2,
+            role = $3,
+            name = $4,
+            active = $5,
             updated_at = CURRENT_TIMESTAMP
-        WHERE id = :id;`,
+        WHERE id = $6
+        RETURNING id;`,
 
     UPDATE_ROLE: `
         UPDATE users
-        SET role = :role,
+        SET role = $1,
             updated_at = CURRENT_TIMESTAMP
-        WHERE id = :id;`,
+        WHERE id = $2
+        RETURNING id;`,
 
     FIND_BY_EMAIL: `
-        SELECT * FROM users WHERE email = :email;`
+        SELECT * FROM users WHERE email = $1;`
 }
 
 export const PROJECTS = {
@@ -41,7 +44,7 @@ export const PROJECTS = {
         SELECT 
         p.*, 
         COALESCE(
-            SUM(DISTINCT s.estimated_cost), 
+            SUM(s.estimated_cost), 
             0
         ) AS total_estimated_cost, 
         COALESCE(
@@ -50,9 +53,9 @@ export const PROJECTS = {
         ) AS actual_cost 
         FROM 
         projects p 
-        LEFT JOIN stage s ON p.id = s.project_id AND s.deleted = 0
-        LEFT JOIN payments py ON p.id = s.project_id AND s.id = py.stage_id AND py.deleted = 0
-        WHERE p.deleted = 0
+        LEFT JOIN stage s ON p.id = s.project_id AND s.deleted = false
+        LEFT JOIN payments py ON s.id = py.stage_id AND py.deleted = false
+        WHERE p.deleted = false
         GROUP BY 
         p.id;`,
 
@@ -61,14 +64,15 @@ export const PROJECTS = {
             name, description, start_date, end_date, status, created_by
         ) 
         VALUES (
-            :name, :description, :startDate, :endDate, :status, :createdBy
-        );`,
+            $1, $2, $3, $4, $5, $6
+        )
+        RETURNING id;`,
 
     GET: `
         SELECT 
             p.*, 
         COALESCE(
-            SUM(DISTINCT s.estimated_cost), 
+            SUM(s.estimated_cost), 
             0
         ) AS total_estimated_cost, 
         COALESCE(
@@ -77,42 +81,46 @@ export const PROJECTS = {
         ) AS actual_cost 
         FROM 
             projects p 
-            LEFT JOIN stage s ON p.id = s.project_id AND s.deleted = 0
-            LEFT JOIN payments py ON p.id = s.project_id AND s.id = py.stage_id AND py.deleted = 0
+            LEFT JOIN stage s ON p.id = s.project_id AND s.deleted = false
+            LEFT JOIN payments py ON s.id = py.stage_id AND py.deleted = false
         WHERE 
-            p.id = :id AND p.deleted = 0
+            p.id = $1 AND p.deleted = false
         GROUP BY 
             p.id;`,
 
     UPDATE: `
         UPDATE projects
-        SET name = :name,
-            description = :description,
-            start_date = :startDate,
-            status = :status,
-            end_date = :endDate,
+        SET name = $1,
+            description = $2,
+            start_date = $3,
+            status = $4,
+            end_date = $5,
             updated_at = CURRENT_TIMESTAMP
-        WHERE id = :id;
+        WHERE id = $6;
     `,
 
     SOFT_DELETE: `
         UPDATE projects
-        SET deleted = 1
-        WHERE id = :id;`,
+        SET deleted = true
+        WHERE id = $1;`,
 
     RECOVER: `
         UPDATE projects
-        SET deleted = 0
-        WHERE id = :id;`
+        SET deleted = false
+        WHERE id = $1;`
 }
 
 export const STAGES = {
     GET_ALL: `
-        SELECT s.*, ROUND((100 * COALESCE(SUM(p.amount), 0)) / s.estimated_cost, 1) AS progress,
+        SELECT s.*, ROUND(
+            CASE WHEN s.estimated_cost = 0 THEN 0
+                 ELSE ((100.0 * COALESCE(SUM(p.amount), 0)) / s.estimated_cost)::numeric
+            END, 1
+        ) AS progress,
         COALESCE(SUM(p.amount), 0) AS total_payments
         FROM stage s 
-        LEFT JOIN payments p ON s.id = p.stage_id AND p.deleted = 0
-        WHERE s.project_id = :projectId AND s.deleted = 0
+        LEFT JOIN payments p ON s.id = p.stage_id AND p.deleted = false
+        WHERE s.project_id = $1 AND s.deleted = false
         GROUP BY s.id;`,
 
     ADD: `
@@ -120,31 +128,32 @@ export const STAGES = {
             project_id, name, estimated_cost, created_by, start_date, end_date, description, contractor_id
         ) 
         VALUES (
-            :projectId, :name, :estimatedCost, :createdBy, :startDate, :endDate, :description, :contractorId
-        );`,
-    GET: `SELECT * FROM stage WHERE id = :id AND deleted = 0;`,
+            $1, $2, $3, $4, $5, $6, $7, $8
+        )
+        RETURNING id;`,
+    GET: `SELECT * FROM stage WHERE id = $1 AND deleted = false;`,
 
     UPDATE: `
         UPDATE stage
-        SET name = :name,
-            estimated_cost = :estimatedCost
-        WHERE id = :id;`,
+        SET name = $1,
+            estimated_cost = $2
+        WHERE id = $3;`,
 
     GET_PROJECT_ID: `
         SELECT p.id AS project_id
         FROM stage s
         JOIN projects p ON s.project_id = p.id
-        WHERE s.id = :stageId AND s.deleted = 0;`,
+        WHERE s.id = $1 AND s.deleted = false;`,
 
     SOFT_DELETE: `
         UPDATE stage
-        SET deleted = 1
-        WHERE id = :id;`,
+        SET deleted = true
+        WHERE id = $1;`,
 
         RECOVER: `
             UPDATE stage
-            SET deleted = 0
-            WHERE id = :id;`,
+            SET deleted = false
+            WHERE id = $1;`,
 
     REPORT_SUMMARY: `
         SELECT 
@@ -163,15 +172,15 @@ export const STAGES = {
             ROUND(
                 CASE 
                     WHEN s.estimated_cost = 0 THEN 0
-                    ELSE (COALESCE(SUM(py.amount), 0) * 100.0) / s.estimated_cost
+                    ELSE ((COALESCE(SUM(py.amount), 0) * 100.0) / s.estimated_cost)::numeric
                 END,
                 1
             ) AS progress_percentage,
             (s.estimated_cost - COALESCE(SUM(py.amount), 0)) AS outstanding_balance
         FROM stage s
         JOIN projects p ON s.project_id = p.id
-        LEFT JOIN payments py ON s.id = py.stage_id AND py.deleted = 0
-        WHERE s.id = :stageId AND s.deleted = 0
+        LEFT JOIN payments py ON s.id = py.stage_id AND py.deleted = false
+        WHERE s.id = $1 AND s.deleted = false
         GROUP BY s.id;`
 }
 
@@ -181,49 +190,50 @@ export const PAYMENTS = {
             stage_id, amount, date, payer, payment_category_id, contractor_id, description, payment_method, created_by, balance, hide_totals_invoice
         ) 
         VALUES (
-            :stageId, :amount, :date, :payer, :paymentCategoryId, :contractorId, :description, :paymentMethod, :createdBy, :balance, :hideTotalsInvoice
-        );`,
+            $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11
+        )
+        RETURNING id;`,
 
     GET_ALL: `
-        SELECT * FROM payments WHERE stage_id = :stageId AND deleted = 0 ORDER BY id DESC;`,
+        SELECT * FROM payments WHERE stage_id = $1 AND deleted = false ORDER BY id DESC;`,
 
     GET_ALL_BY_PROJECT_ID: `
         SELECT * FROM payments p
         JOIN stage s ON p.stage_id = s.id
-        WHERE s.project_id = :projectId AND p.deleted = 0
-        ORDER BY date(date) ASC;`,
+        WHERE s.project_id = $1 AND p.deleted = false
+        ORDER BY date ASC;`,
 
     GET: `
-        SELECT * FROM payments WHERE id = :id AND deleted = 0;`,
+        SELECT * FROM payments WHERE id = $1 AND deleted = false;`,
 
     GET_PROJECT_ID: `
         SELECT p.id AS project_id
         FROM payments AS py
         INNER JOIN stage AS s ON py.stage_id = s.id
         INNER JOIN projects AS p ON s.project_id = p.id
-        WHERE py.id = :paymentId AND py.deleted = 0
+        WHERE py.id = $1 AND py.deleted = false
         LIMIT 1;`,
 
     GET_STAGE_ID: `
         SELECT s.id AS stage_id
         FROM payments py
         JOIN stage s ON py.stage_id = s.id
-        WHERE py.id = :paymentId AND py.deleted = 0;`,
+        WHERE py.id = $1 AND py.deleted = false;`,
 
     GET_TOTAL_PAYED_AMOUNT: `
         SELECT COALESCE(SUM(amount), 0) AS total_amount
         FROM payments
-        WHERE stage_id = :stageId AND deleted = 0;`,
+        WHERE stage_id = $1 AND deleted = false;`,
 
     SOFT_DELETE: `
         UPDATE payments
-        SET deleted = 1
-        WHERE id = :id;`,
+        SET deleted = true
+        WHERE id = $1;`,
 
         RECOVER: `
             UPDATE payments
-            SET deleted = 0
-            WHERE id = :id;`,
+            SET deleted = false
+            WHERE id = $1;`,
 
     REPORT_BY_STAGE: `
         SELECT 
@@ -240,31 +250,32 @@ export const PAYMENTS = {
         FROM payments py
         LEFT JOIN contractors c ON py.contractor_id = c.id
         LEFT JOIN payment_categories pc ON py.payment_category_id = pc.id
-        WHERE py.stage_id = :stageId AND py.deleted = 0
-        ORDER BY date(py.date) ASC, py.id ASC;`
+        WHERE py.stage_id = $1 AND py.deleted = false
+        ORDER BY py.date ASC, py.id ASC;`
 }
 
 export const PAYMENT_CATEGORIES = {
-    GET: `SELECT * FROM payment_categories WHERE id = :id;`,
+    GET: `SELECT * FROM payment_categories WHERE id = $1;`,
 
     GET_ALL: `
         SELECT * FROM payment_categories;`,
 
     ADD: `
         INSERT INTO payment_categories (name, description) 
-        VALUES (:name, :description);`,
+        VALUES ($1, $2)
+        RETURNING id;`,
 
     ADD_OR_UPDATE: `
         INSERT INTO payment_categories (name, description)
-        VALUES (:name, :description)
+        VALUES ($1, $2)
         ON CONFLICT(name) DO UPDATE SET
             description = excluded.description;`,
 
     UPDATE: `
         UPDATE payment_categories
-        SET name = :name,
-            description = :description
-        WHERE id = :id;`
+        SET name = $1,
+            description = $2
+        WHERE id = $3;`
 }
 
 export const CONTRACTORS = {
@@ -276,7 +287,7 @@ export const CONTRACTORS = {
     // Get a single contractor by ID
     GET: `
         SELECT * FROM contractors
-        WHERE id = :id;`,
+        WHERE id = $1;`,
 
     // Add a new contractor
     ADD: `
@@ -284,23 +295,23 @@ export const CONTRACTORS = {
             name, email, phone, address
         ) 
         VALUES (
-            :name, :email, :phone, :address
-        );`,
+            $1, $2, $3, $4
+        )
+        RETURNING id;`,
 
     // Update an existing contractor
     UPDATE: `
         UPDATE contractors
-        SET name = :name,
-            email = :email,
-            phone = :phone,
-            address = :address,
-            updated_at = CURRENT_TIMESTAMP
-        WHERE id = :id;`,
+        SET name = $1,
+            email = $2,
+            phone = $3,
+            address = $4
+        WHERE id = $5;`,
 
     // Delete a contractor by ID
     DELETE: `
         DELETE FROM contractors
-        WHERE id = :id;`,
+        WHERE id = $1;`,
 
     // Get all contractors for a specific project
     PROJECTS: `
@@ -310,9 +321,9 @@ export const CONTRACTORS = {
         FROM 
             projects p
         JOIN stage s ON p.id = s.project_id
-        JOIN payments py ON s.id = py.stage_id AND py.deleted = 0
+        JOIN payments py ON s.id = py.stage_id AND py.deleted = false
         WHERE 
-            py.contractor_id = :id
+            py.contractor_id = $1 AND py.deleted = false
         ORDER BY p.start_date ASC
         LIMIT 10 OFFSET 0;`
 }
@@ -323,45 +334,46 @@ export const EVIDENCES = {
             payment_id, file_path, description, created_by
         ) 
         VALUES (
-            :paymentId, :filePath, :description, :createdBy
-        );`,
+            $1, $2, $3, $4
+        )
+        RETURNING id;`,
 
     GET_ALL: `
-        SELECT * FROM evidences WHERE payment_id = :paymentId;`,
+        SELECT * FROM evidences WHERE payment_id = $1;`,
 
     GET: `
-        SELECT * FROM evidences WHERE id = :id;`,
+        SELECT * FROM evidences WHERE id = $1;`,
 
     GET_PROJECT_ID: `
         SELECT p.id AS project_id
         FROM payments py
         JOIN stage s ON py.stage_id = s.id
         JOIN projects p ON s.project_id = p.id
-        WHERE py.id = :paymentId;`,
+        WHERE py.id = $1;`,
 
     GET_STAGE_ID: `
         SELECT s.id AS stage_id
         FROM payments py
         JOIN stage s ON py.stage_id = s.id
-        WHERE py.id = :paymentId;`
+        WHERE py.id = $1;`
 }
 
 export const SETTINGS = {
     GET: `
-        SELECT * FROM settings WHERE key = :key;`,
+        SELECT * FROM settings WHERE key = $1;`,
 
     GET_ALL: `
         SELECT * FROM settings;`,
 
     GET_ALL_ACTIVE: `
-        SELECT * FROM settings WHERE active = 1;`,
+        SELECT * FROM settings WHERE active = true;`,
 
     ADD_OR_UPDATE: `
         INSERT INTO settings (
             key, value, details, active, created_by
         )
         VALUES (
-            :key, :value, :details, :active, :createdBy
+            $1, $2, $3, $4, $5
         )
         ON CONFLICT(key) DO UPDATE SET
             value = excluded.value,
@@ -371,11 +383,11 @@ export const SETTINGS = {
 
     UPDATE: `
         UPDATE settings
-        SET value = :value,
-            details = :details,
-            active = :active,
+        SET value = $1,
+            details = $2,
+            active = $3,
             updated_at = CURRENT_TIMESTAMP
-        WHERE id = :id;`
+        WHERE id = $4;`
 }
 
 export const ADMIN = {
@@ -394,14 +406,14 @@ export const ADMIN = {
         ORDER BY id DESC;`,
 
     GET_DELETED_PROJECTS: `
-        SELECT * FROM projects WHERE deleted = 1 ORDER BY id DESC;`,
+        SELECT * FROM projects WHERE deleted = true ORDER BY id DESC;`,
 
     GET_DELETED_STAGES: `
         SELECT s.id, s.name, s.project_id, s.estimated_cost, s.deleted,
                p.name AS project_name, p.created_at
         FROM stage s
         JOIN projects p ON s.project_id = p.id
-        WHERE s.deleted = 1
+        WHERE s.deleted = true
         ORDER BY s.id DESC;`,
 
     GET_DELETED_PAYMENTS: `
@@ -410,34 +422,39 @@ export const ADMIN = {
         FROM payments py
         JOIN stage s ON py.stage_id = s.id
         JOIN projects p ON s.project_id = p.id
-        WHERE py.deleted = 1
+        WHERE py.deleted = true
         ORDER BY py.id DESC;`,
 
     IMPORT_CONTRACTOR: `
         INSERT INTO contractors (name, email, phone, address) 
-        VALUES (:name, :email, :phone, :address);`,
+        VALUES ($1, $2, $3, $4)
+        RETURNING id;`,
 
     GET_PAYMENT_CATEGORY_ID_BY_NAME: `
-        SELECT id FROM payment_categories WHERE name = :name;`,
+        SELECT id FROM payment_categories WHERE name = $1;`,
     
     IMPORT_PAYMENT_CATEGORY: `
         INSERT INTO payment_categories (name, description) 
-        VALUES (:name, :description);`,
+        VALUES ($1, $2)
+        RETURNING id;`,
     
     IMPORT_PROJECT: `
         INSERT INTO projects (name, description, start_date, status, end_date, created_by) 
-        VALUES (:name, :description, :start_date, :status, :end_date, :created_by);`,
+        VALUES ($1, $2, $3, $4, $5, $6)
+        RETURNING id;`,
     
     IMPORT_STAGE: `
         INSERT INTO stage (name, project_id, estimated_cost, final_cost, start_date, end_date, description, contractor_id, created_by) 
-        VALUES (:name, :project_id, :estimated_cost, :final_cost, :start_date, :end_date, :description, :contractor_id, :created_by);`,
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        RETURNING id;`,
     
     IMPORT_PAYMENT: `
         INSERT INTO payments (stage_id, payment_category_id, contractor_id, description, payment_method, amount, balance, date, payer, evidence, created_by) 
-        VALUES (:stage_id, :payment_category_id, :contractor_id, :description, :payment_method, :amount, :balance, :date, :payer, :evidence, :created_by);`,
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+        RETURNING id;`,
     
     CHECK_USER_EXISTS: `
-        SELECT id FROM users WHERE id = :id;`,
+        SELECT id FROM users WHERE id = $1;`,
 
     EXPORT_CONTRACTORS: `SELECT * FROM contractors;`,
     

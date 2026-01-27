@@ -1,1 +1,0 @@
-ALTER TABLE projects ADD COLUMN deleted INTEGER DEFAULT 0;

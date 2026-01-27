@@ -23,9 +23,8 @@ export class Evidence {
  */
 export const getAll = async (paymentId) => {
     try {
-        const query = database.query(EVIDENCES.GET_ALL)
-        const evidences = query.all({ paymentId })
-        return evidences.map((evidence) => new Evidence(evidence))
+        const rows = await database.unsafe(EVIDENCES.GET_ALL, [paymentId])
+        return rows.map((evidence) => new Evidence(evidence))
     } catch (error) {
         console.error(`Error fetching evidences: ${error.message}`)
         return []
@@ -39,9 +38,15 @@ export const getAll = async (paymentId) => {
  */
 export const create = async (evidence = {}) => {
     try {
-        const query = database.query(EVIDENCES.ADD)
-        const { lastInsertRowid } = query.run({ ...evidence })
-        return new Evidence({ ...evidence, id: lastInsertRowid })
+        const rows = await database.unsafe(EVIDENCES.ADD, [
+            evidence.paymentId,
+            evidence.filePath ?? evidence.file_path,
+            evidence.description,
+            evidence.createdBy
+        ])
+        const id = rows?.[0]?.id
+        if (!id) return null
+        return new Evidence({ ...evidence, id })
     } catch (error) {
         console.error(`Error creating evidence: ${error.message}`)
         return null
@@ -59,8 +64,8 @@ export const create = async (evidence = {}) => {
  */
 export const getById = async (id) => {
     try {
-        const query = database.query(EVIDENCES.GET_BY_ID)
-        const evidence = query.get({ id })
+        const rows = await database.unsafe(EVIDENCES.GET, [id])
+        const evidence = rows?.[0]
         return evidence ? new Evidence(evidence) : null
     } catch (error) {
         console.error(`Error fetching evidence by ID: ${error.message}`)
@@ -75,8 +80,10 @@ export const getById = async (id) => {
  */
 export const update = async (evidence) => {
     try {
-        const query = database.query(EVIDENCES.UPDATE)
-        query.run({ ...evidence })
+        await database.unsafe('UPDATE evidences SET description = $1 WHERE id = $2', [
+            evidence.description,
+            evidence.id
+        ])
         return new Evidence(evidence)
     } catch (error) {
         console.error(`Error updating evidence: ${error.message}`)
@@ -95,9 +102,8 @@ export const update = async (evidence) => {
  */
 export const getProjectId = async (evidenceId) => {
     try {
-        const query = database.query(EVIDENCES.GET_PROJECT_ID)
-        const { projectId } = query.get({ evidenceId })
-        return projectId
+        const rows = await database.unsafe(EVIDENCES.GET_PROJECT_ID, [evidenceId])
+        return rows?.[0]?.project_id || null
     } catch (error) {
         console.error(`Error fetching project ID: ${error.message}`)
         return null
@@ -112,9 +118,8 @@ export const getProjectId = async (evidenceId) => {
  */
 export const getStageId = async (evidenceId) => {
     try {
-        const query = database.query(EVIDENCES.GET_STAGE_ID)
-        const { stageId } = query.get({ evidenceId })
-        return stageId
+        const rows = await database.unsafe(EVIDENCES.GET_STAGE_ID, [evidenceId])
+        return rows?.[0]?.stage_id || null
     } catch (error) {
         console.error(`Error fetching stage ID: ${error.message}`)
         return null
