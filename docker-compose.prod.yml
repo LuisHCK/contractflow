@@ -9,15 +9,15 @@ services:
       - ./uploads:/app/uploads
       - ./data:/app/data
     environment:
-      - NODE_ENV
-      - DATABASE_URL
-      - PORT
-      - SECRET_KEY
-      - ADMIN_EMAIL
-      - ADMIN_PASSWORD
-      - ALLOWED_ORIGINS
-      - MEMORY_COST
-      - TIME_COST
+      - NODE_ENV=${NODE_ENV}
+      - DATABASE_URL=${DATABASE_URL}
+      - PORT=${PORT}
+      - SECRET_KEY=${SECRET_KEY}
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS}
+      - MEMORY_COST=${MEMORY_COST}
+      - TIME_COST=${TIME_COST}
     depends_on:
       - db
     restart: always
@@ -27,9 +27,9 @@ services:
     image: postgres:16-alpine
     restart: always
     environment:
-      - POSTGRES_DB
-      - POSTGRES_USER
-      - POSTGRES_PASSWORD
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
