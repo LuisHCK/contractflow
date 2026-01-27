@@ -12,13 +12,8 @@ export const importData = async (req, res) => {
         if (!req.files || !req.files.data) {
             return res.status(400).send('No import file provided')
         }
-        const file = req.files.data
-        let importObj
-        try {
-            importObj = JSON.parse(file.data.toString())
-        } catch (e) {
-            return res.status(400).send('Invalid JSON file')
-        }
+
+        const importObj = req.files.data
 
         // Insert Contractors
         const contractorIdMap = {}
