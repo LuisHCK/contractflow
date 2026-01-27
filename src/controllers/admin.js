@@ -8,18 +8,22 @@ export const importData = async (req, res) => {
         if (!req.user) {
             return res.status(401).send('Authentication required')
         }
+
         const currentUserId = req.user.id
         if (!req.files || !req.files.data) {
             return res.status(400).send('No import file provided')
         }
 
-        const importObj = req.files.data
+        const filePath = req.files.data[0].path
+        const fileObj = 
+        await Bun.file(filePath).json()
 
         // Insert Contractors
         const contractorIdMap = {}
         for (const contractor of importObj.contractors || []) {
             const { id, ...fields } = contractor
             const result = database.query('INSERT INTO contractors (name, email, phone, address) VALUES (:name, :email, :phone, :address)').run(fields)
+            console.log(result)
             contractorIdMap[id] = result.lastInsertRowid
         }
 
@@ -61,10 +65,12 @@ export const importData = async (req, res) => {
             database.query('INSERT INTO payments (stage_id, payment_category_id, contractor_id, description, payment_method, amount, balance, date, payer, evidence, created_by) VALUES (:stage_id, :payment_category_id, :contractor_id, :description, :payment_method, :amount, :balance, :date, :payer, :evidence, :created_by)').run({ ...fields, stage_id: newStageId, payment_category_id: newPaymentCategoryId, contractor_id: newContractorId, created_by: newCreatedBy })
         }
 
-        res.status(200).send('Import successful')
+        req.flash('success', 'Import successful')
+        return res.redirect('/admin')
     } catch (error) {
         console.error('Import error:', error)
-        res.status(500).send('Failed to import data')
+        req.flash('danger', 'Failed to import data')
+        return res.redirect('/admin')
     }
 }
 
