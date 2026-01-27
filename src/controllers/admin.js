@@ -17,14 +17,11 @@ export const importData = async (req, res) => {
         const filePath = req.files.data[0].path
         const importObj = await Bun.file(filePath).json()
 
-        console.log(importObj)
-
         // Insert Contractors
         const contractorIdMap = {}
         for (const contractor of importObj.contractors || []) {
             const { id, ...fields } = contractor
-            const result = database.query('INSERT INTO contractors (name, email, phone, address) VALUES (:name, :email, :phone, :address)').run(fields)
-            console.log(result)
+            const result = database.query(ADMIN.IMPORT_CONTRACTOR).run(fields)
             contractorIdMap[id] = result.lastInsertRowid
         }
 
@@ -33,12 +30,12 @@ export const importData = async (req, res) => {
         for (const cat of importObj.paymentCategories || []) {
             const { id, ...fields } = cat
 
-            const existingCategory = database.query('SELECT id FROM payment_categories WHERE name = :name').get({ name: fields.name })
+            const existingCategory = database.query(ADMIN.GET_PAYMENT_CATEGORY_ID_BY_NAME).get({ name: fields.name })
 
             if (existingCategory) {
                 paymentCategoryIdMap[id] = existingCategory.id
             } else {
-                const result = database.query('INSERT INTO payment_categories (name, description) VALUES (:name, :description)').run(fields)
+                const result = database.query(ADMIN.IMPORT_PAYMENT_CATEGORY).run(fields)
                 paymentCategoryIdMap[id] = result.lastInsertRowid
             }
         }
@@ -48,7 +45,7 @@ export const importData = async (req, res) => {
         for (const project of importObj.projects || []) {
             const { id, created_by, ...fields } = project
             const newCreatedBy = await getValidUserId(created_by, currentUserId)
-            const result = database.query('INSERT INTO projects (name, description, start_date, status, end_date, created_by) VALUES (:name, :description, :start_date, :status, :end_date, :created_by)').run({ ...fields, created_by: newCreatedBy })
+            const result = database.query(ADMIN.IMPORT_PROJECT).run({ ...fields, created_by: newCreatedBy })
             projectIdMap[id] = result.lastInsertRowid
         }
 
@@ -59,7 +56,7 @@ export const importData = async (req, res) => {
             const newProjectId = projectIdMap[project_id]
             const newContractorId = contractorIdMap[contractor_id]
             const newCreatedBy = await getValidUserId(created_by, currentUserId)
-            const result = database.query('INSERT INTO stage (name, project_id, estimated_cost, final_cost, start_date, end_date, description, contractor_id, created_by) VALUES (:name, :project_id, :estimated_cost, :final_cost, :start_date, :end_date, :description, :contractor_id, :created_by)').run({ ...fields, project_id: newProjectId, contractor_id: newContractorId, created_by: newCreatedBy })
+            const result = database.query(ADMIN.IMPORT_STAGE).run({ ...fields, project_id: newProjectId, contractor_id: newContractorId, created_by: newCreatedBy })
             stageIdMap[id] = result.lastInsertRowid
         }
 
@@ -70,7 +67,7 @@ export const importData = async (req, res) => {
             const newPaymentCategoryId = paymentCategoryIdMap[payment_category_id]
             const newContractorId = contractorIdMap[contractor_id]
             const newCreatedBy = await getValidUserId(created_by, currentUserId)
-            database.query('INSERT INTO payments (stage_id, payment_category_id, contractor_id, description, payment_method, amount, balance, date, payer, evidence, created_by) VALUES (:stage_id, :payment_category_id, :contractor_id, :description, :payment_method, :amount, :balance, :date, :payer, :evidence, :created_by)').run({ ...fields, stage_id: newStageId, payment_category_id: newPaymentCategoryId, contractor_id: newContractorId, created_by: newCreatedBy })
+            database.query(ADMIN.IMPORT_PAYMENT).run({ ...fields, stage_id: newStageId, payment_category_id: newPaymentCategoryId, contractor_id: newContractorId, created_by: newCreatedBy })
         }
 
         req.flash('success', 'Import successful')
@@ -85,7 +82,7 @@ export const importData = async (req, res) => {
 // Helper to check if user exists, else fallback to current user
 async function getValidUserId(userId, fallbackId) {
     if (!userId) return fallbackId
-    const user = database.query('SELECT id FROM users WHERE id = :id').get({ id: userId })
+    const user = database.query(ADMIN.CHECK_USER_EXISTS).get({ id: userId })
     return user ? userId : fallbackId
 }
 /**
@@ -95,11 +92,11 @@ async function getValidUserId(userId, fallbackId) {
 export const exportData = async (req, res) => {
     try {
         // Fetch all entities
-        const contractors = database.query('SELECT * FROM contractors').all()
-        const paymentCategories = database.query('SELECT * FROM payment_categories').all()
-        const projects = database.query('SELECT * FROM projects').all()
-        const stages = database.query('SELECT * FROM stage').all()
-        const payments = database.query('SELECT * FROM payments').all()
+        const contractors = database.query(ADMIN.EXPORT_CONTRACTORS).all()
+        const paymentCategories = database.query(ADMIN.EXPORT_PAYMENT_CATEGORIES).all()
+        const projects = database.query(ADMIN.EXPORT_PROJECTS).all()
+        const stages = database.query(ADMIN.EXPORT_STAGES).all()
+        const payments = database.query(ADMIN.EXPORT_PAYMENTS).all()
 
         // Compose export object
         const exportObj = {

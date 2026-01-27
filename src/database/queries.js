@@ -411,5 +411,41 @@ export const ADMIN = {
         JOIN stage s ON py.stage_id = s.id
         JOIN projects p ON s.project_id = p.id
         WHERE py.deleted = 1
-        ORDER BY py.id DESC;`
+        ORDER BY py.id DESC;`,
+
+    IMPORT_CONTRACTOR: `
+        INSERT INTO contractors (name, email, phone, address) 
+        VALUES (:name, :email, :phone, :address);`,
+
+    GET_PAYMENT_CATEGORY_ID_BY_NAME: `
+        SELECT id FROM payment_categories WHERE name = :name;`,
+    
+    IMPORT_PAYMENT_CATEGORY: `
+        INSERT INTO payment_categories (name, description) 
+        VALUES (:name, :description);`,
+    
+    IMPORT_PROJECT: `
+        INSERT INTO projects (name, description, start_date, status, end_date, created_by) 
+        VALUES (:name, :description, :start_date, :status, :end_date, :created_by);`,
+    
+    IMPORT_STAGE: `
+        INSERT INTO stage (name, project_id, estimated_cost, final_cost, start_date, end_date, description, contractor_id, created_by) 
+        VALUES (:name, :project_id, :estimated_cost, :final_cost, :start_date, :end_date, :description, :contractor_id, :created_by);`,
+    
+    IMPORT_PAYMENT: `
+        INSERT INTO payments (stage_id, payment_category_id, contractor_id, description, payment_method, amount, balance, date, payer, evidence, created_by) 
+        VALUES (:stage_id, :payment_category_id, :contractor_id, :description, :payment_method, :amount, :balance, :date, :payer, :evidence, :created_by);`,
+    
+    CHECK_USER_EXISTS: `
+        SELECT id FROM users WHERE id = :id;`,
+
+    EXPORT_CONTRACTORS: `SELECT * FROM contractors;`,
+    
+    EXPORT_PAYMENT_CATEGORIES: `SELECT * FROM payment_categories;`,
+    
+    EXPORT_PROJECTS: `SELECT * FROM projects;`,
+    
+    EXPORT_STAGES: `SELECT * FROM stage;`,
+    
+    EXPORT_PAYMENTS: `SELECT * FROM payments;`
 }
