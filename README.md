@@ -1,8 +1,8 @@
-# ContractorPay - Streamline Your Project Payments 🚀
+# ContractFlow - Streamline Your Project Payments 🚀
 
 ## Description
 
-ContractorPay is a modern solution designed to simplify how you manage and track project payments. From planning and budgeting to creating and paying contractors, ContractorPay provides the tools you need to handle your projects with confidence and ease.
+ContractFlow is a modern solution designed to simplify how you manage and track project payments. From planning and budgeting to creating and paying contractors, ContractFlow provides the tools you need to handle your projects with confidence and ease.
 
 ## Features
 
@@ -60,9 +60,3 @@ bun password-reset.js user@example.com newSecurePass123
 # Using the npm script
 bun run password-reset admin@company.com Admin2026!
 ```
-
-**Security Notes:**
-- This tool is for server-side administrative use only
-- Never expose this functionality via an API endpoint
-- Passwords must be at least 6 characters long
-- Passwords are hashed using Argon2i before storage
