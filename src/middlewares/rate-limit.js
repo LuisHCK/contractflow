@@ -15,15 +15,19 @@ const buildParkingHandler = windowMs => (req, res, _next, options) => {
     })
 }
 
-const createLimiter = ({ limit, windowMs = FIFTEEN_MINUTES_IN_MS }) =>
+const createLimiter = ({ limit, windowMs = FIFTEEN_MINUTES_IN_MS, skip }) =>
     rateLimit({
         windowMs,
         limit,
         standardHeaders: true,
         legacyHeaders: false,
+        skip,
         handler: buildParkingHandler(windowMs)
     })
 
-export const globalLimiter = createLimiter({ limit: 100 })
+export const globalLimiter = createLimiter({
+    limit: 300,
+    skip: (req) => req.user?.role === 'admin'
+})
 
 export const authLimiter = createLimiter({ limit: 5 })

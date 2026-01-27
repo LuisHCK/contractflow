@@ -79,6 +79,7 @@ app.use((req, res, next) => {
     next()
 })
 
+app.use(setUser)
 app.use(globalLimiter)
 app.use(
     cors({
@@ -101,7 +102,6 @@ app.locals.formatToCurrency = formatToCurrency
 app.use(express.static(path.join(__dirname, '/public')))
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')))
 
-app.use(setUser)
 app.use(flash)
 
 app.get('/lang/:locale', (req, res) => {
