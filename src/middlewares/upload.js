@@ -12,7 +12,7 @@ import { mkdir } from "node:fs/promises";
  */
 const fileFilter = (_req, file, cb) => {
     // Accept most common documents and images
-    if (!file.originalname.match(/\.(jpg|jpeg|png|gif|docx|xlsx|pptx|txt|pdf)$/i)) {
+    if (!file.originalname.match(/\.(jpg|jpeg|png|gif|docx|xlsx|pptx|txt|pdf|json)$/i)) {
         return cb(new Error('Only image files are allowed!'), false)
     }
     cb(null, true)

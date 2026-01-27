@@ -13,7 +13,7 @@
                     <p class="block">
                         <%= __('admin_import_description') %>
                     </p>
-                    <form action="/admin/import" method="post" enctype="multipart/form-data">
+                    <form action="/admin/import?_csrf=<%= csrfToken %>" method="post" enctype="multipart/form-data">
                         <div class="field has-addons">
                             <div class="control is-expanded">
                                 <div class="file is-info is-fullwidth has-name">
