@@ -1,5 +1,6 @@
-<div>
-    <% (messages || []).forEach(function (message, index) { %>
+<% if (messages && messages.length > 0) { %>
+<div class="container p-4">
+    <% messages.forEach(function (message, index) { %>
         <div class="notification mb-4 is-<%= message.type %> is-light" role="alert" aria-live="assertive" id="flash-message-<%= index %>">
             <button class="delete"
                 onclick="document.getElementById('flash-message-<%= index %>').remove();"
@@ -15,3 +16,4 @@
           </div>
     <% }) %>
 </div>
+<% } %>
