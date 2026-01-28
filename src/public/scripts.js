@@ -65,8 +65,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const flashCloseButtons = document.querySelectorAll('.notification .delete')
     flashCloseButtons.forEach(button => {
         button.addEventListener('click', () => {
+            // Prefer removing the outer container, fallback to the notification itself
+            const container = button.closest('.container')
             const notification = button.closest('.notification')
-            if (notification) {
+            if (container) {
+                container.remove()
+            } else if (notification) {
                 notification.remove()
             }
         })
