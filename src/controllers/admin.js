@@ -90,18 +90,29 @@ export const importData = async (req, res) => {
             const newPaymentCategoryId = paymentCategoryIdMap[payment_category_id]
             const newContractorId = contractorIdMap[contractor_id]
             const newCreatedBy = await getValidUserId(created_by, currentUserId)
+
+            // Preserve boolean-like flags from SQLite export (supports "0"/"1", numbers, booleans)
+            const hideTotals = toBooleanFlag(fields.hide_totals_invoice)
+            const deleted = toBooleanFlag(fields.deleted)
+
             await database.unsafe(ADMIN.IMPORT_PAYMENT, [
+                // stage_id, payment_category_id, contractor_id
                 newStageId,
-                fields.amount,
-                fields.date,
-                fields.payer,
                 newPaymentCategoryId,
                 newContractorId,
+                // description, payment_method, amount, balance
                 fields.description,
                 fields.payment_method,
-                newCreatedBy,
+                fields.amount,
                 fields.balance,
-                fields.evidence
+                // date, payer, evidence, created_by
+                fields.date,
+                fields.payer,
+                fields.evidence,
+                newCreatedBy,
+                // flags
+                hideTotals,
+                deleted
             ])
         }
 
@@ -120,6 +131,17 @@ async function getValidUserId(userId, fallbackId) {
     const rows = await database.unsafe(ADMIN.CHECK_USER_EXISTS, [userId])
     const user = rows?.[0]
     return user ? userId : fallbackId
+}
+
+// Normalize "boolean" flags from SQLite JSON ("0"/"1", numbers, booleans) into real booleans
+function toBooleanFlag(value) {
+    if (typeof value === 'boolean') return value
+    if (typeof value === 'number') return value !== 0
+    if (typeof value === 'string') {
+        const v = value.trim().toLowerCase()
+        return v === '1' || v === 'true' || v === 'yes'
+    }
+    return false
 }
 /**
  * Export business data (Projects, Contractors, Stages, Payments, Payment Categories) as JSON.
