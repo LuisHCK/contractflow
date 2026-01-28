@@ -56,7 +56,7 @@ export const importData = async (req, res) => {
                 fields.description,
                 fields.start_date,
                 fields.status,
-                fields.end_date,
+                normalizeEmptyToNull(fields.end_date),
                 newCreatedBy
             ])
             projectIdMap[id] = rows?.[0]?.id
@@ -75,7 +75,7 @@ export const importData = async (req, res) => {
                 fields.estimated_cost,
                 fields.final_cost,
                 fields.start_date,
-                fields.end_date,
+                normalizeEmptyToNull(fields.end_date),
                 fields.description,
                 newContractorId,
                 newCreatedBy
@@ -142,6 +142,13 @@ function toBooleanFlag(value) {
         return v === '1' || v === 'true' || v === 'yes'
     }
     return false
+}
+
+// Convert empty-string or whitespace-only values to null (for nullable DATE columns, etc.)
+function normalizeEmptyToNull(value) {
+    if (value === null || value === undefined) return null
+    if (typeof value === 'string' && value.trim() === '') return null
+    return value
 }
 /**
  * Export business data (Projects, Contractors, Stages, Payments, Payment Categories) as JSON.
