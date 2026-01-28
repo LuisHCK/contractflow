@@ -1,19 +1,19 @@
-<% if (messages && messages.length > 0) { %>
-<div class="container p-4">
+<div>
     <% messages.forEach(function (message, index) { %>
-        <div class="notification mb-4 is-<%= message.type %> is-light" role="alert" aria-live="assertive" id="flash-message-<%= index %>">
-            <button class="delete"
-                onclick="document.getElementById('flash-message-<%= index %>').remove();"
-                aria-label="Close"
-                title="Close this message"
-                data-tooltip="Close this message"
-                data-tooltip-position="down"
-                data-tooltip-alignment="center"
-                data-tooltip-size="is-small"
-                >
-            </button>
-            <%= message.content %>
-          </div>
+        <div class="container p-4">
+            <div class="notification mb-4 is-<%= message.type %> is-light" role="alert" aria-live="assertive" id="flash-message-<%= index %>">
+                <button class="delete"
+                    onclick="document.getElementById('flash-message-<%= index %>').remove();"
+                    aria-label="Close"
+                    title="Close this message"
+                    data-tooltip="Close this message"
+                    data-tooltip-position="down"
+                    data-tooltip-alignment="center"
+                    data-tooltip-size="is-small"
+                    >
+                </button>
+                <%= message.content %>
+            </div>
+        </div>
     <% }) %>
 </div>
-<% } %>

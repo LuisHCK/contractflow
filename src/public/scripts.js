@@ -61,4 +61,14 @@ document.addEventListener('DOMContentLoaded', () => {
             window.print()
         })
     }
+    // Flash message close buttons
+    const flashCloseButtons = document.querySelectorAll('.notification .delete')
+    flashCloseButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const notification = button.closest('.notification')
+            if (notification) {
+                notification.remove()
+            }
+        })
+    })
 })
