@@ -3,11 +3,8 @@ import seed from './seed'
 import { runMigrations } from './migrations'
 
 // Prefer explicit connection string; fallback to env-detected default client
-const connectionUrl =
-    process.env.DATABASE_URL ||
-    process.env.POSTGRES_URL ||
-    process.env.PGURL ||
-    process.env.PG_URL
+const { POSTGRES_PASSWORD, POSTGRES_DB } = process.env
+const connectionUrl = `postgres://contractorpay:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}`
 
 export const database = connectionUrl ? new SQL(connectionUrl) : sql
 
