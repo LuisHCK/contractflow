@@ -1,52 +1,75 @@
+<% const statusStyles = {
+    active: "is-success",
+    paused: "is-warning",
+    completed: "is-link",
+    archived: "is-dark"
+}; %>
 
-<div class="projects-grid">
-    <% projects.forEach(project => { %>
-        <div class="card project-card">
-            <div class="card-content">
-                <div class="media mb-2">
-                    <div class="media-content">
-                        <div class="is-flex is-justify-content-space-between is-align-items-start">
-                            <p class="title is-5 mb-0"><%= project.name %></p>
-                            <span class="tag is-info is-capitalized is-light">
-                                <%= __(`projects_status_${project.status}`) %>
-                            </span>
+<div class="columns is-multiline is-variable is-4">
+    <% if (projects && projects.length) { %>
+        <% projects.forEach(function (project) {
+            const statusKey = (project.status || "unknown").toLowerCase();
+            const statusClass = statusStyles[statusKey] || "is-info";
+            const statusLabel = (project.status || "Unknown").replace(/_/g, " ");
+        %>
+        <div class="column is-full-tablet is-half-desktop">
+            <div class="card">
+                <header class="card-header">
+                    <div class="card-header-title is-block">
+                        <p class="title is-5 is-spaced"><%= project.name %></p>
+                        <p class="subtitle is-6 has-text-grey">
+                            <%= project.description || "No description provided" %>
+                        </p>
+                    </div>
+                    <div class="card-header-icon">
+                        <span class="tag <%= statusClass %> is-light is-uppercase"><%= statusLabel %></span>
+                    </div>
+                </header>
+
+                <div class="card-content">
+                    <div class="content">
+                        <div class="columns is-mobile">
+                            <div class="column">
+                                <p class="heading">Start Date</p>
+                                    <p class="title is-6"><%= project.startDate || "Not scheduled" %></p>
+                            </div>
+                            <div class="column">
+                                <p class="heading">End Date</p>
+                                <p class="title is-6"><%= project.endDate || "In progress" %></p>
+                            </div>
                         </div>
+                        <div class="columns is-mobile">
+                            <div class="column">
+                                <p class="heading">Created</p>
+                                <p class="title is-6"><%= project.createdAt || "" %></p>
+                            </div>
+                            <div class="column">
+                                <p class="heading">Updated</p>
+                                <p class="title is-6"><%= project.updatedAt || "" %></p>
+                            </div>
+                        </div>
+                        <% if (project.deleted) { %>
+                            <span class="tag is-danger is-light is-uppercase">Archived</span>
+                        <% } %>
                     </div>
                 </div>
 
-                <div class="content mb-4">
-                    <p class="has-text-grey is-size-6 mb-4 line-clamp-2">
-                        <%= project.description %>
-                    </p>
-                    
-                    <div class="level is-mobile mb-0">
-                        <div class="level-left mr-5">
-                            <div>
-                                <p class="heading has-text-grey-light mb-0"><%= __('projects_list_estimated_cost') %></p>
-                                <p class="title is-6"><%= formatToCurrency(project.estimatedCost) %></p>
-                            </div>
-                        </div>
-                        <div class="level-left">
-                            <div>
-                                <p class="heading has-text-grey-light mb-0"><%= __('projects_list_payed') %></p>
-                                <p class="title is-6 has-text-success"><%= formatToCurrency(project.actualCost) %></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <footer class="card-footer">
+                    <a href="/projects/<%= project.id %>" class="card-footer-item has-text-weight-semibold">
+                        View Details
+                    </a>
+                    <a href="/projects/<%= project.id %>/edit" class="card-footer-item has-text-weight-semibold">
+                        Edit
+                    </a>
+                </footer>
             </div>
-            <footer class="card-footer">
-                <a href="/projects/show/<%= project.id %>" class="card-footer-item has-text-primary has-text-weight-bold">
-                    <%= __('projects_list_view') %>
-                </a>
-            </footer>
         </div>
-    <% }); %>
-
-    <!-- No projects message -->
-    <% if (projects.length === 0) { %>
-        <div class="notification is-warning has-text-centered w-full">
-            <%= __('projects_list_no_projects') %>
+        <% }); %>
+    <% } else { %>
+        <div class="column is-12">
+            <div class="notification is-info is-light">
+                There are no projects to display yet.
+            </div>
         </div>
     <% } %>
 </div>
