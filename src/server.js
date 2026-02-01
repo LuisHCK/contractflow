@@ -137,6 +137,17 @@ app.use((err, req, res, next) => {
 const port = process.env.PORT || 3000
 
 app.listen(port, () => {
+    console.clear()
+    console.log(`
+   ___                 .                         .    .____  .                 
+ .'   \   __.  , __   _/_   .___    ___    ___  _/_   /      |     __.  ,  _  /
+ |      .'   \ |'  `.  |    /   \  /   ` .'   `  |    |__.   |   .'   \ |  |  |
+ |      |    | |    |  |    |   ' |    | |       |    |      |   |    | `  ^  '
+  `.__,  `._.' /    |  \__/ /     `.__/|  `._.'  \__/ /     /\__  `._.'  \/ \/ 
+                                                                                                                                                                                          
+                                                                                                                     
+                                                                                                                                                                              
+    `)
     console.log(`Open http://localhost:${port} in your browser 🚀`)
     console.log(`Server listening on port ${port}`)
 })

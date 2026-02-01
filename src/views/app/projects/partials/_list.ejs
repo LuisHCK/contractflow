@@ -14,20 +14,20 @@
         %>
         <div class="column is-full-tablet is-half-desktop">
             <div class="card">
-                <header class="card-header">
-                    <div class="card-header-title is-block">
-                        <p class="title is-5 is-spaced"><%= project.name %></p>
-                        <p class="subtitle is-6 has-text-grey">
-                            <%= project.description || "No description provided" %>
-                        </p>
-                    </div>
-                    <div class="card-header-icon">
-                        <span class="tag <%= statusClass %> is-light is-uppercase"><%= statusLabel %></span>
-                    </div>
-                </header>
-
                 <div class="card-content">
                     <div class="content">
+                        <div class="columns is-mobile">
+                            <div class="column">
+                                <p class="title is-5 is-spaced"><%= project.name %></p>
+                                <p class="subtitle is-6 has-text-grey">
+                                    <%= project.description %>
+                                </p>
+                            </div>
+                            <div class="column is-narrow">
+                                <span class="tag <%= statusClass %> is-light is-uppercase"><%= statusLabel %></span>
+                            </div>
+                        </div>
+
                         <div class="columns is-mobile">
                             <div class="column">
                                 <p class="heading">Start Date</p>
@@ -55,10 +55,10 @@
                 </div>
 
                 <footer class="card-footer">
-                    <a href="/projects/<%= project.id %>" class="card-footer-item has-text-weight-semibold">
+                    <a href="/projects/show/<%= project.id %>" class="card-footer-item has-text-weight-semibold">
                         View Details
                     </a>
-                    <a href="/projects/<%= project.id %>/edit" class="card-footer-item has-text-weight-semibold">
+                    <a href="/projects/edit/<%= project.id %>" class="card-footer-item has-text-weight-semibold">
                         Edit
                     </a>
                 </footer>

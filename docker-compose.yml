@@ -4,11 +4,11 @@ services:
       context: .
       target: dev
     ports:
-      - "3000:3000"
+      - "8088:8088"
     env_file: .env
     volumes:
       - ./uploads:/app/uploads
-      - ./:/app
+      - ./:/app:delegated
     command: ["bun", "run", "dev"]
     depends_on:
       - db

@@ -21,9 +21,8 @@ RUN bun install --production
 # -------------------------
 FROM base AS dev
 
-# Copy package manifest and lockfile for better caching (if you have bun.lockb)
 COPY package.json ./
-COPY bun.lockb ./
+COPY bun.lock ./
 
 # Install all dependencies (including dev)
 RUN bun install
