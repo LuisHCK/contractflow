@@ -31,21 +31,21 @@
                         <div class="columns is-mobile">
                             <div class="column">
                                 <p class="heading">Start Date</p>
-                                    <p class="title is-6"><%= project.startDate || "Not scheduled" %></p>
+                                <p class="title is-6"><%= project.startDate %></p>
                             </div>
                             <div class="column">
                                 <p class="heading">End Date</p>
-                                <p class="title is-6"><%= project.endDate || "In progress" %></p>
+                                <p class="title is-6"><%= project.endDate %></p>
                             </div>
                         </div>
                         <div class="columns is-mobile">
                             <div class="column">
                                 <p class="heading">Created</p>
-                                <p class="title is-6"><%= project.createdAt || "" %></p>
+                                <p class="title is-6"><%= project.createdAt %></p>
                             </div>
                             <div class="column">
                                 <p class="heading">Updated</p>
-                                <p class="title is-6"><%= project.updatedAt || "" %></p>
+                                <p class="title is-6"><%= project.updatedAt %></p>
                             </div>
                         </div>
                         <% if (project.deleted) { %>
