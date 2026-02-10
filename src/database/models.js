@@ -34,6 +34,7 @@ export class Project {
      * @param {string} project.status - The current status of the project.
      * @param {number} [project.estimatedCost] - The estimated cost of the project.
      * @param {number} [project.actualCost] - The actual cost of the project.
+     * @param {number} [project.progress] - The progress percentage of the project.
      */
     constructor(project) {
         this.id = project.id
@@ -44,6 +45,7 @@ export class Project {
         this.status = project.status
         this.estimatedCost = project.estimatedCost || project.total_estimated_cost
         this.actualCost = project.actualCost || project.actual_cost
+        this.progress = Number(project.progress) || 0
     }
 
     /**

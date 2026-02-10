@@ -1,3 +1,4 @@
+import { DATE_FORMAT } from '@/config/constants'
 import { format, parse } from 'date-fns'
 
 /**
@@ -11,4 +12,16 @@ export const formatToISOString = (date) => {
 
     const parsedDate =  parse(date, 'yyyy-MM-dd', new Date())
     return format(parsedDate, "yyyy-MM-dd'T'HH:mm:ss")
+}
+
+/**
+ * Formats a given date using the specified date format.
+ *
+ * @param {Date|string|number} date - The date to format. Can be a Date object, a date string, or a timestamp.
+ * @returns {string|null} The formatted date string, or null if no date is provided.
+ */
+export const formatDate = (date) => {
+    if (!date) return null
+
+    return format(date, DATE_FORMAT)
 }

@@ -57,7 +57,7 @@ export const PROJECTS = {
                 ELSE ((COALESCE(SUM(py.amount), 0) * 100.0) / COALESCE(SUM(s.estimated_cost), 0))::numeric
                 END,
                 1
-            ) AS progress_percentage
+            ) AS progress
         FROM 
         projects p 
         LEFT JOIN stage s ON p.id = s.project_id AND s.deleted = false

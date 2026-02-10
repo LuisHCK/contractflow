@@ -14,6 +14,7 @@ import { formatToCurrency } from './utils/money'
 import { setUser } from './middlewares/jwt'
 import { flash } from './middlewares/flash'
 import { globalLimiter } from './middlewares/rate-limit'
+import { formatDate } from './utils/date'
 
 const app = express()
 const localesDirectory = path.join(process.cwd(), 'locales')
@@ -97,6 +98,7 @@ app.use((req, res, next) => {
 
 // Make formatToCurrency available in all EJS templates
 app.locals.formatToCurrency = formatToCurrency
+app.locals.formatDate = formatDate
 
 // Serve static files
 app.use(express.static(path.join(__dirname, '/public')))
@@ -139,14 +141,11 @@ const port = process.env.PORT || 3000
 app.listen(port, () => {
     console.clear()
     console.log(`
-   ___                 .                         .    .____  .                 
- .'   \   __.  , __   _/_   .___    ___    ___  _/_   /      |     __.  ,  _  /
- |      .'   \ |'  `.  |    /   \  /   ` .'   `  |    |__.   |   .'   \ |  |  |
- |      |    | |    |  |    |   ' |    | |       |    |      |   |    | `  ^  '
-  `.__,  `._.' /    |  \__/ /     `.__/|  `._.'  \__/ /     /\__  `._.'  \/ \/ 
-                                                                                                                                                                                          
-                                                                                                                     
-                                                                                                                                                                              
+  ____            _                  _   _____ _               
+ / ___|___  _ __ | |_ _ __ __ _  ___| |_|  ___| | _____      __
+| |   / _ \\| '_ \\| __| '__/ _\` |/ __| __| |_  | |/ _ \\ \\ /\\ / /
+| |__| (_) | | | | |_| | | (_| | (__| |_|  _| | | (_) \\ V  V / 
+ \\____\\___/|_| |_|\\__|_|  \\__,_|\\___|\\__|_|   |_|\\___/ \\_/\\_/                                                                                                                                                                       
     `)
     console.log(`Open http://localhost:${port} in your browser 🚀`)
     console.log(`Server listening on port ${port}`)
