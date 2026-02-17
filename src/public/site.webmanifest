@@ -1,6 +1,6 @@
 {
-  "name": "ContractorPay",
-  "short_name": "ContractorPay",
+  "name": "ContractFlow",
+  "short_name": "ContractFlow",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#111827",
