@@ -128,7 +128,8 @@ export const STAGES = {
         FROM stage s 
         LEFT JOIN payments p ON s.id = p.stage_id AND p.deleted = false
         WHERE s.project_id = $1 AND s.deleted = false
-        GROUP BY s.id;`,
+        GROUP BY s.id
+        ORDER BY s.id DESC;`,
 
     ADD: `
         INSERT INTO stage (
@@ -157,10 +158,10 @@ export const STAGES = {
         SET deleted = true
         WHERE id = $1;`,
 
-        RECOVER: `
-            UPDATE stage
-            SET deleted = false
-            WHERE id = $1;`,
+    RECOVER: `
+        UPDATE stage
+        SET deleted = false
+        WHERE id = $1;`,
 
     REPORT_SUMMARY: `
         SELECT 
