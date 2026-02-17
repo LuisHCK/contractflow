@@ -37,18 +37,17 @@ export const create = async (req, res) => {
             })
         }
 
-        // Insert user
-        const query = database.query(USERS.ADD)
+        // Insert user (Postgres)
         const hashedPassword = await hashPassword(password)
-        const result = query.run({
-            password: hashedPassword,
+        const rows = await database.unsafe(USERS.ADD, [
+            hashedPassword,
             email,
             role,
-            active: active ? 1 : 0,
+            !!active,
             name
-        })
+        ])
 
-        if (!result || !result || result.lastInsertRowid === 0) {
+        if (!rows || rows.length === 0) {
             return res.render('generic/form-view', {
                 title: req.__('users_create_title') || 'Create User',
                 form: populateForm({
@@ -58,8 +57,7 @@ export const create = async (req, res) => {
                 })
             })
         }
-
-        const newId = result.lastInsertRowid || result.id
+        const newId = rows[0].id
         res.redirect(`/admin`)
     } catch (error) {
         console.error(`Error creating user: ${error.message}`)
@@ -82,8 +80,8 @@ export const edit = async (req, res) => {
 
         // Render form for editing
         if (req.method === 'GET') {
-            const q = database.query(USERS.GET)
-            const user = q.get({ id })
+            const rows = await database.unsafe(USERS.GET, [id])
+            const user = rows?.[0]
             if (!user) {
                 return res.status(404).json({ error: 'User not found' })
             }
@@ -121,8 +119,8 @@ export const edit = async (req, res) => {
         }
 
         // Get existing user to keep password if not provided
-        const getQ = database.query(USERS.GET)
-        const existing = getQ.get({ id })
+        const existingRows = await database.unsafe(USERS.GET, [id])
+        const existing = existingRows?.[0]
         if (!existing) {
             return res.status(404).json({ error: 'User not found' })
         }
@@ -132,17 +130,15 @@ export const edit = async (req, res) => {
             finalPassword = await hashPassword(password)
         }
 
-        const updateQ = database.query(USERS.UPDATE)
-        const { changes } = updateQ.run({
-            id,
-            password: finalPassword,
+        const updateRows = await database.unsafe(USERS.UPDATE, [
+            finalPassword,
             email,
             role,
             name,
-            active: active ? 1 : 0
-        })
-
-        if (changes === 0) {
+            !!active,
+            id
+        ])
+        if (!updateRows || updateRows.length === 0) {
             return res.status(404).json({ error: 'User not found' })
         }
 

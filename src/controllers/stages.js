@@ -120,7 +120,7 @@ export const create = async (req, res) => {
     try {
         if (req.method === 'POST') {
             const { body, params } = req
-            const stage = await createStage({ ...body, projectId: params.id, createdBy: 1 })
+            const stage = await createStage({ ...body, projectId: params.id, createdBy: req.user.id })
 
             if (stage?.id) {
                 res.redirect(`/projects/show/${params.id}`)

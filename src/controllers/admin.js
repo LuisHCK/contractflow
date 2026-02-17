@@ -17,12 +17,17 @@ export const importData = async (req, res) => {
         const filePath = req.files.data[0].path
         const importObj = await Bun.file(filePath).json()
 
-        // Insert Contractors
+        // Insert Contractors (Postgres)
         const contractorIdMap = {}
         for (const contractor of importObj.contractors || []) {
             const { id, ...fields } = contractor
-            const result = database.query(ADMIN.IMPORT_CONTRACTOR).run(fields)
-            contractorIdMap[id] = result.lastInsertRowid
+            const rows = await database.unsafe(ADMIN.IMPORT_CONTRACTOR, [
+                fields.name,
+                fields.email,
+                fields.phone,
+                fields.address
+            ])
+            contractorIdMap[id] = rows?.[0]?.id
         }
 
         // Insert Payment Categories
@@ -30,13 +35,14 @@ export const importData = async (req, res) => {
         for (const cat of importObj.paymentCategories || []) {
             const { id, ...fields } = cat
 
-            const existingCategory = database.query(ADMIN.GET_PAYMENT_CATEGORY_ID_BY_NAME).get({ name: fields.name })
+            const existingRows = await database.unsafe(ADMIN.GET_PAYMENT_CATEGORY_ID_BY_NAME, [fields.name])
+            const existingCategory = existingRows?.[0]
 
             if (existingCategory) {
                 paymentCategoryIdMap[id] = existingCategory.id
             } else {
-                const result = database.query(ADMIN.IMPORT_PAYMENT_CATEGORY).run(fields)
-                paymentCategoryIdMap[id] = result.lastInsertRowid
+                const rows = await database.unsafe(ADMIN.IMPORT_PAYMENT_CATEGORY, [fields.name, fields.description])
+                paymentCategoryIdMap[id] = rows?.[0]?.id
             }
         }
 
@@ -45,8 +51,15 @@ export const importData = async (req, res) => {
         for (const project of importObj.projects || []) {
             const { id, created_by, ...fields } = project
             const newCreatedBy = await getValidUserId(created_by, currentUserId)
-            const result = database.query(ADMIN.IMPORT_PROJECT).run({ ...fields, created_by: newCreatedBy })
-            projectIdMap[id] = result.lastInsertRowid
+            const rows = await database.unsafe(ADMIN.IMPORT_PROJECT, [
+                fields.name,
+                fields.description,
+                fields.start_date,
+                fields.status,
+                normalizeEmptyToNull(fields.end_date),
+                newCreatedBy
+            ])
+            projectIdMap[id] = rows?.[0]?.id
         }
 
         // Insert Stages
@@ -56,8 +69,18 @@ export const importData = async (req, res) => {
             const newProjectId = projectIdMap[project_id]
             const newContractorId = contractorIdMap[contractor_id]
             const newCreatedBy = await getValidUserId(created_by, currentUserId)
-            const result = database.query(ADMIN.IMPORT_STAGE).run({ ...fields, project_id: newProjectId, contractor_id: newContractorId, created_by: newCreatedBy })
-            stageIdMap[id] = result.lastInsertRowid
+            const rows = await database.unsafe(ADMIN.IMPORT_STAGE, [
+                fields.name,
+                newProjectId,
+                fields.estimated_cost,
+                fields.final_cost,
+                fields.start_date,
+                normalizeEmptyToNull(fields.end_date),
+                fields.description,
+                newContractorId,
+                newCreatedBy
+            ])
+            stageIdMap[id] = rows?.[0]?.id
         }
 
         // Insert Payments
@@ -67,7 +90,30 @@ export const importData = async (req, res) => {
             const newPaymentCategoryId = paymentCategoryIdMap[payment_category_id]
             const newContractorId = contractorIdMap[contractor_id]
             const newCreatedBy = await getValidUserId(created_by, currentUserId)
-            database.query(ADMIN.IMPORT_PAYMENT).run({ ...fields, stage_id: newStageId, payment_category_id: newPaymentCategoryId, contractor_id: newContractorId, created_by: newCreatedBy })
+
+            // Preserve boolean-like flags from SQLite export (supports "0"/"1", numbers, booleans)
+            const hideTotals = toBooleanFlag(fields.hide_totals_invoice)
+            const deleted = toBooleanFlag(fields.deleted)
+
+            await database.unsafe(ADMIN.IMPORT_PAYMENT, [
+                // stage_id, payment_category_id, contractor_id
+                newStageId,
+                newPaymentCategoryId,
+                newContractorId,
+                // description, payment_method, amount, balance
+                fields.description,
+                fields.payment_method,
+                fields.amount,
+                fields.balance,
+                // date, payer, evidence, created_by
+                fields.date,
+                fields.payer,
+                fields.evidence,
+                newCreatedBy,
+                // flags
+                hideTotals,
+                deleted
+            ])
         }
 
         req.flash('success', 'Import successful')
@@ -82,8 +128,27 @@ export const importData = async (req, res) => {
 // Helper to check if user exists, else fallback to current user
 async function getValidUserId(userId, fallbackId) {
     if (!userId) return fallbackId
-    const user = database.query(ADMIN.CHECK_USER_EXISTS).get({ id: userId })
+    const rows = await database.unsafe(ADMIN.CHECK_USER_EXISTS, [userId])
+    const user = rows?.[0]
     return user ? userId : fallbackId
+}
+
+// Normalize "boolean" flags from SQLite JSON ("0"/"1", numbers, booleans) into real booleans
+function toBooleanFlag(value) {
+    if (typeof value === 'boolean') return value
+    if (typeof value === 'number') return value !== 0
+    if (typeof value === 'string') {
+        const v = value.trim().toLowerCase()
+        return v === '1' || v === 'true' || v === 'yes'
+    }
+    return false
+}
+
+// Convert empty-string or whitespace-only values to null (for nullable DATE columns, etc.)
+function normalizeEmptyToNull(value) {
+    if (value === null || value === undefined) return null
+    if (typeof value === 'string' && value.trim() === '') return null
+    return value
 }
 /**
  * Export business data (Projects, Contractors, Stages, Payments, Payment Categories) as JSON.
@@ -92,11 +157,11 @@ async function getValidUserId(userId, fallbackId) {
 export const exportData = async (req, res) => {
     try {
         // Fetch all entities
-        const contractors = database.query(ADMIN.EXPORT_CONTRACTORS).all()
-        const paymentCategories = database.query(ADMIN.EXPORT_PAYMENT_CATEGORIES).all()
-        const projects = database.query(ADMIN.EXPORT_PROJECTS).all()
-        const stages = database.query(ADMIN.EXPORT_STAGES).all()
-        const payments = database.query(ADMIN.EXPORT_PAYMENTS).all()
+        const contractors = await database.unsafe(ADMIN.EXPORT_CONTRACTORS)
+        const paymentCategories = await database.unsafe(ADMIN.EXPORT_PAYMENT_CATEGORIES)
+        const projects = await database.unsafe(ADMIN.EXPORT_PROJECTS)
+        const stages = await database.unsafe(ADMIN.EXPORT_STAGES)
+        const payments = await database.unsafe(ADMIN.EXPORT_PAYMENTS)
 
         // Compose export object
         const exportObj = {
@@ -128,9 +193,12 @@ import JSONSerializer from '@/utils/json-serializer'
 export const index = async (_req, res) => {
     try {
         // Get summary counts
-        const userCountResult = database.query(ADMIN.COUNT_USERS).get()
-        const projectCountResult = database.query(ADMIN.COUNT_PROJECTS).get()
-        const contractorCountResult = database.query(ADMIN.COUNT_CONTRACTORS).get()
+        const userCountRows = await database.unsafe(ADMIN.COUNT_USERS)
+        const projectCountRows = await database.unsafe(ADMIN.COUNT_PROJECTS)
+        const contractorCountRows = await database.unsafe(ADMIN.COUNT_CONTRACTORS)
+        const userCountResult = userCountRows?.[0]
+        const projectCountResult = projectCountRows?.[0]
+        const contractorCountResult = contractorCountRows?.[0]
 
         const summary = {
             totalUsers: userCountResult?.count || 0,
@@ -139,13 +207,13 @@ export const index = async (_req, res) => {
         }
 
         // Get all users
-        const usersData = database.query(ADMIN.GET_ALL_USERS).all()
+        const usersData = await database.unsafe(ADMIN.GET_ALL_USERS)
         const users = usersData.map(user => new User(user))
 
         // Get soft-deleted elements
-        const deletedProjects = database.query(ADMIN.GET_DELETED_PROJECTS).all()
-        const deletedStages = database.query(ADMIN.GET_DELETED_STAGES).all()
-        const deletedPayments = database.query(ADMIN.GET_DELETED_PAYMENTS).all()
+        const deletedProjects = await database.unsafe(ADMIN.GET_DELETED_PROJECTS)
+        const deletedStages = await database.unsafe(ADMIN.GET_DELETED_STAGES)
+        const deletedPayments = await database.unsafe(ADMIN.GET_DELETED_PAYMENTS)
 
         res.render('app/admin/index', {
             summary,
@@ -189,8 +257,7 @@ export const changeUserRole = async (req, res) => {
             return res.status(400).redirect('/admin')
         }
 
-        const query = database.query(USERS.UPDATE_ROLE)
-        query.run({ id: targetId, role })
+        await database.unsafe(USERS.UPDATE_ROLE, [role, targetId])
 
         req.flash('success', 'User role updated')
         return res.redirect('/admin')

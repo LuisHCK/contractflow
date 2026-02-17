@@ -78,7 +78,7 @@ export const createStagePayment = async (req, res) => {
                 ...body,
                 stageId: params.stageId,
                 hideTotalsInvoice,
-                createdBy: 1
+                createdBy: req.user.id
             })
 
             if (payment?.id) {

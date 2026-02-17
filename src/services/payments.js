@@ -5,9 +5,10 @@
  */
 export const recoverPaymentById = async (paymentId) => {
     try {
-        const query = database.query(PAYMENTS.RECOVER)
-        const result = query.run({ id: paymentId })
-        return result.changes > 0
+        const existing = await getById(paymentId)
+        if (!existing?.id) return false
+        await database.unsafe(PAYMENTS.RECOVER, [paymentId])
+        return true
     } catch (error) {
         console.error(`Error recovering payment: ${error.message}`)
         return false
@@ -22,6 +23,7 @@ import { format } from 'date-fns'
 import { DATE_FORMAT } from '@/config/constants'
 import { Project } from '@/database/models'
 import { getStageById } from './stages'
+import { formatToISOString } from '@/utils/date'
 
 export class Payment {
     constructor(payment) {
@@ -80,10 +82,7 @@ export class Payment {
  */
 export const getAllPayments = async (stageId, options = { includeRelated: false }) => {
     try {
-        const query = database.query(PAYMENTS.GET_ALL)
-        const payments = query.all({
-            stageId
-        })
+        const payments = await database.unsafe(PAYMENTS.GET_ALL, [stageId])
 
         // Include related data if specified
         if (options.includeRelated) {
@@ -120,13 +119,9 @@ export const getAllPayments = async (stageId, options = { includeRelated: false 
 
 export const getById = async (paymentId) => {
     try {
-        const query = database.query(PAYMENTS.GET)
-        const payment = query.get({ id: paymentId })
-
-        if (payment) {
-            return new Payment(payment)
-        }
-        return null
+        const rows = await database.unsafe(PAYMENTS.GET, [paymentId])
+        const payment = rows?.[0]
+        return payment ? new Payment(payment) : null
     } catch (error) {
         console.error(`Error fetching payment by ID: ${error.message}`)
         return null
@@ -135,11 +130,8 @@ export const getById = async (paymentId) => {
 
 export const getPaymentsByProjectId = async (projectId) => {
     try {
-        const query = database.query(PAYMENTS.GET_ALL_BY_PROJECT_ID).as(Payment)
-        const payments = query.all({
-            projectId
-        })
-        return payments
+        const rows = await database.unsafe(PAYMENTS.GET_ALL_BY_PROJECT_ID, [projectId])
+        return rows.map((row) => new Payment(row))
     } catch (error) {
         console.error(`Error fetching payments: ${error.message}`)
         return []
@@ -166,9 +158,22 @@ export const createPayment = async (payment = {}) => {
         // Calculate the balance
         const balance = Number(stage.estimatedCost) - currentPaidAmount
 
-        const query = database.query(PAYMENTS.ADD)
-        const { lastInsertRowid } = query.run({ ...payment, balance })
-        return new Payment({ ...payment, id: lastInsertRowid })
+        const rows = await database.unsafe(PAYMENTS.ADD, [
+            payment.stageId,
+            payment.amount,
+            formatToISOString(payment.date),
+            payment.payer,
+            payment.paymentCategoryId,
+            payment.contractorId,
+            payment.description,
+            payment.paymentMethod,
+            payment.createdBy,
+            balance,
+            payment.hideTotalsInvoice
+        ])
+        const id = rows?.[0]?.id
+        if (!id) return null
+        return new Payment({ ...payment, id, balance })
     } catch (error) {
         console.error(`Error creating payment: ${error.message}`)
         return null
@@ -184,15 +189,14 @@ export const createPayment = async (payment = {}) => {
  */
 export const getPaymentProject = async (paymentId, asObject = false) => {
     try {
+        const rows = await database.unsafe(PAYMENTS.GET_PROJECT_ID, [paymentId])
+        const projectId = rows?.[0]?.project_id
+        if (!projectId) return null
         if (asObject) {
-            const projectQuery = database.query(PROJECTS.GET).as(Project)
-            const project = projectQuery.get({ id: project.id })
-            return project
-        } else {
-            const query = database.query(PAYMENTS.GET_PROJECT_ID)
-            const project = query.get({ paymentId })
-            return project.project_id
+            const prow = await database.unsafe(PROJECTS.GET, [projectId])
+            return prow?.[0] ? new Project(prow[0]) : null
         }
+        return projectId
     } catch (error) {
         console.error(`Error fetching payment project: ${error.message}`, error)
         return null
@@ -210,9 +214,8 @@ export const getPaymentProject = async (paymentId, asObject = false) => {
  */
 export const getPaymentStage = async (paymentId) => {
     try {
-        const query = database.query(PAYMENTS.GET_STAGE_ID)
-        const stage = query.get({ paymentId })
-        return stage?.stage_id
+        const rows = await database.unsafe(PAYMENTS.GET_STAGE_ID, [paymentId])
+        return rows?.[0]?.stage_id || null
     } catch (error) {
         console.error(`Error fetching payment stage: ${error.message}`)
         return null
@@ -229,9 +232,8 @@ export const getPaymentStage = async (paymentId) => {
  */
 export const getTotalPayedAmount = async (stageId) => {
     try {
-        const query = database.query(PAYMENTS.GET_TOTAL_PAYED_AMOUNT)
-        const { total } = query.get({ stageId })
-        return total || 0
+        const rows = await database.unsafe(PAYMENTS.GET_TOTAL_PAYED_AMOUNT, [stageId])
+        return rows?.[0]?.total_amount || 0
     } catch (error) {
         console.error(`Error fetching total payed amount: ${error.message}`)
         return 0
@@ -240,8 +242,7 @@ export const getTotalPayedAmount = async (stageId) => {
 
 export const getStagePaymentsForReport = async (stageId) => {
     try {
-        const query = database.query(PAYMENTS.REPORT_BY_STAGE)
-        const rows = query.all({ stageId })
+        const rows = await database.unsafe(PAYMENTS.REPORT_BY_STAGE, [stageId])
 
         return rows.map((row) => {
             const rawDate = row.date || row.created_at
@@ -276,9 +277,10 @@ export const getStagePaymentsForReport = async (stageId) => {
  */
 export const deletePaymentById = async (paymentId) => {
     try {
-        const query = database.query(PAYMENTS.SOFT_DELETE)
-        const result = query.run({ id: paymentId })
-        return result.changes > 0
+        const existing = await getById(paymentId)
+        if (!existing?.id) return false
+        await database.unsafe(PAYMENTS.SOFT_DELETE, [paymentId])
+        return true
     } catch (error) {
         console.error(`Error soft deleting payment: ${error.message}`)
         return false

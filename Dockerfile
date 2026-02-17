@@ -17,6 +17,30 @@ COPY package.json ./
 RUN bun install --production
 
 # -------------------------
+# Development stage
+# -------------------------
+FROM base AS dev
+
+COPY package.json ./
+COPY bun.lock ./
+
+# Install all dependencies (including dev)
+RUN bun install
+
+# Set workdir
+WORKDIR /app
+
+# Copy all source code (for initial build, but will be overridden by volume in compose)
+COPY . .
+
+# Expose port for dev
+ENV PORT=3000
+EXPOSE 3000
+
+# Start with hot reload
+CMD ["bun", "run", "dev"]
+
+# -------------------------
 # Runtime stage
 # -------------------------
 FROM base AS runtime

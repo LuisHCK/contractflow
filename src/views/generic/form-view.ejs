@@ -4,10 +4,9 @@
     <body>
         <% if (locals.showNavigation === undefined || locals.showNavigation) { %>
             <%- include('../partials/navigation') %>
+            <%- include('../partials/flash-messages') %>
         <% } %>
         <main class="container is-max-widescreen py-6 px-4">
-            <%- include('../partials/flash-messages', locals) %>
-
             <% if (locals.showNavigation === undefined || locals.showNavigation) { %>
             <h1 class="title is-3">
                 <%= __(locals.title) %>
