@@ -1,82 +1,89 @@
-<div class="table-container">
-    <table class="table is-striped is-hoverable is-fullwidth">
-        <thead>
-            <tr class="is-<%= locals.theme || 'light' %>">
-                <th><%= __('stages_name') %></th>
-                <th><%= __('stages_estimated_cost') %></th>
-                <th><%= __('stages_paid') %></th>
-                <th><%= __('stages_owed') %></th>
-                <th><%= __('stages_progress') %></th>
-                <th class="has-text-right"><%= __('stages_actions') %></th>
-            </tr>
-        </thead>
-        <tbody>
-            <% stages.forEach(stage=> { %>
-                <tr>
-                    <td>
-                        <%= stage.name %>
-                    </td>
-                    <td>
-                        <div class="tag is-dark">
-                            <%= formatToCurrency(stage.estimatedCost) %>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="tag is-info">
-                            <%= formatToCurrency(stage.totalPayments) %>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="tag is-warning">
-                            <%= formatToCurrency(Math.max((Number(stage.estimatedCost) || 0) - (Number(stage.totalPayments) || 0), 0)) %>
-                        </div>
-                    </td>
-                    <td>
-                        <progress class="progress <% if (stage.progress >= 100) {%> is-success <%}%> "
-                            value="<%= stage.progress %>" max="100">
-                            <%= stage.progress %>%
-                        </progress>
+<div class="columns is-multiline is-variable is-4">
+    <% if (stages && stages.length) { %>
+        <% stages.forEach(function (stage) {
+            const estimatedCost = Number(stage.estimatedCost) || 0;
+            const totalPayments = Number(stage.totalPayments) || 0;
+            const owedAmount = Math.max(estimatedCost - totalPayments, 0);
+            const progressValue = Number(stage.progress) || 0;
+        %>
+        <div class="column is-full-tablet is-half-desktop">
+            <div class="card">
+                <div class="card-content">
+                    <div class="content">
+                        <h4 class="title is-5 is-spaced"><%= stage.name %></h4>
 
-                    </td>
-                    <td>
-                        <div class="field is-grouped is-justify-content-flex-end">
-                            <p class="control">
-                                <a class="button primary is-small"
-                                    href="/projects/show/<%= project.id %>/stages/show/<%= stage.id %>/payments/create">
-                                    <%= __('stages_register_payment') %>
-                                </a>
-                            </p>
-                            <p class="control">
-                                <a class="button is-light is-small"
-                                    href="/projects/show/<%= project.id %>/stages/show/<%= stage.id %>">
-                                    <%= __('view') %>
-                                </a>
-                            </p>
-                            <p class="control">
-                                <form method="POST" action="/projects/show/<%= project.id %>/stages/remove/<%= stage.id %>">
-                                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                                    <button
-                                        type="submit"
-                                        class="button is-warning is-small">
-                                        <%= __('stages_delete') %>
-                                    </button>
-                                </form>
-                            </p>
+                        <div>
+                            <div class="columns mb-0">
+                                <div class="column pb-1"><%= __('stages_progress') %></div>
+                                <div class="column has-text-right pb-2"><%= progressValue %>%</div>
+                            </div>
+                            <progress class="progress is-small <% if (progressValue >= 100) { %>is-success<% } %>" value="<%= progressValue %>" max="100">
+                                <%= progressValue %>%
+                            </progress>
                         </div>
-                    </td>
-                </tr>
-            <% }); %>
 
-            <!-- No stages message -->
-            <% if (stages.length === 0) { %>
-                <tr>
-                    <td colspan="6">
-                        <div class="notification is-warning has-text-centered">
-                            <%= __('stages_no_stages') %>
+                        <div class="columns is-multiline">
+                            <div class="column is-half">
+                                <div class="is-flex gap-2 mt-3">
+                                    <div class="is-flex is-align-items-center is-justify-content-center">
+                                        <%- include('../../../partials/icons/coins.ejs') %>
+                                    </div>
+                                    <div>
+                                        <p class="mb-1 is-size-7"><%= __('stages_estimated_cost') %></p>
+                                        <p class="m-0"><%= formatToCurrency(estimatedCost) %></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="column is-half">
+                                <div class="is-flex gap-2 mt-3">
+                                    <div class="is-flex is-align-items-center is-justify-content-center">
+                                        <%- include('../../../partials/icons/cash.ejs') %>
+                                    </div>
+                                    <div>
+                                        <p class="mb-1 is-size-7"><%= __('stages_paid') %></p>
+                                        <p class="m-0"><%= formatToCurrency(totalPayments) %></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="column is-half">
+                                <div class="is-flex gap-2 mt-3">
+                                    <div class="is-flex is-align-items-center is-justify-content-center">
+                                        <%- include('../../../partials/icons/wallet.ejs') %>
+                                    </div>
+                                    <div>
+                                        <p class="mb-1 is-size-7"><%= __('stages_owed') %></p>
+                                        <p class="m-0"><%= formatToCurrency(owedAmount) %></p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </td>
-                </tr>
-            <% } %>
-        </tbody>
-    </table>
+                    </div>
+                </div>
+
+                <footer class="card-footer">
+                    <a href="/projects/show/<%= project.id %>/stages/show/<%= stage.id %>/payments/create" class="card-footer-item has-text-weight-semibold">
+                        <%= __('stages_register_payment') %>
+                    </a>
+                    <a href="/projects/show/<%= project.id %>/stages/show/<%= stage.id %>" class="card-footer-item has-text-weight-semibold">
+                        <%= __('view') %>
+                    </a>
+                    <form method="POST" action="/projects/show/<%= project.id %>/stages/remove/<%= stage.id %>" class="card-footer-item">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                        <button type="submit" class="button is-warning is-small">
+                            <%= __('stages_delete') %>
+                        </button>
+                    </form>
+                </footer>
+            </div>
+        </div>
+        <% }); %>
+    <% } else { %>
+        <div class="column is-12">
+            <div class="notification is-warning has-text-centered">
+                <%= __('stages_no_stages') %>
+            </div>
+        </div>
+    <% } %>
 </div>
