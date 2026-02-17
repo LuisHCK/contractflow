@@ -41,6 +41,7 @@
         "stages_name": "Name",
         "stages_estimated_cost": "Estimated Cost",
         "stages_paid": "Paid",
+        "stages_owed": "Owed",
         "stages_progress": "Progress",
         "stages_actions": "Actions",
         "stages_register_payment": "Register Payment",

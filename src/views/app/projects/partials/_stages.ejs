@@ -5,6 +5,7 @@
                 <th><%= __('stages_name') %></th>
                 <th><%= __('stages_estimated_cost') %></th>
                 <th><%= __('stages_paid') %></th>
+                <th><%= __('stages_owed') %></th>
                 <th><%= __('stages_progress') %></th>
                 <th class="has-text-right"><%= __('stages_actions') %></th>
             </tr>
@@ -23,6 +24,11 @@
                     <td>
                         <div class="tag is-info">
                             <%= formatToCurrency(stage.totalPayments) %>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="tag is-warning">
+                            <%= formatToCurrency(Math.max((Number(stage.estimatedCost) || 0) - (Number(stage.totalPayments) || 0), 0)) %>
                         </div>
                     </td>
                     <td>
@@ -64,7 +70,7 @@
             <!-- No stages message -->
             <% if (stages.length === 0) { %>
                 <tr>
-                    <td colspan="5">
+                    <td colspan="6">
                         <div class="notification is-warning has-text-centered">
                             <%= __('stages_no_stages') %>
                         </div>
