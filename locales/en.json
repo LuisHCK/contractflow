@@ -228,6 +228,7 @@
         "active": "Active",
         "inactive": "Inactive",
         "status": "Status",
+        "archived": "Archived",
         "admin_deleted_title": "Soft-Deleted Elements",
         "admin_deleted_projects": "Deleted Projects",
         "admin_deleted_projects_no_data": "No deleted projects",

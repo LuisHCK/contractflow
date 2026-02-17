@@ -10,7 +10,14 @@
         <% projects.forEach(function (project) {
             const statusKey = (project.status || "unknown").toLowerCase();
             const statusClass = statusStyles[statusKey] || "is-info";
-            const statusLabel = (project.status || "Unknown").replace(/_/g, " ");
+            const projectStatusTranslationKey = `projects_status_${statusKey}`;
+            const translatedProjectStatus = __(projectStatusTranslationKey);
+            const translatedGenericStatus = __(statusKey);
+            const statusLabel = translatedProjectStatus !== projectStatusTranslationKey
+                ? translatedProjectStatus
+                : translatedGenericStatus !== statusKey
+                    ? translatedGenericStatus
+                    : (project.status || __('status')).replace(/_/g, " ");
         %>
         <div class="column is-full-tablet is-half-desktop">
             <div class="card">
@@ -30,7 +37,7 @@
 
                         <div>
                             <div class="columns mb-0">
-                                <div class="column pb-1">Progress</div>
+                                <div class="column pb-1"><%= __('progress') %></div>
                                 <div class="column has-text-right pb-2">
                                     <%= project.progress %>%
                                 </div>
@@ -45,8 +52,8 @@
                                         <%- include('../../../partials/icons/home-dollar.ejs') %>
                                     </div>
                                     <div >
-                                        <p class="mb-1 is-size-7">Estimated cost</p>
-                                        <p class="m-0 "><%= project.estimatedCost %></p>
+                                        <p class="mb-1 is-size-7"><%= __('projects_list_estimated_cost') %></p>
+                                        <p class="m-0 "><%= formatToCurrency(project.estimatedCost) %></p>
                                     </div>
                                 </div>
                             </div>
@@ -57,7 +64,7 @@
                                         <%- include('../../../partials/icons/calendar.ejs') %>
                                     </div>
                                     <div >
-                                        <p class="mb-1 is-size-7">Start Date</p>
+                                        <p class="mb-1 is-size-7"><%= __('projects_create_start_date') %></p>
                                         <p class="m-0 "><%= formatDate(project.startDate) %></p>
                                     </div>
                                 </div>
@@ -65,17 +72,19 @@
                         </div>
 
                         <% if (project.deleted) { %>
-                            <span class="tag is-danger is-light is-uppercase">Archived</span>
+                            <span class="tag is-danger is-light is-uppercase">
+                                <%= __('archived') %>
+                            </span>
                         <% } %>
                     </div>
                 </div>
 
                 <footer class="card-footer">
                     <a href="/projects/show/<%= project.id %>" class="card-footer-item has-text-weight-semibold">
-                        View Details
+                        <%= `${__('projects_list_view')} ${__('detail_details')}` %>
                     </a>
                     <a href="/projects/edit/<%= project.id %>" class="card-footer-item has-text-weight-semibold">
-                        Edit
+                        <%= __('projects_edit') %>
                     </a>
                 </footer>
             </div>
@@ -84,7 +93,7 @@
     <% } else { %>
         <div class="column is-12">
             <div class="notification is-info is-light">
-                There are no projects to display yet.
+                <%= __('projects_list_no_projects') %>
             </div>
         </div>
     <% } %>
