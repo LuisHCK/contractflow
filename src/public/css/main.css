@@ -201,3 +201,20 @@ input[type='checkbox'],
 .gap-4 {
     gap: 1rem !important;
 }
+
+/* Project overview cards */
+.overview-card-box {
+    display: flex;
+    align-items: center;
+}
+
+.overview-card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.overview-card-icon svg {
+    width: 2.75rem;
+    height: 2.75rem;
+}
