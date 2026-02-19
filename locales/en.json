@@ -203,6 +203,7 @@
         "projects_currency_symbol_placeholder": "e.g. $, €, ₡",
         "projects_exchange_rate": "Exchange rate",
         "projects_exchange_rate_placeholder": "1 project-currency = X base units",
+        "projects_exchange_rate_hint": "Used to convert this project's amounts into base totals.",
         "projects_change_currency": "Change currency",
         "projects_currency_edit_title": "Change currency for {{name}}",
         "projects_currency_submit": "Save currency",

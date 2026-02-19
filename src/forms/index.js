@@ -60,6 +60,7 @@ export const PROJECT_CURRENCY_FORM = {
             label: 'projects_exchange_rate',
             name: 'defaultExchangeRate',
             placeholder: 'projects_exchange_rate_placeholder',
+            hint: 'projects_exchange_rate_hint',
             required: false,
             type: 'number'
         }

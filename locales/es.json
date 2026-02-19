@@ -198,6 +198,7 @@
     "projects_currency_symbol_placeholder": "por ejemplo, $, €, ₡",
     "projects_exchange_rate": "Tipo de cambio",
     "projects_exchange_rate_placeholder": "1 moneda del proyecto = X unidades base",
+    "projects_exchange_rate_hint": "Se usa para convertir montos del proyecto a totales base.",
     "projects_change_currency": "Cambiar moneda",
     "projects_currency_edit_title": "Cambiar moneda de {{name}}",
     "projects_currency_submit": "Guardar moneda",

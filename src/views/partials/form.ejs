@@ -135,6 +135,10 @@
                 </div>
             <% } %>
         </div>
+
+        <% if (field.hint && !['select', 'checkbox', 'radio', 'file'].includes(field.type)) { %>
+            <p class="help is-size-7 has-text-grey"><%= __(field.hint) %></p>
+        <% } %>
     </div>
     <% }) %>
 
