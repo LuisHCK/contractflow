@@ -276,6 +276,7 @@ export const recoverProject = async (req, res) => {
         if (success) {
             req.flash('success', 'Project recovered successfully')
         } else {
+            console.log({success})
             req.flash('danger', 'Failed to recover project')
         }
         return res.redirect('/admin')

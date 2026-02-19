@@ -59,10 +59,11 @@ export const getAllProjects = async () => {
  * @param {number} id Project id
  * @returns {Promise<Project> | null}
  */
-export const getProjectById = async (id) => {
+export const getProjectById = async (id, deleted = false) => {
     try {
         const systemCurrency = await getSystemSetting('currency', 'USD')
-        const rows = await database.unsafe(PROJECTS.GET, [id])
+        const deletedFlag = deleted ? 'true' : 'false'
+        const rows = await database.unsafe(PROJECTS.GET, [id, deletedFlag])
         const project = rows?.[0]
         if (!project) return null
         return new Project(hydrateProjectFinancials(project, systemCurrency))
@@ -223,7 +224,7 @@ export const deleteProjectById = async (id) => {
  */
 export const recoverProjectById = async (id) => {
     try {
-        const project = await getProjectById(id)
+        const project = await getProjectById(id, true)
         if (!project) return false
         await database.unsafe(PROJECTS.RECOVER, [id])
         return true

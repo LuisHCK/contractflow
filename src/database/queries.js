@@ -129,7 +129,7 @@ export const PROJECTS = {
             WHERE s.deleted = false
             GROUP BY s.project_id
         ) payment_totals ON p.id = payment_totals.project_id
-        WHERE p.id = $1 AND p.deleted = false;`,
+        WHERE p.id = $1 AND p.deleted = $2;`,
 
     UPDATE: `
         UPDATE projects
