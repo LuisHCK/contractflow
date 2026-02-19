@@ -41,59 +41,95 @@ export const USERS = {
 
 export const PROJECTS = {
     GET_ALL: `
-        SELECT 
-        p.*, 
-        COALESCE(
-            SUM(s.estimated_cost), 
-            0
-        ) AS total_estimated_cost, 
-        COALESCE(
-            SUM(py.amount), 
-            0
-        ) AS actual_cost,
-         ROUND(
+        SELECT
+        p.*,
+        COALESCE(stage_totals.total_estimated_base, 0) AS total_estimated_base,
+        COALESCE(payment_totals.actual_cost_base, 0) AS actual_cost_base,
+        ROUND(
             CASE 
-                WHEN COALESCE(SUM(s.estimated_cost), 0) = 0 THEN 0
-                ELSE ((COALESCE(SUM(py.amount), 0) * 100.0) / COALESCE(SUM(s.estimated_cost), 0))::numeric
+                WHEN COALESCE(stage_totals.total_estimated_base, 0) = 0 THEN 0
+                ELSE ((COALESCE(payment_totals.actual_cost_base, 0) * 100.0) / COALESCE(stage_totals.total_estimated_base, 0))::numeric
                 END,
                 1
             ) AS progress
-        FROM 
-        projects p 
-        LEFT JOIN stage s ON p.id = s.project_id AND s.deleted = false
-        LEFT JOIN payments py ON s.id = py.stage_id AND py.deleted = false
+        FROM projects p
+        LEFT JOIN (
+            SELECT 
+                s.project_id,
+                SUM(
+                    COALESCE(
+                        s.estimated_cost_base,
+                        s.estimated_cost * COALESCE(NULLIF(s.exchange_rate, 0), 1),
+                        s.estimated_cost
+                    )
+                ) AS total_estimated_base
+            FROM stage s
+            WHERE s.deleted = false
+            GROUP BY s.project_id
+        ) stage_totals ON p.id = stage_totals.project_id
+        LEFT JOIN (
+            SELECT
+                s.project_id,
+                SUM(
+                    COALESCE(
+                        py.amount_base,
+                        py.amount * COALESCE(NULLIF(py.exchange_rate, 0), 1),
+                        py.amount
+                    )
+                ) AS actual_cost_base
+            FROM stage s
+            LEFT JOIN payments py ON s.id = py.stage_id AND py.deleted = false
+            WHERE s.deleted = false
+            GROUP BY s.project_id
+        ) payment_totals ON p.id = payment_totals.project_id
         WHERE p.deleted = false
-        GROUP BY 
-        p.id;`,
+        ORDER BY p.id DESC;`,
 
     ADD: `
         INSERT INTO projects (
-            name, description, start_date, end_date, status, created_by
+            name, description, start_date, end_date, status, created_by, currency_code, currency_symbol, default_exchange_rate
         ) 
         VALUES (
-            $1, $2, $3, $4, $5, $6
+            $1, $2, $3, $4, $5, $6, $7, $8, $9
         )
         RETURNING id;`,
 
     GET: `
         SELECT 
-            p.*, 
-        COALESCE(
-            SUM(s.estimated_cost), 
-            0
-        ) AS total_estimated_cost, 
-        COALESCE(
-            SUM(py.amount), 
-            0
-        ) AS actual_cost 
-        FROM 
-            projects p 
-            LEFT JOIN stage s ON p.id = s.project_id AND s.deleted = false
+            p.*,
+            COALESCE(stage_totals.total_estimated_base, 0) AS total_estimated_base,
+            COALESCE(payment_totals.actual_cost_base, 0) AS actual_cost_base
+        FROM projects p
+        LEFT JOIN (
+            SELECT 
+                s.project_id,
+                SUM(
+                    COALESCE(
+                        s.estimated_cost_base,
+                        s.estimated_cost * COALESCE(NULLIF(s.exchange_rate, 0), 1),
+                        s.estimated_cost
+                    )
+                ) AS total_estimated_base
+            FROM stage s
+            WHERE s.deleted = false
+            GROUP BY s.project_id
+        ) stage_totals ON p.id = stage_totals.project_id
+        LEFT JOIN (
+            SELECT
+                s.project_id,
+                SUM(
+                    COALESCE(
+                        py.amount_base,
+                        py.amount * COALESCE(NULLIF(py.exchange_rate, 0), 1),
+                        py.amount
+                    )
+                ) AS actual_cost_base
+            FROM stage s
             LEFT JOIN payments py ON s.id = py.stage_id AND py.deleted = false
-        WHERE 
-            p.id = $1 AND p.deleted = false
-        GROUP BY 
-            p.id;`,
+            WHERE s.deleted = false
+            GROUP BY s.project_id
+        ) payment_totals ON p.id = payment_totals.project_id
+        WHERE p.id = $1 AND p.deleted = false;`,
 
     UPDATE: `
         UPDATE projects
@@ -102,8 +138,20 @@ export const PROJECTS = {
             start_date = $3,
             end_date = $4,
             status = $5,
+            currency_code = $6,
+            currency_symbol = $7,
+            default_exchange_rate = $8,
             updated_at = CURRENT_TIMESTAMP
-        WHERE id = $6;
+        WHERE id = $9;
+    `,
+
+    UPDATE_CURRENCY: `
+        UPDATE projects
+        SET currency_code = $1,
+            currency_symbol = $2,
+            default_exchange_rate = $3,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = $4;
     `,
 
     SOFT_DELETE: `
@@ -120,11 +168,12 @@ export const PROJECTS = {
 export const STAGES = {
     GET_ALL: `
         SELECT s.*, ROUND(
-            CASE WHEN s.estimated_cost = 0 THEN 0
-                 ELSE ((100.0 * COALESCE(SUM(p.amount), 0)) / s.estimated_cost)::numeric
+            CASE WHEN COALESCE(s.estimated_cost_base, s.estimated_cost) = 0 THEN 0
+                 ELSE ((100.0 * COALESCE(SUM(COALESCE(p.amount_base, p.amount * COALESCE(NULLIF(p.exchange_rate, 0), 1), p.amount)), 0)) / COALESCE(s.estimated_cost_base, s.estimated_cost))::numeric
             END, 1
         ) AS progress,
-        COALESCE(SUM(p.amount), 0) AS total_payments
+        COALESCE(SUM(COALESCE(p.amount_base, p.amount * COALESCE(NULLIF(p.exchange_rate, 0), 1), p.amount)), 0) AS total_payments_base,
+        COALESCE(SUM(COALESCE(p.amount_base, p.amount * COALESCE(NULLIF(p.exchange_rate, 0), 1), p.amount)), 0) / COALESCE(NULLIF(s.exchange_rate, 0), 1) AS total_payments
         FROM stage s 
         LEFT JOIN payments p ON s.id = p.stage_id AND p.deleted = false
         WHERE s.project_id = $1 AND s.deleted = false
@@ -133,10 +182,10 @@ export const STAGES = {
 
     ADD: `
         INSERT INTO stage (
-            project_id, name, estimated_cost, created_by, start_date, end_date, description, contractor_id
+            project_id, name, estimated_cost, created_by, start_date, end_date, description, contractor_id, display_currency_code, display_currency_symbol, exchange_rate, estimated_cost_base
         ) 
         VALUES (
-            $1, $2, $3, $4, $5, $6, $7, $8
+            $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12
         )
         RETURNING id;`,
     GET: `SELECT * FROM stage WHERE id = $1 AND deleted = false;`,
@@ -144,8 +193,17 @@ export const STAGES = {
     UPDATE: `
         UPDATE stage
         SET name = $1,
-            estimated_cost = $2
-        WHERE id = $3;`,
+            estimated_cost = $2,
+            start_date = $3,
+            end_date = $4,
+            description = $5,
+            contractor_id = $6,
+            display_currency_code = $7,
+            display_currency_symbol = $8,
+            exchange_rate = $9,
+            estimated_cost_base = $10
+        WHERE id = $11
+        RETURNING id;`,
 
     GET_PROJECT_ID: `
         SELECT p.id AS project_id
@@ -169,22 +227,29 @@ export const STAGES = {
             s.name AS stage_name,
             s.description AS stage_description,
             s.estimated_cost AS estimated_cost,
+            COALESCE(s.estimated_cost_base, s.estimated_cost) AS estimated_cost_base,
+            s.exchange_rate AS stage_exchange_rate,
+            s.display_currency_code AS stage_currency_code,
+            s.display_currency_symbol AS stage_currency_symbol,
             s.start_date AS stage_start_date,
             s.end_date AS stage_end_date,
             p.id AS project_id,
             p.name AS project_name,
             p.status AS project_status,
             p.description AS project_description,
-            COALESCE(SUM(py.amount), 0) AS total_paid,
+            p.currency_code AS project_currency_code,
+            p.currency_symbol AS project_currency_symbol,
+            p.default_exchange_rate AS project_exchange_rate,
+            COALESCE(SUM(COALESCE(py.amount_base, py.amount * COALESCE(NULLIF(py.exchange_rate, 0), 1), py.amount)), 0) AS total_paid_base,
             COUNT(py.id) AS payments_count,
             ROUND(
                 CASE 
-                    WHEN s.estimated_cost = 0 THEN 0
-                    ELSE ((COALESCE(SUM(py.amount), 0) * 100.0) / s.estimated_cost)::numeric
+                    WHEN COALESCE(s.estimated_cost_base, s.estimated_cost) = 0 THEN 0
+                    ELSE ((COALESCE(SUM(COALESCE(py.amount_base, py.amount * COALESCE(NULLIF(py.exchange_rate, 0), 1), py.amount)), 0) * 100.0) / COALESCE(s.estimated_cost_base, s.estimated_cost))::numeric
                 END,
                 1
             ) AS progress_percentage,
-            (s.estimated_cost - COALESCE(SUM(py.amount), 0)) AS outstanding_balance
+            (COALESCE(s.estimated_cost_base, s.estimated_cost) - COALESCE(SUM(COALESCE(py.amount_base, py.amount * COALESCE(NULLIF(py.exchange_rate, 0), 1), py.amount)), 0)) AS outstanding_balance_base
         FROM stage s
         JOIN projects p ON s.project_id = p.id
         LEFT JOIN payments py ON s.id = py.stage_id AND py.deleted = false
@@ -195,10 +260,10 @@ export const STAGES = {
 export const PAYMENTS = {
     ADD: `
         INSERT INTO payments (
-            stage_id, amount, date, payer, payment_category_id, contractor_id, description, payment_method, created_by, balance, hide_totals_invoice
+            stage_id, amount, date, payer, payment_category_id, contractor_id, description, payment_method, created_by, balance, hide_totals_invoice, display_currency_code, display_currency_symbol, exchange_rate, amount_base, balance_base
         ) 
         VALUES (
-            $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11
+            $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16
         )
         RETURNING id;`,
 
@@ -229,7 +294,7 @@ export const PAYMENTS = {
         WHERE py.id = $1 AND py.deleted = false;`,
 
     GET_TOTAL_PAYED_AMOUNT: `
-        SELECT COALESCE(SUM(amount), 0) AS total_amount
+        SELECT COALESCE(SUM(COALESCE(amount_base, amount * COALESCE(NULLIF(exchange_rate, 0), 1), amount)), 0) AS total_amount
         FROM payments
         WHERE stage_id = $1 AND deleted = false;`,
 
@@ -247,11 +312,16 @@ export const PAYMENTS = {
         SELECT 
             py.id,
             py.amount,
+            py.amount_base,
             py.date,
             py.payer,
             py.payment_method,
             py.description,
             py.balance,
+            py.balance_base,
+            py.exchange_rate,
+            py.display_currency_code,
+            py.display_currency_symbol,
             py.created_at,
             COALESCE(c.name, '') AS contractor_name,
             COALESCE(pc.name, '') AS payment_category_name

@@ -22,7 +22,7 @@
                 <div class="">
                     <b><%= __('invoice_amount') %></b>
                     <span class="is-underlined">
-                        <%= utils.formatToCurrency(payment.amount) %>
+                        <%= utils.formatToCurrency(payment.amount, utils.paymentCurrencyOptions) %>
                     </span>
                 </div>
 
@@ -57,19 +57,19 @@
                         <% if (!payment.hideTotalsInvoice) { %>
                         <tr>
                             <td><%= __('invoice_acc_amount') %></td>
-                            <td><%= utils.formatToCurrency(stage.estimatedCost) %></td>
+                            <td><%= utils.formatToCurrency(stage.estimatedCost, utils.stageCurrencyOptions) %></td>
                         </tr>
                         <% } %>
                         
                         <tr>
                             <td><%= __('invoice_this_payment') %></td>
-                            <td><%= utils.formatToCurrency(payment.amount) %></td>
+                            <td><%= utils.formatToCurrency(payment.amount, utils.paymentCurrencyOptions) %></td>
                         </tr>
 
                         <% if (!payment.hideTotalsInvoice) { %>
                         <tr>
                             <td><%= __('invoice_balance_due') %></td>
-                            <td><%= utils.formatToCurrency(payment.balance) %></td>
+                            <td><%= utils.formatToCurrency(payment.balance, utils.paymentCurrencyOptions) %></td>
                         </tr>
                         <% } %>
                     </tbody>

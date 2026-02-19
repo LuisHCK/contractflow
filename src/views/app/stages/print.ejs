@@ -131,11 +131,11 @@
                                         <span class="tag is-info is-light"><%= payment.paymentMethod %></span>
                                     </td>
                                     <td>
-                                        <span class="tag is-primary"><%= formatToCurrency(payment.amount) %></span>
+                                        <span class="tag is-primary"><%= payment.formattedAmount %></span>
                                     </td>
                                     <td>
                                         <span class="tag is-light is-size-7">
-                                            <%= formatToCurrency(payment.balance || 0) %>
+                                            <%= payment.formattedBalance %>
                                         </span>
                                     </td>
                                     <td>

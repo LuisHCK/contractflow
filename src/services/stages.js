@@ -1,9 +1,16 @@
 import { database } from '@/database'
 import { STAGES } from '@/database/queries'
-import { formatToCurrency } from '@/utils/money'
+import {
+    formatToCurrency,
+    fromBaseAmount,
+    getCurrencyOptions,
+    normalizeExchangeRate,
+    toBaseAmount
+} from '@/utils/money'
 import { format } from 'date-fns'
 import { DATE_FORMAT } from '@/config/constants'
 import { formatToISOString } from '@/utils/date'
+import { getProjectById } from '@/services/projects'
 
 /**
  * Recover a soft-deleted stage by setting its deleted flag to 0.
@@ -28,8 +35,13 @@ export class Stage {
         this.projectId = stage.projectId || stage.project_id
         this.name = stage.name
         this.estimatedCost = stage.estimatedCost || stage.estimated_cost || 0
+        this.estimatedCostBase = stage.estimatedCostBase || stage.estimated_cost_base || 0
         this.totalPayments = stage.totalPayments || stage.total_payments || 0
-        this.contractorId = stage.contractorId || stage.contractor_idW
+        this.totalPaymentsBase = stage.totalPaymentsBase || stage.total_payments_base || 0
+        this.displayCurrencyCode = stage.displayCurrencyCode || stage.display_currency_code || null
+        this.displayCurrencySymbol = stage.displayCurrencySymbol || stage.display_currency_symbol || null
+        this.exchangeRate = normalizeExchangeRate(stage.exchangeRate || stage.exchange_rate || 1)
+        this.contractorId = stage.contractorId || stage.contractor_id
         this.progress = stage.progress || 0
         this.createdAt = stage.createdAt || stage.created_at
         this.updatedAt = stage.updatedAt || stage.updated_at
@@ -40,7 +52,27 @@ export class Stage {
     }
 
     get formattedEstimatedCost() {
-        return formatToCurrency(this.estimatedCost)
+        return formatToCurrency(this.estimatedCost, {
+            currency: this.displayCurrencyCode,
+            symbol: this.displayCurrencySymbol
+        })
+    }
+}
+
+const resolveProjectCurrencyContext = async (projectId) => {
+    const project = await getProjectById(projectId)
+    if (!project?.id) {
+        return {
+            currencyCode: 'USD',
+            currencySymbol: null,
+            exchangeRate: 1
+        }
+    }
+
+    return {
+        currencyCode: project.currencyCode || 'USD',
+        currencySymbol: project.currencySymbol || null,
+        exchangeRate: normalizeExchangeRate(project.defaultExchangeRate || 1)
     }
 }
 
@@ -67,10 +99,11 @@ export const getStageById = async (id) => {
     try {
         const rows = await database.unsafe(STAGES.GET, [id])
         const stage = rows?.[0]
+        if (!stage) return null
         return new Stage(stage)
     } catch (error) {
         console.error(`Error fetching stage by id: ${error.message}`)
-        return {}
+        return null
     }
 }
 
@@ -97,19 +130,35 @@ export const getStagesByProject = async (projectId) => {
  */
 export const createStage = async (stage) => {
     try {
+        const projectCurrency = await resolveProjectCurrencyContext(stage.projectId)
+        const estimatedCost = Number(stage.estimatedCost || 0)
+        const estimatedCostBase = toBaseAmount(estimatedCost, projectCurrency.exchangeRate)
+
         const rows = await database.unsafe(STAGES.ADD, [
             stage.projectId,
             stage.name,
-            stage.estimatedCost,
+            estimatedCost,
             stage.createdBy,
             formatToISOString(stage.startDate),
             formatToISOString(stage.endDate),
             stage.description,
-            stage.contractorId
+            stage.contractorId,
+            projectCurrency.currencyCode,
+            projectCurrency.currencySymbol,
+            projectCurrency.exchangeRate,
+            estimatedCostBase
         ])
         const id = rows?.[0]?.id
         if (!id) return null
-        return new Stage({ id, ...stage })
+        return new Stage({
+            id,
+            ...stage,
+            estimatedCost,
+            estimatedCostBase,
+            displayCurrencyCode: projectCurrency.currencyCode,
+            displayCurrencySymbol: projectCurrency.currencySymbol,
+            exchangeRate: projectCurrency.exchangeRate
+        })
     } catch (error) {
         console.error(`Error creating stage: ${error.message}`)
         return null
@@ -124,13 +173,24 @@ export const createStage = async (stage) => {
  */
 export const updateStage = async (id, stage) => {
     try {
+        const existingStage = await getStageById(id)
+        if (!existingStage?.id) return null
+
+        const projectCurrency = await resolveProjectCurrencyContext(existingStage.projectId)
+        const estimatedCost = Number(stage.estimatedCost || 0)
+        const estimatedCostBase = toBaseAmount(estimatedCost, projectCurrency.exchangeRate)
+
         const rows = await database.unsafe(STAGES.UPDATE, [
             stage.name,
-            stage.estimatedCost,
+            estimatedCost,
             formatToISOString(stage.startDate),
             formatToISOString(stage.endDate),
             stage.description,
             stage.contractorId,
+            projectCurrency.currencyCode,
+            projectCurrency.currencySymbol,
+            projectCurrency.exchangeRate,
+            estimatedCostBase,
             id
         ])
         if (!rows || rows.length === 0) return null
@@ -187,32 +247,52 @@ export const getStageReportSummary = async (stageId) => {
             return null
         }
 
-        const estimatedCost = Number(summary.estimated_cost) || 0
-        const totalPaid = Number(summary.total_paid) || 0
-        const outstandingBalance = Number(summary.outstanding_balance) || 0
+        const exchangeRate = normalizeExchangeRate(summary.stage_exchange_rate || 1)
+        const stageCurrencyCode = summary.stage_currency_code || summary.project_currency_code || 'USD'
+        const stageCurrencySymbol = summary.stage_currency_symbol || summary.project_currency_symbol || null
+        const estimatedCostBase = Number(summary.estimated_cost_base) || 0
+        const totalPaidBase = Number(summary.total_paid_base) || 0
+        const outstandingBalanceBase = Number(summary.outstanding_balance_base) || 0
+        const estimatedCost = fromBaseAmount(estimatedCostBase, exchangeRate)
+        const totalPaid = fromBaseAmount(totalPaidBase, exchangeRate)
+        const outstandingBalance = fromBaseAmount(outstandingBalanceBase, exchangeRate)
         const progress = Number(summary.progress_percentage) || 0
+        const formatOptions = getCurrencyOptions({
+            displayCurrencyCode: stageCurrencyCode,
+            displayCurrencySymbol: stageCurrencySymbol,
+            exchangeRate
+        })
 
         return {
             project: {
                 id: summary.project_id,
                 name: summary.project_name,
                 status: summary.project_status,
-                description: summary.project_description
+                description: summary.project_description,
+                currencyCode: summary.project_currency_code,
+                currencySymbol: summary.project_currency_symbol,
+                defaultExchangeRate: summary.project_exchange_rate
             },
             stage: {
                 id: summary.stage_id,
                 name: summary.stage_name,
                 description: summary.stage_description,
                 estimatedCost,
-                formattedEstimatedCost: formatToCurrency(estimatedCost),
+                estimatedCostBase,
+                exchangeRate,
+                displayCurrencyCode: stageCurrencyCode,
+                displayCurrencySymbol: stageCurrencySymbol,
+                formattedEstimatedCost: formatToCurrency(estimatedCost, formatOptions),
                 startDate: formatDateValue(summary.stage_start_date),
                 endDate: formatDateValue(summary.stage_end_date)
             },
             totals: {
                 totalPaid,
-                formattedTotalPaid: formatToCurrency(totalPaid),
+                totalPaidBase,
+                formattedTotalPaid: formatToCurrency(totalPaid, formatOptions),
                 outstandingBalance,
-                formattedOutstandingBalance: formatToCurrency(outstandingBalance),
+                outstandingBalanceBase,
+                formattedOutstandingBalance: formatToCurrency(outstandingBalance, formatOptions),
                 paymentsCount: summary.payments_count || 0,
                 progress
             }

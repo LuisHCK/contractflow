@@ -1,9 +1,17 @@
-import { PAYMENT_FORM, PROJECT_FORM } from '@/forms'
+import { PAYMENT_FORM, PROJECT_FORM, PROJECT_CURRENCY_FORM } from '@/forms'
 import { getAllPayments } from '@/services/payments'
-import { createProject, getAllProjects, getProjectById, updateProject, deleteProjectById } from '@/services/projects'
+import {
+    createProject,
+    getAllProjects,
+    getProjectById,
+    updateProject,
+    updateProjectCurrency,
+    deleteProjectById
+} from '@/services/projects'
 import { getStageById, getStagesByProject } from '@/services/stages'
 import { format } from 'date-fns'
 import { DATE_FORMAT } from '@/config/constants'
+import { formatToCurrency } from '@/utils/money'
 
 export const index = async (_req, res) => {
     try {
@@ -89,12 +97,17 @@ export const edit = async (req, res) => {
         }
 
         // Render form edit view
+        const projectEditFields = PROJECT_FORM.fields.filter(
+            (field) =>
+                !['currencyCode', 'currencySymbol', 'defaultExchangeRate'].includes(field.name)
+        )
+
         res.render('generic/form-view', {
             form: {
                 ...PROJECT_FORM,
                 method: 'POST',
                 action: req.params.id,
-                fields: PROJECT_FORM.fields.map((field) => {
+                fields: projectEditFields.map((field) => {
                     const value = project[field.name]
                     return { ...field, value }
                 })
@@ -103,6 +116,43 @@ export const edit = async (req, res) => {
         })
     } catch (error) {
         res.status(500).json({ message: error.message })
+    }
+}
+
+export const editCurrency = async (req, res) => {
+    try {
+        const project = await getProjectById(req.params.id)
+
+        if (!project) {
+            return res.status(404).json({ message: 'Project not found' })
+        }
+
+        if (req.method === 'POST') {
+            const { body, params } = req
+            const updatedProject = await updateProjectCurrency(params.id, body)
+
+            if (updatedProject?.id) {
+                return res.redirect(`/projects/show/${params.id}`)
+            }
+
+            return res.redirect(`/projects/show/${params.id}/currency?error=true`)
+        }
+
+        return res.render('generic/form-view', {
+            form: {
+                ...PROJECT_CURRENCY_FORM,
+                method: 'POST',
+                action: `/projects/show/${project.id}/currency`,
+                submitLabel: 'projects_currency_submit',
+                fields: PROJECT_CURRENCY_FORM.fields.map((field) => {
+                    const value = project[field.name]
+                    return { ...field, value }
+                })
+            },
+            title: req.__('projects_currency_edit_title', { name: project.name })
+        })
+    } catch (error) {
+        return res.status(500).json({ message: error.message })
     }
 }
 
@@ -136,7 +186,11 @@ export const showStagePayments = async (req, res) => {
         const data = payments.map((payment) => ({
             ...payment,
             date: format(payment.date, DATE_FORMAT),
-            amount: () => `<span class="tag is-primary">$${payment.amount.toFixed(2)}</span>`,
+            amount: () =>
+                `<span class="tag is-primary">${formatToCurrency(payment.amount, {
+                    currency: payment.displayCurrencyCode,
+                    symbol: payment.displayCurrencySymbol
+                })}</span>`,
             actions: () =>
                 `<a href="/projects/show/${req.params.id}/stages/${req.params.stageId}/payments/show/${payment.id}" class="button is-small">${req.__('view')}</a>`
         }))

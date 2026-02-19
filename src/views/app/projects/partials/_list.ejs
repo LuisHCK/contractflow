@@ -53,7 +53,7 @@
                                     </div>
                                     <div >
                                         <p class="mb-1 is-size-7"><%= __('projects_list_estimated_cost') %></p>
-                                        <p class="m-0 "><%= formatToCurrency(project.estimatedCost) %></p>
+                                        <p class="m-0 "><%= formatToCurrency(project.estimatedCost, { currency: project.currencyCode, symbol: project.currencySymbol }) %></p>
                                     </div>
                                 </div>
                             </div>

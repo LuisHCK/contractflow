@@ -26,6 +26,8 @@ router.get('/projects/create', projectController.create)
 router.post('/projects/create', projectController.create)
 router.get('/projects/edit/:id', projectController.edit)
 router.post('/projects/edit/:id', projectController.edit)
+router.get('/projects/show/:id/currency', projectController.editCurrency)
+router.post('/projects/show/:id/currency', projectController.editCurrency)
 router.post('/projects/delete/:id', projectController.deleteProject)
 
 /**

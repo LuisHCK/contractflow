@@ -36,7 +36,11 @@ export const index = async (req, res) => {
         const data = payments.map((payment) => ({
             ...payment,
             date: format(payment.date, DATE_FORMAT),
-            amount: () => `<span class="tag is-primary">$${Number(payment.amount).toFixed(2)}</span>`,
+            amount: () =>
+                `<span class="tag is-primary">${formatToCurrency(payment.amount, {
+                    currency: payment.displayCurrencyCode,
+                    symbol: payment.displayCurrencySymbol
+                })}</span>`,
             actions: () =>
                 `<a href="/projects/show/${projectId}/stages/${stageId}/payments/show/${payment.id}" class="button is-small">${req.__('view')}</a>`
         }))
@@ -146,7 +150,15 @@ export const print = async (req, res) => {
                 estimatedCostWords: numberToWords(payment.amount, req.getLocale()).toUpperCase()
             },
             utils: {
-                formatToCurrency
+                formatToCurrency,
+                paymentCurrencyOptions: {
+                    currency: payment.displayCurrencyCode || stage.displayCurrencyCode,
+                    symbol: payment.displayCurrencySymbol || stage.displayCurrencySymbol
+                },
+                stageCurrencyOptions: {
+                    currency: stage.displayCurrencyCode,
+                    symbol: stage.displayCurrencySymbol
+                }
             }
         })
     } catch (error) {
