@@ -97,7 +97,7 @@ router.post(
  * SYSTEM SETTINGS
  */
 router.get('/settings', systemSettingsController.index)
-router.post('/settings', systemSettingsController.index)
+router.post('/settings/invoice-format', systemSettingsController.updateInvoiceFormat)
 
 /**
  * ADMIN

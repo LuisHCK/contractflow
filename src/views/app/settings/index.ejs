@@ -3,6 +3,7 @@
     <%- include('../../partials/head', { title: `ContractFlow | ${__(title)}` }) %>
     <body>
         <%- include('../../partials/navigation') %>
+        <%- include('../../partials/flash-messages') %>
 
         <main class="container is-max-desktop py-6 px-4">
             <nav class="breadcrumb is-small" aria-label="breadcrumbs">
@@ -21,30 +22,17 @@
                     <h1 class="title is-2 is-family-sans-serif"><%= __(title) %></h1>
                 </div>
 
-                <% if (typeof success !== 'undefined') { %>
-                    <div class="notification is-success">
-                        <button class="delete" onclick="this.parentNode.remove()"></button>
-                        <%= success %>
-                    </div>
-                <% } %>
+                <% actions.forEach(actionItem => { %>
+                    <form action="<%= actionItem.action %>" method="post" class="form mb-5">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-                <% if (typeof error !== 'undefined') { %>
-                    <div class="notification is-danger">
-                        <button class="delete" onclick="this.parentNode.remove()"></button>
-                        <%= error %>
-                    </div>
-                <% } %>
-
-                <form action="/settings" method="post" class="form">
-                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                    <% groups.forEach(group => { %>
-                        <div class="box mb-5">
-                            <h2 class="title is-4 mb-2"><%= group.title %></h2>
-                            <% if (group.description) { %>
-                                <p class="subtitle is-6 has-text-grey mb-4"><%= group.description %></p>
+                        <div class="box">
+                            <h2 class="title is-4 mb-2"><%= actionItem.title %></h2>
+                            <% if (actionItem.description) { %>
+                                <p class="subtitle is-6 has-text-grey mb-4"><%= actionItem.description %></p>
                             <% } %>
 
-                            <% group.fields.forEach(field => { %>
+                            <% actionItem.fields.forEach(field => { %>
                                 <div class="field mb-4">
                                     <label class="label" for="<%= field.name %>">
                                         <%= field.label %>
@@ -61,6 +49,23 @@
                                                 placeholder="<%= field.placeholder %>"
                                                 <%= field.required ? 'required' : '' %>
                                             ><%= field.value || '' %></textarea>
+                                        <% } else if (field.type === 'select') { %>
+                                            <div class="select is-fullwidth">
+                                                <select
+                                                    name="<%= field.name %>"
+                                                    id="<%= field.name %>"
+                                                    <%= field.required ? 'required' : '' %>
+                                                >
+                                                    <% (field.options || []).forEach(option => { %>
+                                                        <option
+                                                            value="<%= option.value %>"
+                                                            <%= option.selected ? 'selected' : '' %>
+                                                        >
+                                                            <%= option.label %>
+                                                        </option>
+                                                    <% }) %>
+                                                </select>
+                                            </div>
                                         <% } else { %>
                                             <input
                                                 class="input"
@@ -73,17 +78,21 @@
                                             />
                                         <% } %>
                                     </div>
+
+                                    <% if (field.help) { %>
+                                        <p class="help"><%= field.help %></p>
+                                    <% } %>
                                 </div>
                             <% }) %>
-                        </div>
-                    <% }) %>
 
-                    <div>
-                        <button class="button is-primary" type="submit">
-                            <%= __(submitLabel || 'submit') %>
-                        </button>
-                    </div>
-                </form>
+                            <div>
+                                <button class="button is-primary" type="submit">
+                                    <%= actionItem.submitLabel %>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                <% }) %>
             </section>
         </main>
     </body>

@@ -1,0 +1,106 @@
+<section class="letter-invoice">
+    <header class="letter-header">
+        <div>
+            <h1 class="title is-4 mb-1"><%= __('invoice_title') %></h1>
+            <p class="is-size-7 has-text-grey"><%= project.name %></p>
+        </div>
+        <div class="has-text-right">
+            <p class="mb-1">
+                <b><%= __('invoice_receipt_number') %></b>
+                <span class="is-underlined"><%= payment.paymentNumber %></span>
+            </p>
+            <p class="mb-0">
+                <b><%= __('invoice_payment_date') %></b>
+                <span class="is-underlined"><%= payment.createdAt %></span>
+            </p>
+        </div>
+    </header>
+
+    <div class="letter-grid mt-4 mb-4">
+        <div>
+            <p class="mb-1"><b><%= __('invoice_received_from') %></b></p>
+            <p><%= payment.payer || '-' %></p>
+        </div>
+        <div>
+            <p class="mb-1"><b><%= __('invoice_received_by') %></b></p>
+            <p><%= contractor.name || '-' %></p>
+        </div>
+        <div>
+            <p class="mb-1"><b><%= __('invoice_payment_method') %></b></p>
+            <p><%= payment.paymentMethod || '-' %></p>
+        </div>
+        <div>
+            <p class="mb-1"><b><%= __('invoice_amount') %></b></p>
+            <p><%= utils.formatToCurrency(payment.amount, utils.paymentCurrencyOptions) %></p>
+        </div>
+    </div>
+
+    <div class="mb-4">
+        <p class="mb-1"><b><%= __('invoice_for_payment_of') %></b></p>
+        <p><%= payment.description || '-' %></p>
+    </div>
+
+    <div class="mb-4">
+        <p class="mb-1"><b><%= __('invoice_in_words') %></b></p>
+        <p class="is-uppercase"><%= stage.estimatedCostWords %></p>
+    </div>
+
+    <table class="table is-fullwidth is-bordered is-narrow is-dark-bordered">
+        <tbody>
+            <tr>
+                <td><%= __('invoice_this_payment') %></td>
+                <td class="has-text-right">
+                    <%= utils.formatToCurrency(payment.amount, utils.paymentCurrencyOptions) %>
+                </td>
+            </tr>
+
+            <% if (!payment.hideTotalsInvoice) { %>
+            <tr>
+                <td><%= __('invoice_acc_amount') %></td>
+                <td class="has-text-right">
+                    <%= utils.formatToCurrency(stage.estimatedCost, utils.stageCurrencyOptions) %>
+                </td>
+            </tr>
+            <tr>
+                <td><%= __('invoice_balance_due') %></td>
+                <td class="has-text-right">
+                    <%= utils.formatToCurrency(payment.balance, utils.paymentCurrencyOptions) %>
+                </td>
+            </tr>
+            <% } %>
+        </tbody>
+    </table>
+</section>
+
+<style>
+    .letter-invoice {
+        max-width: 8.5in;
+        margin: 0 auto;
+        padding: 0.5in;
+        border: 1px solid #ddd;
+        background: #fff;
+    }
+
+    .letter-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 0.75rem;
+    }
+
+    .letter-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.75rem 1rem;
+    }
+
+    @media print {
+        .letter-invoice {
+            border: none;
+            margin: 0;
+            padding: 0;
+            max-width: none;
+        }
+    }
+</style>

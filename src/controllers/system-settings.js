@@ -1,44 +1,19 @@
 import { getSystemSetting, setSystemSetting } from '@/services/system-settings'
-
-const CURRENCY_KEY = 'currency'
+import {
+	DEFAULT_INVOICE_FORMAT,
+	INVOICE_FORMAT_SETTING_KEY,
+	getInvoiceFormatOptions,
+	isInvoiceFormatSupported,
+	normalizeInvoiceFormat
+} from '@/services/invoice-formats'
 
 /**
- * Display and update grouped system settings.
- * Currently includes only currency, but is ready for more groups.
+ * Display and update system settings.
  *
- * GET  /settings -> show settings groups
- * POST /settings -> update settings
+ * GET  /settings -> show settings actions
  */
 export const index = async (req, res) => {
 	try {
-		const { method, body, user } = req
-
-		if (method === 'POST') {
-			const currencyValue = (body.currency || '').trim()
-
-			if (!currencyValue) {
-				const viewModel = await buildSettingsViewModel(req, {
-					currency: body.currency || ''
-				})
-
-				return res.render('app/settings/index', {
-					...viewModel,
-					error: req.__('system_settings_currency_error')
-				})
-			}
-
-			await setSystemSetting(CURRENCY_KEY, currencyValue, {
-				userId: user?.id,
-				details: 'Default currency code (e.g. USD, EUR, MXN)'
-			})
-
-			const viewModel = await buildSettingsViewModel(req)
-			return res.render('app/settings/index', {
-				...viewModel,
-				success: req.__('system_settings_saved_successfully')
-			})
-		}
-
 		const viewModel = await buildSettingsViewModel(req)
 		return res.render('app/settings/index', viewModel)
 	} catch (error) {
@@ -49,25 +24,63 @@ export const index = async (req, res) => {
 	}
 }
 
-const buildSettingsViewModel = async (req, overrides = {}) => {
-	const currentCurrency =
-		overrides.currency !== undefined
-			? overrides.currency
-			: await getSystemSetting(CURRENCY_KEY, '')
+export const updateInvoiceFormat = async (req, res) => {
+	try {
+		const requester = req.user
+		if (!requester || requester.role !== 'admin') {
+			req.flash('danger', 'Unauthorized')
+			return res.status(403).redirect('/settings')
+		}
 
-	const groups = [
+		const requestedFormat = String(req.body.invoiceFormat || '').trim()
+
+		if (!isInvoiceFormatSupported(requestedFormat)) {
+			req.flash('danger', req.__('system_settings_invoice_format_invalid'))
+			return res.status(400).redirect('/settings')
+		}
+
+		const normalizedFormat = normalizeInvoiceFormat(requestedFormat)
+
+		await setSystemSetting(INVOICE_FORMAT_SETTING_KEY, normalizedFormat, {
+			userId: requester.id,
+			details: 'Default invoice print format'
+		})
+
+		req.flash('success', req.__('system_settings_invoice_format_saved'))
+		return res.redirect('/settings')
+	} catch (error) {
+		console.error(`Error updating invoice format: ${error.message}`)
+		req.flash('danger', req.__('system_settings_invoice_format_update_failed'))
+		return res.status(500).redirect('/settings')
+	}
+}
+
+const buildSettingsViewModel = async (req) => {
+	const selectedInvoiceFormat = normalizeInvoiceFormat(
+		await getSystemSetting(INVOICE_FORMAT_SETTING_KEY, DEFAULT_INVOICE_FORMAT)
+	)
+
+	const invoiceFormatOptions = getInvoiceFormatOptions().map((item) => ({
+		value: item.key,
+		label: req.__(item.labelKey),
+		selected: item.key === selectedInvoiceFormat
+	}))
+
+	const actions = [
 		{
-			key: 'general',
-			title: req.__('system_settings_group_general_title'),
-			description: req.__('system_settings_group_general_description'),
+			key: 'invoice-format',
+			title: req.__('system_settings_invoice_format_title'),
+			description: req.__('system_settings_invoice_format_description'),
+			action: '/settings/invoice-format',
+			submitLabel: req.__('system_settings_invoice_format_save'),
 			fields: [
 				{
-					type: 'text',
-					name: 'currency',
-					label: req.__('system_settings_currency_label'),
-					placeholder: req.__('system_settings_currency_placeholder'),
+					type: 'select',
+					name: 'invoiceFormat',
+					label: req.__('system_settings_invoice_format_label'),
 					required: true,
-					value: currentCurrency || ''
+					options: invoiceFormatOptions,
+					help: req.__('system_settings_invoice_format_help')
 				}
 			]
 		}
@@ -75,8 +88,7 @@ const buildSettingsViewModel = async (req, overrides = {}) => {
 
 	return {
 		title: 'system_settings_page_title',
-		submitLabel: 'system_settings_submit_label',
-		groups
+		actions
 	}
 }
 

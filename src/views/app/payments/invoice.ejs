@@ -3,86 +3,7 @@
     <%- include('../../partials/head') %>
 
     <body class="container">
-        <% for (let i = 0; i < 2; i++) { %>
-        <section class="receipt-container">
-            <div class="receipt-body">
-                <h1 class="is-size-5"><%= __('invoice_title') %></h1>
-                <div>
-                    <div class="has-text-right">
-                        <b><%= __('invoice_receipt_number') %></b>
-                        <span class="is-underlined"> <%= payment.paymentNumber %> </span>
-                    </div>
-
-                    <div class="nowrap has-text-right">
-                        <b><%= __('invoice_payment_date') %></b>
-                        <span class="is-underlined"> <%= payment.createdAt %> </span>
-                    </div>
-                </div>
-
-                <div class="">
-                    <b><%= __('invoice_amount') %></b>
-                    <span class="is-underlined">
-                        <%= utils.formatToCurrency(payment.amount, utils.paymentCurrencyOptions) %>
-                    </span>
-                </div>
-
-                <div class="">
-                    <b><%= __('invoice_in_words') %></b>
-                    <span class="is-underlined"> <%= stage.estimatedCostWords %> </span>
-                </div>
-
-                <div class="">
-                    <b><%= __('invoice_received_from') %></b>
-                    <span class="is-underlined"> <%= payment.payer %> </span>
-                </div>
-
-                <div class="">
-                    <b><%= __('invoice_for_payment_of') %></b>
-                    <span class="is-underlined"> <%= payment.description %> </span>
-                </div>
-
-                <div class="span-col">
-                    <b><%= __('invoice_payment_method') %></b>
-                    <span class="is-underlined"> <%= payment.paymentMethod %> </span>
-                </div>
-
-                <div class="">
-                    <b><%= __('invoice_received_by') %></b>
-                    <span class="is-underlined"> <%= contractor.name %> </span>
-                </div>
-
-                <!-- Summary -->
-                <table class="table is-bordered is-narrow is-dark-bordered">
-                    <tbody>
-                        <% if (!payment.hideTotalsInvoice) { %>
-                        <tr>
-                            <td><%= __('invoice_acc_amount') %></td>
-                            <td><%= utils.formatToCurrency(stage.estimatedCost, utils.stageCurrencyOptions) %></td>
-                        </tr>
-                        <% } %>
-                        
-                        <tr>
-                            <td><%= __('invoice_this_payment') %></td>
-                            <td><%= utils.formatToCurrency(payment.amount, utils.paymentCurrencyOptions) %></td>
-                        </tr>
-
-                        <% if (!payment.hideTotalsInvoice) { %>
-                        <tr>
-                            <td><%= __('invoice_balance_due') %></td>
-                            <td><%= utils.formatToCurrency(payment.balance, utils.paymentCurrencyOptions) %></td>
-                        </tr>
-                        <% } %>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <% if (i === 0) { %>
-        <hr class="my-4 divider">
-        <% } %>
-
-        <% } %>
-
+        <%- include(invoiceFormatTemplate) %>
 
         <div class="has-text-centered mt-5 is-hidden-print">
             <button type="button" class="button is-primary is-ghost" id="print-button">
@@ -90,39 +11,4 @@
             </button>
         </div>
     </body>
-
-    <style>
-        body {
-            font-size: small;
-        }
-
-        .receipt-container {
-            border: 1px solid black;
-            padding: 1rem;
-        }
-
-        .receipt-body {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.5rem;
-        }
-
-        .receipt-body > h1 {
-            white-space: nowrap;
-        }
-
-        .span-col {
-            grid-column: 1 / span 2;
-        }
-
-        .nowrap {
-            white-space: nowrap;
-        }
-
-        .divider {
-            width: 100%;
-            height: 1px;
-            border-bottom: 1px dashed rgb(100, 100, 100);
-        }
-    </style>
 </html>

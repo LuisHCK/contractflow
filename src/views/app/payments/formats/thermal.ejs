@@ -1,0 +1,101 @@
+<section class="thermal-receipt">
+    <header class="thermal-center thermal-block">
+        <h1 class="thermal-title"><%= __('invoice_title') %></h1>
+        <p><%= project.name %></p>
+        <p><%= __('invoice_receipt_number') %> <%= payment.paymentNumber %></p>
+        <p><%= __('invoice_payment_date') %> <%= payment.createdAt %></p>
+    </header>
+
+    <div class="thermal-divider"></div>
+
+    <section class="thermal-block">
+        <p><b><%= __('invoice_received_from') %></b> <%= payment.payer || '-' %></p>
+        <p><b><%= __('invoice_received_by') %></b> <%= contractor.name || '-' %></p>
+        <p><b><%= __('invoice_payment_method') %></b> <%= payment.paymentMethod || '-' %></p>
+        <p><b><%= __('invoice_for_payment_of') %></b> <%= payment.description || '-' %></p>
+    </section>
+
+    <div class="thermal-divider"></div>
+
+    <section class="thermal-block">
+        <div class="thermal-row">
+            <span><%= __('invoice_this_payment') %></span>
+            <span><%= utils.formatToCurrency(payment.amount, utils.paymentCurrencyOptions) %></span>
+        </div>
+
+        <% if (!payment.hideTotalsInvoice) { %>
+        <div class="thermal-row">
+            <span><%= __('invoice_acc_amount') %></span>
+            <span><%= utils.formatToCurrency(stage.estimatedCost, utils.stageCurrencyOptions) %></span>
+        </div>
+
+        <div class="thermal-row">
+            <span><%= __('invoice_balance_due') %></span>
+            <span><%= utils.formatToCurrency(payment.balance, utils.paymentCurrencyOptions) %></span>
+        </div>
+        <% } %>
+    </section>
+
+</section>
+
+<style>
+    body {
+        margin: 0;
+        font-size: 12px;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+            'Courier New', monospace;
+    }
+
+    .thermal-receipt {
+        width: 80mm;
+        margin: 0 auto;
+        padding: 8px;
+        border: 1px dashed #777;
+    }
+
+    .thermal-title {
+        font-size: 14px;
+        margin: 0 0 4px;
+    }
+
+    .thermal-block p {
+        margin: 0 0 4px;
+        word-break: break-word;
+    }
+
+    .thermal-center {
+        text-align: center;
+    }
+
+    .thermal-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 0.75rem;
+        margin-bottom: 4px;
+    }
+
+    .thermal-row > span:last-child {
+        text-align: right;
+        white-space: nowrap;
+    }
+
+    .thermal-divider {
+        border-top: 1px dashed #777;
+        margin: 8px 0;
+    }
+
+    @media print {
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .thermal-receipt {
+            width: 80mm;
+            border: none;
+            margin: 0;
+            padding: 6px;
+        }
+    }
+</style>

@@ -15,6 +15,13 @@ import { DATE_FORMAT } from '@/config/constants'
 import { getStageById } from '@/services/stages'
 import numberToWords from '@/utils/number-to-words'
 import { formatToCurrency } from '@/utils/money'
+import { getSystemSetting } from '@/services/system-settings'
+import {
+    DEFAULT_INVOICE_FORMAT,
+    INVOICE_FORMAT_SETTING_KEY,
+    getInvoiceFormatTemplate,
+    normalizeInvoiceFormat
+} from '@/services/invoice-formats'
 
 /**
  * Handles the request to list all payments for a specific project stage.
@@ -141,10 +148,18 @@ export const print = async (req, res) => {
             return res.status(404).send('Payment not found')
         }
 
+        const configuredInvoiceFormat = await getSystemSetting(
+            INVOICE_FORMAT_SETTING_KEY,
+            DEFAULT_INVOICE_FORMAT
+        )
+        const invoiceFormat = normalizeInvoiceFormat(configuredInvoiceFormat)
+
         res.render('app/payments/invoice', {
             payment,
             contractor,
             project,
+            invoiceFormat,
+            invoiceFormatTemplate: getInvoiceFormatTemplate(invoiceFormat),
             stage: {
                 ...stage,
                 estimatedCostWords: numberToWords(payment.amount, req.getLocale()).toUpperCase()
