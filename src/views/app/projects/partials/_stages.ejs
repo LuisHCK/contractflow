@@ -30,7 +30,7 @@
                                     </div>
                                     <div>
                                         <p class="mb-1 is-size-7"><%= __('stages_estimated_cost') %></p>
-                                        <p class="m-0"><%= formatToCurrency(estimatedCost) %></p>
+                                        <p class="m-0"><%= formatToCurrency(estimatedCost, { currency: stage.displayCurrencyCode, symbol: stage.displayCurrencySymbol }) %></p>
                                     </div>
                                 </div>
                             </div>
@@ -42,7 +42,7 @@
                                     </div>
                                     <div>
                                         <p class="mb-1 is-size-7"><%= __('stages_paid') %></p>
-                                        <p class="m-0"><%= formatToCurrency(totalPayments) %></p>
+                                        <p class="m-0"><%= formatToCurrency(totalPayments, { currency: stage.displayCurrencyCode, symbol: stage.displayCurrencySymbol }) %></p>
                                     </div>
                                 </div>
                             </div>
@@ -54,7 +54,7 @@
                                     </div>
                                     <div>
                                         <p class="mb-1 is-size-7"><%= __('stages_owed') %></p>
-                                        <p class="m-0"><%= formatToCurrency(owedAmount) %></p>
+                                        <p class="m-0"><%= formatToCurrency(owedAmount, { currency: stage.displayCurrencyCode, symbol: stage.displayCurrencySymbol }) %></p>
                                     </div>
                                 </div>
                             </div>

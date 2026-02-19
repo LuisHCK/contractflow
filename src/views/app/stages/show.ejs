@@ -67,7 +67,7 @@
                                             </p>
                                             <div class="card-header-icon">
                                                 <span class="tag is-success">
-                                                    <%= formatToCurrency(payment.amount) %>
+                                                    <%= formatToCurrency(payment.amount, { currency: payment.displayCurrencyCode, symbol: payment.displayCurrencySymbol }) %>
                                                 </span>
                                             </div>
                                         </header>

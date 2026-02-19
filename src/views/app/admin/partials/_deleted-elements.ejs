@@ -114,7 +114,7 @@
                                     <td><%= stage.id %></td>
                                     <td><%= stage.name %></td>
                                     <td><%= stage.project_name %></td>
-                                    <td>$<%= stage.estimated_cost.toLocaleString() %></td>
+                                    <td><%= formatToCurrency(stage.estimated_cost) %></td>
                                     <td>
                                         <% if (stage.created_at) { %>
                                             <%= new Date(stage.created_at).toLocaleDateString() %>
@@ -184,7 +184,7 @@
                             <% deletedPayments.forEach(payment => { %>
                                 <tr>
                                     <td><%= payment.id %></td>
-                                    <td class="has-text-weight-semibold">$<%= payment.amount.toLocaleString() %></td>
+                                    <td class="has-text-weight-semibold"><%= formatToCurrency(payment.amount) %></td>
                                     <td><%= payment.payer %></td>
                                     <td><%= payment.stage_name %></td>
                                     <td><%= payment.project_name %></td>

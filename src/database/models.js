@@ -43,8 +43,21 @@ export class Project {
         this.startDate = project.startDate || project.start_date
         this.endDate = project.endDate || project.end_date
         this.status = project.status
-        this.estimatedCost = project.estimatedCost || project.total_estimated_cost
-        this.actualCost = project.actualCost || project.actual_cost
+        this.currencyCode =
+            project.currencyCode || project.currency_code || project.display_currency_code || null
+        this.currencySymbol =
+            project.currencySymbol ||
+            project.currency_symbol ||
+            project.display_currency_symbol ||
+            null
+        this.defaultExchangeRate = Number(
+            project.defaultExchangeRate || project.default_exchange_rate || 1
+        )
+        this.estimatedCost =
+            project.estimatedCost || project.total_estimated_cost || project.total_estimated_base || 0
+        this.actualCost = project.actualCost || project.actual_cost || project.actual_cost_base || 0
+        this.totalEstimatedBase = Number(project.totalEstimatedBase || project.total_estimated_base || 0)
+        this.actualCostBase = Number(project.actualCostBase || project.actual_cost_base || 0)
         this.progress = Number(project.progress) || 0
     }
 
@@ -66,7 +79,15 @@ export class Stage {
         this.name = stage.name ?? ''
         this.projectId = stage.projectId || stage.project_id
         this.estimatedCost = Number(stage.estimatedCost || stage.estimated_cost || 0)
+        this.estimatedCostBase = Number(stage.estimatedCostBase || stage.estimated_cost_base || 0)
         this.finalCost = Number(stage.finalCost || stage.final_cost || 0)
+        this.exchangeRate = Number(stage.exchangeRate || stage.exchange_rate || 1)
+        this.displayCurrencyCode = stage.displayCurrencyCode || stage.display_currency_code || null
+        this.displayCurrencySymbol =
+            stage.displayCurrencySymbol || stage.display_currency_symbol || null
+        this.totalPayments = Number(stage.totalPayments || stage.total_payments || 0)
+        this.totalPaymentsBase = Number(stage.totalPaymentsBase || stage.total_payments_base || 0)
+        this.progress = Number(stage.progress || 0)
         this.createdBy = stage.createdBy || stage.created_by
     }
 }
@@ -76,6 +97,13 @@ export class Payment {
         this.id = payment.id
         this.stageId = payment.stageId || payment.stage_id
         this.amount = Number(payment.amount || 0)
+        this.amountBase = Number(payment.amountBase || payment.amount_base || 0)
+        this.balance = Number(payment.balance || 0)
+        this.balanceBase = Number(payment.balanceBase || payment.balance_base || 0)
+        this.exchangeRate = Number(payment.exchangeRate || payment.exchange_rate || 1)
+        this.displayCurrencyCode = payment.displayCurrencyCode || payment.display_currency_code || null
+        this.displayCurrencySymbol =
+            payment.displayCurrencySymbol || payment.display_currency_symbol || null
         this.date = payment.date
         this.payer = payment.payer ?? ''
     }

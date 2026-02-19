@@ -24,6 +24,13 @@ import { DATE_FORMAT } from '@/config/constants'
 import { Project } from '@/database/models'
 import { getStageById } from './stages'
 import { formatToISOString } from '@/utils/date'
+import {
+    formatToCurrency,
+    fromBaseAmount,
+    getCurrencyOptions,
+    normalizeExchangeRate,
+    toBaseAmount
+} from '@/utils/money'
 
 export class Payment {
     constructor(payment) {
@@ -32,6 +39,7 @@ export class Payment {
         this.stageId = payment.stageId || payment.stage_id
         /** @type {number} */
         this.amount = payment.amount
+        this.amountBase = Number(payment.amountBase || payment.amount_base || 0)
         this.date = payment.date
         this.payer = payment.payer
         this.paymentCategoryId = payment.paymentCategoryId || payment.payment_category_id
@@ -44,7 +52,11 @@ export class Payment {
         this._updatedAt = payment.updatedAt || payment.updated_at
         this.evidences = payment.evidences || []
         this.contractor = payment.contractor || null
-        this.balance = payment.balance || 0
+        this.balance = Number(payment.balance || 0)
+        this.balanceBase = Number(payment.balanceBase || payment.balance_base || 0)
+        this.exchangeRate = normalizeExchangeRate(payment.exchangeRate || payment.exchange_rate || 1)
+        this.displayCurrencyCode = payment.displayCurrencyCode || payment.display_currency_code || null
+        this.displayCurrencySymbol = payment.displayCurrencySymbol || payment.display_currency_symbol || null
         this.hideTotalsInvoice = payment.hideTotalsInvoice || payment.hide_totals_invoice || false
         this.deleted = Boolean(payment.deleted) || false
     }
@@ -145,22 +157,33 @@ export const getPaymentsByProjectId = async (projectId) => {
  */
 export const createPayment = async (payment = {}) => {
     try {
-        // Calculate balance
         const stage = await getStageById(payment.stageId)
-        // Get previous payments for the stage
+        if (!stage?.id) return null
+
+        const paymentExchangeRate = normalizeExchangeRate(stage.exchangeRate || 1)
+        const paymentAmount = Number(payment.amount || 0)
+        const amountBase = toBaseAmount(paymentAmount, paymentExchangeRate)
+
         const previousPayments = await getAllPayments(payment.stageId)
-        // Calculate the total amount already paid for the stage
-        const overallPaidAmount = previousPayments.reduce(
-            (sum, p) => Number(sum) + Number(p.amount),
+        const overallPaidAmountBase = previousPayments.reduce(
+            (sum, p) =>
+                Number(sum) +
+                Number(
+                    p.amountBase ||
+                        toBaseAmount(p.amount, p.exchangeRate || paymentExchangeRate)
+                ),
             0
         )
-        const currentPaidAmount = overallPaidAmount + Number(payment.amount)
-        // Calculate the balance
-        const balance = Number(stage.estimatedCost) - currentPaidAmount
+        const currentPaidAmountBase = overallPaidAmountBase + amountBase
+        const estimatedCostBase = Number(
+            stage.estimatedCostBase || toBaseAmount(stage.estimatedCost, stage.exchangeRate)
+        )
+        const balanceBase = estimatedCostBase - currentPaidAmountBase
+        const balance = fromBaseAmount(balanceBase, paymentExchangeRate)
 
         const rows = await database.unsafe(PAYMENTS.ADD, [
             payment.stageId,
-            payment.amount,
+            paymentAmount,
             formatToISOString(payment.date),
             payment.payer,
             payment.paymentCategoryId,
@@ -169,11 +192,26 @@ export const createPayment = async (payment = {}) => {
             payment.paymentMethod,
             payment.createdBy,
             balance,
-            payment.hideTotalsInvoice
+            payment.hideTotalsInvoice,
+            stage.displayCurrencyCode || 'USD',
+            stage.displayCurrencySymbol || null,
+            paymentExchangeRate,
+            amountBase,
+            balanceBase
         ])
         const id = rows?.[0]?.id
         if (!id) return null
-        return new Payment({ ...payment, id, balance })
+        return new Payment({
+            ...payment,
+            id,
+            amount: paymentAmount,
+            amountBase,
+            balance,
+            balanceBase,
+            exchangeRate: paymentExchangeRate,
+            displayCurrencyCode: stage.displayCurrencyCode || 'USD',
+            displayCurrencySymbol: stage.displayCurrencySymbol || null
+        })
     } catch (error) {
         console.error(`Error creating payment: ${error.message}`)
         return null
@@ -254,11 +292,18 @@ export const getStagePaymentsForReport = async (stageId) => {
             return {
                 id: row.id,
                 paymentNumber: row.id.toString().padStart(6, '0'),
-                amount: row.amount,
+                amount: Number(row.amount || 0),
+                amountBase: Number(row.amount_base || 0),
                 paymentMethod: row.payment_method,
                 description: row.description,
                 payer: row.payer,
-                balance: row.balance,
+                balance: Number(row.balance || 0),
+                balanceBase: Number(row.balance_base || 0),
+                exchangeRate: normalizeExchangeRate(row.exchange_rate || 1),
+                displayCurrencyCode: row.display_currency_code || 'USD',
+                displayCurrencySymbol: row.display_currency_symbol || null,
+                formattedAmount: formatToCurrency(Number(row.amount || 0), getCurrencyOptions(row)),
+                formattedBalance: formatToCurrency(Number(row.balance || 0), getCurrencyOptions(row)),
                 contractorName: row.contractor_name,
                 paymentCategoryName: row.payment_category_name,
                 date

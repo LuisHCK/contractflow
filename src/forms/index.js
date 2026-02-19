@@ -42,6 +42,30 @@ export const PROJECT_FORM = {
     ]
 }
 
+export const PROJECT_CURRENCY_FORM = {
+    fields: [
+        {
+            label: 'projects_currency_code',
+            name: 'currencyCode',
+            placeholder: 'projects_currency_code_placeholder',
+            required: false
+        },
+        {
+            label: 'projects_currency_symbol',
+            name: 'currencySymbol',
+            placeholder: 'projects_currency_symbol_placeholder',
+            required: false
+        },
+        {
+            label: 'projects_exchange_rate',
+            name: 'defaultExchangeRate',
+            placeholder: 'projects_exchange_rate_placeholder',
+            required: false,
+            type: 'number'
+        }
+    ]
+}
+
 export const STAGE_FORM = {
     fields: [
         {
