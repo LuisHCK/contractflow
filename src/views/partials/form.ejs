@@ -24,6 +24,12 @@
                     name="<%= field.name %>"
                     id="<%= field.name %>"
                     placeholder="<%= __(field.placeholder) %>"
+                    <% if (field.readonly) { %>
+                        readonly
+                    <% } %>
+                    <% if (field.disabled) { %>
+                        disabled
+                    <% } %>
                     <% if (field.required) { %>
                         required
                     <% } %>
@@ -35,6 +41,9 @@
                     <select
                         name="<%= field.name %>"
                         id="<%= field.name %>"
+                        <% if (field.disabled || field.readonly) { %>
+                            disabled
+                        <% } %>
                         <% if (field.required) { %>
                             required
                         <% } %>
@@ -70,6 +79,9 @@
                         name="<%= field.name %>"
                         accept="<%= field.accept %>"
                         id="<%= field.name %>"
+                        <% if (field.disabled) { %>
+                            disabled
+                        <% } %>
                         <% if (field.required) { %>
                             required
                         <% } %>
@@ -93,6 +105,9 @@
                             type="checkbox"
                             name="<%= field.name %>"
                             id="<%= field.name %>"
+                            <% if (field.disabled) { %>
+                                disabled
+                            <% } %>
                             <% if (field.value) { %>
                                 checked
                             <% } %>
@@ -113,6 +128,12 @@
                     name="<%= field.name %>"
                     id="<%= field.name %>"
                     value="<%= field.value %>"
+                    <% if (field.readonly) { %>
+                        readonly
+                    <% } %>
+                    <% if (field.disabled) { %>
+                        disabled
+                    <% } %>
                     <% if (field.required) { %>
                         required
                     <% } %>
@@ -121,7 +142,7 @@
             </div>
 
             <!-- Create option -->
-            <% if (field.showCreateOption) { %>
+            <% if (field.showCreateOption && !field.disabled && !field.readonly) { %>
                 <div class="control">
                     <button
                         type="button"

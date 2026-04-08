@@ -9,7 +9,6 @@ import {
 } from '@/services/payments'
 import { getById as getContractorById } from '@/services/contractors'
 import { getAll as getAllPaymentCategories } from '@/services/payment-categories'
-import { getAll as getAllContractors } from '@/services/contractors'
 import { format } from 'date-fns'
 import { DATE_FORMAT } from '@/config/constants'
 import { getStageById } from '@/services/stages'
@@ -103,23 +102,48 @@ export const createStagePayment = async (req, res) => {
         }
 
         // GET handling
-        const contractors = await getAllContractors()
+        const stage = await getStageById(req.params.stageId)
+        if (!stage?.id) {
+            return res.status(404).send('Stage not found')
+        }
+
+        const stageContractor = stage.contractorId
+            ? await getContractorById(stage.contractorId)
+            : null
+
         const paymentCategories = await getAllPaymentCategories()
-
-        const contractorsOptions = formatOptions({
-            items: contractors
-        })
-
         const paymentCategoriesOptions = formatOptions({
             items: paymentCategories
         })
 
+        const formDefinition = {
+            ...PAYMENT_FORM,
+            fields: PAYMENT_FORM.fields.map((field) => {
+                if (field.name === 'contractorId') {
+                    return {
+                        ...field,
+                        options: stageContractor
+                            ? [{ value: stageContractor.id, label: stageContractor.name }]
+                            : []
+                    }
+                }
+
+                if (field.name === 'paymentCategoryId') {
+                    return {
+                        ...field,
+                        options: paymentCategoriesOptions
+                    }
+                }
+
+                return field
+            })
+        }
+
         const form = populateForm({
-            form: PAYMENT_FORM,
+            form: formDefinition,
             data: {
                 ...req.body,
-                contractorId: contractorsOptions,
-                paymentCategoryId: paymentCategoriesOptions
+                contractorId: stageContractor?.id || ''
             }
         })
 
@@ -140,8 +164,8 @@ export const print = async (req, res) => {
             return res.status(404).send('Payment not found')
         }
 
-        const contractor = await getContractorById(payment.contractorId)
         const stage = await getStageById(payment.stageId)
+        const contractor = stage?.contractorId ? await getContractorById(stage.contractorId) : null
         const project = await getPaymentProject(id)
 
         if (!contractor || !stage || !project) {

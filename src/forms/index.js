@@ -144,10 +144,12 @@ export const PAYMENT_FORM = {
             label: 'contractor_name',
             name: 'contractorId',
             placeholder: 'payments_create_contractor_placeholder',
-            required: true,
+            required: false,
             type: 'select',
             options: [], // to be populated dynamically
-            showCreateOption: true,
+            disabled: true,
+            readonly: true,
+            showCreateOption: false,
             createOptionLabel: 'stages_create_new_contractor',
             createOptionPath: '/contractors/create',
             optionsSource: '/contractors'

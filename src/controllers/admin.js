@@ -85,10 +85,9 @@ export const importData = async (req, res) => {
 
         // Insert Payments
         for (const payment of importObj.payments || []) {
-            const { id, stage_id, payment_category_id, contractor_id, created_by, ...fields } = payment
+            const { id, stage_id, payment_category_id, created_by, ...fields } = payment
             const newStageId = stageIdMap[stage_id]
             const newPaymentCategoryId = paymentCategoryIdMap[payment_category_id]
-            const newContractorId = contractorIdMap[contractor_id]
             const newCreatedBy = await getValidUserId(created_by, currentUserId)
 
             // Preserve boolean-like flags from SQLite export (supports "0"/"1", numbers, booleans)
@@ -96,10 +95,9 @@ export const importData = async (req, res) => {
             const deleted = toBooleanFlag(fields.deleted)
 
             await database.unsafe(ADMIN.IMPORT_PAYMENT, [
-                // stage_id, payment_category_id, contractor_id
+                // stage_id, payment_category_id
                 newStageId,
                 newPaymentCategoryId,
-                newContractorId,
                 // description, payment_method, amount, balance
                 fields.description,
                 fields.payment_method,

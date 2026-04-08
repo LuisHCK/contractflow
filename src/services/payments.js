@@ -43,7 +43,8 @@ export class Payment {
         this.date = payment.date
         this.payer = payment.payer
         this.paymentCategoryId = payment.paymentCategoryId || payment.payment_category_id
-        this.contractorId = payment.contractorId || payment.contractor_id
+        this.contractorId =
+            payment.contractorId || payment.contractor_id || payment.contractor?.id || null
         this.description = payment.description
         this.paymentMethod = payment.paymentMethod || payment.payment_method
         this.paymentCategory = payment.paymentCategory
@@ -98,13 +99,17 @@ export const getAllPayments = async (stageId, options = { includeRelated: false 
 
         // Include related data if specified
         if (options.includeRelated) {
+            const stage = await getStageById(stageId)
+            const contractor = stage?.contractorId
+                ? await getContractorById(stage.contractorId)
+                : null
+
             await Promise.all(
                 payments.map(async (payment) => {
-                    const contractor = await getContractorById(payment.contractor_id)
-                    const paymentCategory = await getPaymentCategoryById(
-                        payment.payment_category_id
-                    )
-                    const evidences = await getEvidences(payment.id)
+                    const [paymentCategory, evidences] = await Promise.all([
+                        getPaymentCategoryById(payment.payment_category_id),
+                        getEvidences(payment.id)
+                    ])
 
                     if (contractor) {
                         payment.contractor = contractor
@@ -158,7 +163,7 @@ export const getPaymentsByProjectId = async (projectId) => {
 export const createPayment = async (payment = {}) => {
     try {
         const stage = await getStageById(payment.stageId)
-        if (!stage?.id) return null
+        if (!stage?.id || !stage.contractorId) return null
 
         const paymentExchangeRate = normalizeExchangeRate(stage.exchangeRate || 1)
         const paymentAmount = Number(payment.amount || 0)
@@ -187,7 +192,7 @@ export const createPayment = async (payment = {}) => {
             formatToISOString(payment.date),
             payment.payer,
             payment.paymentCategoryId,
-            payment.contractorId,
+            stage.contractorId,
             payment.description,
             payment.paymentMethod,
             payment.createdBy,
@@ -208,6 +213,7 @@ export const createPayment = async (payment = {}) => {
             amountBase,
             balance,
             balanceBase,
+            contractorId: stage.contractorId,
             exchangeRate: paymentExchangeRate,
             displayCurrencyCode: stage.displayCurrencyCode || 'USD',
             displayCurrencySymbol: stage.displayCurrencySymbol || null

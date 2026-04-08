@@ -326,7 +326,8 @@ export const PAYMENTS = {
             COALESCE(c.name, '') AS contractor_name,
             COALESCE(pc.name, '') AS payment_category_name
         FROM payments py
-        LEFT JOIN contractors c ON py.contractor_id = c.id
+        LEFT JOIN stage s ON py.stage_id = s.id
+        LEFT JOIN contractors c ON s.contractor_id = c.id
         LEFT JOIN payment_categories pc ON py.payment_category_id = pc.id
         WHERE py.stage_id = $1 AND py.deleted = false
         ORDER BY py.date ASC, py.id ASC;`
@@ -399,9 +400,8 @@ export const CONTRACTORS = {
         FROM 
             projects p
         JOIN stage s ON p.id = s.project_id
-        JOIN payments py ON s.id = py.stage_id AND py.deleted = false
         WHERE 
-            py.contractor_id = $1 AND py.deleted = false
+            s.contractor_id = $1 AND s.deleted = false AND p.deleted = false
         ORDER BY p.start_date ASC
         LIMIT 10 OFFSET 0;`
 }
@@ -542,7 +542,22 @@ export const ADMIN = {
             hide_totals_invoice,
             deleted
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+        SELECT
+            $1,
+            $2,
+            s.contractor_id,
+            $3,
+            $4,
+            $5,
+            $6,
+            $7,
+            $8,
+            $9,
+            $10,
+            $11,
+            $12
+        FROM stage s
+        WHERE s.id = $1
         RETURNING id;`,
     
     CHECK_USER_EXISTS: `
