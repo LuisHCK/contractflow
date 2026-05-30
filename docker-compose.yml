@@ -4,14 +4,15 @@ services:
       context: .
       target: dev
     ports:
-      - "8088:8088"
+      - "3000:3000"
     env_file: .env
     volumes:
       - ./uploads:/app/uploads
       - ./:/app:delegated
     command: ["bun", "run", "dev"]
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     restart: always
 
   db:
@@ -22,6 +23,12 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
 
 volumes:
   pgdata:
