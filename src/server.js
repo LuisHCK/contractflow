@@ -42,9 +42,6 @@ const cspDirectives = {
     objectSrc: ["'none'"]
 }
 
-// Initialize database
-dbInit()
-
 // Basic security hardening
 app.disable('x-powered-by')
 // Trust proxy (required for rate limiting behind proxies)
@@ -138,7 +135,7 @@ app.use((err, req, res, next) => {
 
 const port = process.env.PORT || 3000
 
-app.listen(port, () => {
+dbInit().then(() => app.listen(port, () => {
     console.clear()
     console.log(`
   ____            _                  _   _____ _               
@@ -149,4 +146,7 @@ app.listen(port, () => {
     `)
     console.log(`Open http://localhost:${port} in your browser 🚀`)
     console.log(`Server listening on port ${port}`)
+})).catch((err) => {
+    console.error('Failed to initialize database:', err)
+    process.exit(1)
 })

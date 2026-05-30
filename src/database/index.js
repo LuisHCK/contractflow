@@ -9,7 +9,11 @@ console.debug('Database connected to:', DATABASE_URL)
 
 let databaseInstance = globalThis.__databaseInstance
 if (!databaseInstance) {
-    databaseInstance = new SQL(DATABASE_URL)
+    databaseInstance = new SQL({
+        url: DATABASE_URL,
+        idleTimeout: 20,
+        max: 10,
+    })
     globalThis.__databaseInstance = databaseInstance
 }
 export const database = databaseInstance
