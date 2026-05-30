@@ -1,0 +1,76 @@
+<div class="table-container">
+    <table class="table is-fullwidth is-striped is-hoverable is-narrow">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th><%= __('invoice_payment_date') %></th>
+                <th><%= __('contractor_name') %></th>
+                <th><%= __('payment_categories_list_title') %></th>
+                <th><%= __('invoice_payment_method') %></th>
+                <th class="has-text-right"><%= __('invoice_amount') %></th>
+                <th><%= __('evidence_description') %></th>
+                <th><%= __('evidence_attachment') %></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <% payments.forEach(payment => { %>
+            <tr>
+                <td class="has-text-weight-semibold is-vcentered">
+                    #<%= payment.paymentNumber %>
+                </td>
+                <td class="is-vcentered is-nowrap">
+                    <%= payment.createdAt %>
+                </td>
+                <td class="is-vcentered">
+                    <%= payment.contractor?.name || '-' %>
+                </td>
+                <td class="is-vcentered">
+                    <% if (payment.paymentCategory?.name) { %>
+                        <span class="tag is-light is-info"><%= payment.paymentCategory.name %></span>
+                    <% } else { %>
+                        <span class="has-text-grey-light">-</span>
+                    <% } %>
+                </td>
+                <td class="is-vcentered">
+                    <span class="tag is-info is-light"><%= __(payment.paymentMethod) %></span>
+                </td>
+                <td class="has-text-right is-vcentered is-nowrap">
+                    <span class="tag is-success">
+                        <%= formatToCurrency(payment.amount, { currency: payment.displayCurrencyCode, symbol: payment.displayCurrencySymbol }) %>
+                    </span>
+                </td>
+                <td class="is-vcentered">
+                    <% if (payment.description) { %>
+                        <span class="is-size-7 is-italic"><%= payment.description %></span>
+                    <% } else { %>
+                        <span class="has-text-grey-light is-size-7">-</span>
+                    <% } %>
+                </td>
+                <td class="is-vcentered">
+                    <% if (payment.evidences?.length > 0) { %>
+                        <div class="tags">
+                            <% payment.evidences.forEach(evidence => { %>
+                                <a href="/<%= evidence.filePath %>" target="_blank" class="tag is-link is-light is-small">
+                                    <span class="icon is-small mr-1"><i class="fas fa-paperclip"></i></span>
+                                    <%= evidence.fileName.length > 20 ? evidence.fileName.substring(0, 17) + '...' : evidence.fileName %>
+                                </a>
+                            <% }) %>
+                        </div>
+                    <% } else { %>
+                        <span class="has-text-grey-light is-size-7"><%= __('evidence_no_evidence', 'No evidence') %></span>
+                    <% } %>
+                </td>
+                <td class="is-vcentered is-nowrap">
+                    <a href="/payments/print/<%= payment.id %>?print=true" class="button is-small is-ghost has-text-link">
+                        <%= __('print') %>
+                    </a>
+                    <a href="/payments/show/<%= payment.id %>/evidences/create" class="button is-small is-ghost has-text-info">
+                        <%= __('evidences_create_title') %>
+                    </a>
+                </td>
+            </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</div>

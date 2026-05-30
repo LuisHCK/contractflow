@@ -1,0 +1,78 @@
+<%
+    const currencyOpts = { currency: stage.displayCurrencyCode, symbol: stage.displayCurrencySymbol }
+    const totalPaid = payments.reduce((sum, p) => sum + Number(p.amount || 0), 0)
+    const totalDue  = Math.max(0, Number(stage.estimatedCost || 0) - totalPaid)
+%>
+<div class="columns is-multiline is-mobile overview-cards mb-5">
+
+    <div class="column is-one-quarter-desktop is-half-tablet is-half-mobile">
+        <div class="box h-full overview-card-box">
+            <div class="columns is-mobile is-vcentered">
+                <div class="column is-narrow">
+                    <div class="overview-card-icon">
+                        <%- include('../../../partials/icons/coins.ejs') %>
+                    </div>
+                </div>
+                <div class="column">
+                    <p class="title is-6 mb-1"><%= __('estimated_budget') %></p>
+                    <p class="subtitle is-5 mb-0">
+                        <%= formatToCurrency(stage.estimatedCost, currencyOpts) %>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="column is-one-quarter-desktop is-half-tablet is-half-mobile">
+        <div class="box h-full overview-card-box">
+            <div class="columns is-mobile is-vcentered">
+                <div class="column is-narrow">
+                    <div class="overview-card-icon">
+                        <%- include('../../../partials/icons/cash.ejs') %>
+                    </div>
+                </div>
+                <div class="column">
+                    <p class="title is-6 mb-1"><%= __('invoice_total_amount') %></p>
+                    <p class="subtitle is-5 mb-0">
+                        <%= formatToCurrency(totalPaid, currencyOpts) %>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="column is-one-quarter-desktop is-half-tablet is-half-mobile">
+        <div class="box h-full overview-card-box">
+            <div class="columns is-mobile is-vcentered">
+                <div class="column is-narrow">
+                    <div class="overview-card-icon">
+                        <%- include('../../../partials/icons/wallet.ejs') %>
+                    </div>
+                </div>
+                <div class="column">
+                    <p class="title is-6 mb-1"><%= __('balance') %></p>
+                    <p class="subtitle is-5 mb-0 <%= totalDue > 0 ? 'has-text-danger' : 'has-text-success' %>">
+                        <%= formatToCurrency(totalDue, currencyOpts) %>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="column is-one-quarter-desktop is-half-tablet is-half-mobile">
+        <div class="box h-full overview-card-box">
+            <div class="columns is-mobile is-vcentered">
+                <div class="column is-narrow">
+                    <div class="overview-card-icon">
+                        <%- include('../../../partials/icons/calendar.ejs') %>
+                    </div>
+                </div>
+                <div class="column">
+                    <p class="title is-6 mb-1"><%= __('payments_count') %></p>
+                    <p class="subtitle is-5 mb-0"><%= payments.length %></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

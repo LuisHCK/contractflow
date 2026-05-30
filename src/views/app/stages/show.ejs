@@ -47,6 +47,8 @@
 
                 <h2 class="subtitle"><%= stage.description %></h2>
 
+                <%- include('./partials/_stats', { stage, payments, formatToCurrency, __ }) %>
+
                 <section>
                     <h2 class="title is-5"><%= __('payments_stage_title', 'Payments') %></h2>
                 </section>
@@ -57,89 +59,7 @@
                             <%= __('stages_no_payments', 'No payments registered for this stage.') %>
                         </div>
                     <% } else { %>
-                        <div class="columns is-multiline">
-                            <% payments.forEach(payment => { %>
-                                <div class="column is-12-mobile is-6-tablet is-4-desktop">
-                                    <div class="card is-fullheight">
-                                        <header class="card-header">
-                                            <p class="card-header-title">
-                                                <span><%= __('payment_number', 'Payment #') %><%= payment.paymentNumber %></span>
-                                            </p>
-                                            <div class="card-header-icon">
-                                                <span class="tag is-success">
-                                                    <%= formatToCurrency(payment.amount, { currency: payment.displayCurrencyCode, symbol: payment.displayCurrencySymbol }) %>
-                                                </span>
-                                            </div>
-                                        </header>
-                                        <div class="card-content">
-                                            <div class="content is-small">
-                                                <p>
-                                                    <strong><%= __('invoice_payment_date') %>:</strong> 
-                                                    <%= payment.createdAt %>
-                                                </p>
-                                                
-                                                <div class="mb-2">
-                                                    <strong><%= __('contractor_name') %>:</strong>
-                                                    <br>
-                                                    <span><%= payment.contractor?.name %></span>
-                                                </div>
-
-                                                <div class="mb-2">
-                                                    <strong><%= __('payment_categories_list_title') %>:</strong>
-                                                    <br>
-                                                    <span class="tag is-light is-info"><%= payment.paymentCategory?.name %></span>
-                                                </div>
-
-                                                <div class="mb-2">
-                                                    <strong><%= __('invoice_payment_method') %>:</strong>
-                                                    <br>
-                                                    <span class="tag is-info is-light">
-                                                        <%= __(payment.paymentMethod) %>
-                                                    </span>
-                                                </div>
-
-                                                <% if (payment.description) { %>
-                                                <div class="mb-2">
-                                                    <strong><%= __('evidence_description') %>:</strong>
-                                                    <p class="is-italic mt-1 pl-2" style="border-left: 2px solid #dbdbdb;">
-                                                        "<%= payment.description %>"
-                                                    </p>
-                                                </div>
-                                                <% } %>
-
-                                                <div class="mt-3">
-                                                    <strong><%= __('evidence_attachment') %>:</strong>
-                                                    <div class="mt-1">
-                                                        <% if (payment.evidences?.length > 0) { %>
-                                                            <div class="tags">
-                                                                <% payment.evidences.forEach(evidence => { %>
-                                                                    <a href="/<%= evidence.filePath %>" target="_blank" class="tag is-link is-light">
-                                                                        <span class="icon is-small mr-1"><i class="fas fa-paperclip"></i></span>
-                                                                        <%= evidence.fileName.length > 20 ? evidence.fileName.substring(0, 17) + '...' : evidence.fileName %>
-                                                                    </a>
-                                                                <% }) %>
-                                                            </div>
-                                                        <% } else { %>
-                                                            <span class="is-size-7 has-text-grey">
-                                                                <%= __('evidence_no_evidence', 'No evidence registered') %>
-                                                            </span>
-                                                        <% } %>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <footer class="card-footer">
-                                            <a href="/payments/print/<%= payment.id %>?print=true" class="card-footer-item has-text-link">
-                                                <span><%= __('print') %></span>
-                                            </a>
-                                            <a href="/payments/show/<%= payment.id %>/evidences/create" class="card-footer-item has-text-info">
-                                                <span><%= __('evidences_create_title') %></span>
-                                            </a>
-                                        </footer>
-                                    </div>
-                                </div>
-                            <% }) %>
-                        </div>
+                        <%- include('./partials/_payments-table', { payments, formatToCurrency, __ }) %>
                     <% } %>
                 </div>
             </main>
