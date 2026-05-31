@@ -46,7 +46,10 @@ export const create = async (req, res) => {
         if (req.method === 'GET') {
             return res.render('generic/form-view', {
                 title: req.__('evidences_create_title'),
-                form: EVIDENCE_FORM
+                form: {
+                    ...EVIDENCE_FORM,
+                    action: `${req.path}?_csrf=${encodeURIComponent(res.locals.csrfToken)}`
+                }
             })
         }
 
