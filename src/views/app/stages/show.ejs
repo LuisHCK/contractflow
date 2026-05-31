@@ -1,68 +1,110 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="<%= locals.theme || 'light' %>">
-<%- include('../../partials/head', { title: `ContractFlow | ${project.name} stages` }) %>
+<%- include('../../partials/head', { title: `ContractFlow | ${project.name} — ${stage.name}` }) %>
 
-    <body>
-        <%- include('../../partials/navigation') %>
+<body>
+    <%- include('../../partials/navigation') %>
 
-            <main class="container is-max-widescreen py-6 px-4">
-                <!-- Breadcrumbs -->
-                <nav class="breadcrumb is-small" aria-label="breadcrumbs">
-                    <ul>
-                        <li><a href="/"> <%= __('breadcrumb_home') %> </a></li>
-                        <li><a href="/projects"> <%= __('breadcrumb_projects') %> </a></li>
-                        <li><a href="/projects/show/<%= project.id %>">
-                                <%= project.name %>
-                            </a></li>
-                        <li class="is-active">
-                            <a href="#" aria-current="page" class="has-text-dark">
-                                <%= stage.name %>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
+    <main class="container is-max-widescreen py-6 px-4">
 
-                <section class="is-flex is-justify-content-space-between is-align-items-center">
-                    <h1 class="title is-1">
-                        <%= stage.name %>
-                    </h1>
+        <!-- Breadcrumbs -->
+        <nav class="breadcrumb is-small" aria-label="breadcrumbs">
+            <ul>
+                <li><a href="/"> <%= __('breadcrumb_home') %> </a></li>
+                <li><a href="/projects"> <%= __('breadcrumb_projects') %> </a></li>
+                <li><a href="/projects/show/<%= project.id %>"><%= project.name %></a></li>
+                <li class="is-active">
+                    <a href="#" aria-current="page" class="has-text-dark"><%= stage.name %></a>
+                </li>
+            </ul>
+        </nav>
 
-                    <div>
-                        <a href="/projects/show/<%= project.id %>/stages/edit/<%= stage.id %>?backto=details"
-                            class="button is-primary">
-                            <%= __('detail_edit') %>
-                        </a>
-                        <a href="/projects/show/<%= project.id %>/stages/show/<%= stage.id %>/payments/create"
-                            class="button is-secondary">
-                            <%= __('stages_register_payment') %>
-                        </a>
-                        <% if (payments.length > 0) { %>
-                            <a href="/projects/show/<%= project.id %>/stages/print/<%= stage.id %>" class="button is-info">
-                                <%= __('print_report', 'Print report') %>
-                            </a>
-                        <% } %>
+        <!-- Header -->
+        <section class="is-flex is-justify-content-space-between is-align-items-start mb-5">
+            <div class="mr-5">
+                <p class="heading is-size-7 has-text-grey"><%= project.name %></p>
+                <h1 class="title is-2 is-family-sans-serif"><%= stage.name %></h1>
+                <% if (stage.description) { %>
+                    <p class="is-size-6"><%= stage.description %></p>
+                <% } %>
+            </div>
+            <div class="buttons is-flex is-flex-wrap-wrap is-justify-content-flex-end">
+                <a href="/projects/show/<%= project.id %>/stages/edit/<%= stage.id %>?backto=details"
+                    class="button is-light">
+                    <%= __('detail_edit') %>
+                </a>
+                <a href="/projects/show/<%= project.id %>/stages/show/<%= stage.id %>/payments/create"
+                    class="button is-primary">
+                    <%= __('stages_register_payment') %>
+                </a>
+                <% if (payments.length > 0) { %>
+                    <button type="button" class="button is-info" onclick="window.print()">
+                        <%= __('print_report', 'Print report') %>
+                    </button>
+                <% } %>
+            </div>
+        </section>
+
+        <!-- Summary cards -->
+        <section class="mb-5">
+            <div class="columns is-multiline">
+                <div class="column is-12-mobile is-6-tablet is-3-desktop">
+                    <div class="box">
+                        <p class="heading"><%= __('estimated_budget') %></p>
+                        <p class="title is-4"><%= formatToCurrency(estimatedCost, currencyOpts) %></p>
+                        <p class="is-size-7 has-text-grey mt-2">
+                            <%= __('stages_report_stage_dates') %>:
+                            <span><%= stage.startDate || __('stages_report_not_defined') %></span>
+                            <span> - </span>
+                            <span><%= stage.endDate || __('stages_report_not_defined') %></span>
+                        </p>
                     </div>
-
-                </section>
-
-                <h2 class="subtitle"><%= stage.description %></h2>
-
-                <%- include('./partials/_stats', { stage, payments, formatToCurrency, __ }) %>
-
-                <section>
-                    <h2 class="title is-5"><%= __('payments_stage_title', 'Payments') %></h2>
-                </section>
-
-                <div class="mt-4">
-                    <% if (payments.length === 0) { %>
-                        <div class="notification is-warning">
-                            <%= __('stages_no_payments', 'No payments registered for this stage.') %>
-                        </div>
-                    <% } else { %>
-                        <%- include('./partials/_payments-table', { payments, formatToCurrency, __ }) %>
-                    <% } %>
                 </div>
-            </main>
-    </body>
+                <div class="column is-12-mobile is-6-tablet is-3-desktop">
+                    <div class="box">
+                        <p class="heading"><%= __('invoice_total_amount') %></p>
+                        <p class="title is-4"><%= formatToCurrency(totalPaid, currencyOpts) %></p>
+                        <p class="is-size-7 has-text-grey mt-2">
+                            <%= __('payments_count') %>: <%= payments.length %>
+                        </p>
+                    </div>
+                </div>
+                <div class="column is-12-mobile is-6-tablet is-3-desktop">
+                    <div class="box">
+                        <p class="heading"><%= __('balance') %></p>
+                        <p class="title is-4 <%= outstandingBalance > 0 ? 'has-text-danger' : 'has-text-success' %>">
+                            <%= formatToCurrency(outstandingBalance, currencyOpts) %>
+                        </p>
+                        <p class="is-size-7 has-text-grey mt-2">
+                            <%= __('payments_balance_hint') %>
+                        </p>
+                    </div>
+                </div>
+                <div class="column is-12-mobile is-6-tablet is-3-desktop">
+                    <div class="box">
+                        <p class="heading"><%= __('progress') %></p>
+                        <p class="title is-4"><%= progress %>%</p>
+                        <progress class="progress is-success mt-2" value="<%= progress %>" max="100"></progress>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Payments table -->
+        <section>
+            <h2 class="title is-5"><%= __('payments_stage_title', 'Payments') %></h2>
+            <% if (payments.length === 0) { %>
+                <div class="notification is-warning mt-4">
+                    <%= __('stages_no_payments', 'No payments registered for this stage.') %>
+                </div>
+            <% } else { %>
+                <div class="mt-4">
+                    <%- include('./partials/_payments-table', { payments, formatToCurrency, __ }) %>
+                </div>
+            <% } %>
+        </section>
+
+    </main>
+</body>
 
 </html>

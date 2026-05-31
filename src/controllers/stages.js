@@ -34,7 +34,15 @@ export const show = async (req, res) => {
             return res.status(404).send('Stage not found')
         }
 
-        res.render('app/stages/show', { stage, project, payments })
+        const currencyOpts = { currency: stage.displayCurrencyCode, symbol: stage.displayCurrencySymbol }
+        const totalPaid = payments.reduce((sum, p) => sum + Number(p.amount || 0), 0)
+        const estimatedCost = Number(stage.estimatedCost || 0)
+        const outstandingBalance = estimatedCost - totalPaid
+        const progress = estimatedCost > 0
+            ? Math.min(100, Math.round((totalPaid / estimatedCost) * 1000) / 10)
+            : 0
+
+        res.render('app/stages/show', { stage, project, payments, currencyOpts, totalPaid, estimatedCost, outstandingBalance, progress })
     } catch (error) {
         console.error(`[StagesController.show] Error fetching stage: ${error}`)
         return res
