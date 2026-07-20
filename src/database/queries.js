@@ -189,6 +189,7 @@ export const STAGES = {
         )
         RETURNING id;`,
     GET: `SELECT * FROM stage WHERE id = $1 AND deleted = false;`,
+    GET_ANY: `SELECT * FROM stage WHERE id = $1;`,
 
     UPDATE: `
         UPDATE stage
@@ -278,6 +279,8 @@ export const PAYMENTS = {
 
     GET: `
         SELECT * FROM payments WHERE id = $1 AND deleted = false;`,
+    GET_ANY: `
+        SELECT * FROM payments WHERE id = $1;`,
 
     GET_PROJECT_ID: `
         SELECT p.id AS project_id

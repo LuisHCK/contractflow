@@ -19,7 +19,8 @@ import { getProjectById } from '@/services/projects'
  */
 export const recoverStageById = async (stageId) => {
     try {
-        const existing = await getStageById(stageId)
+        const rows = await database.unsafe(STAGES.GET_ANY, [stageId])
+        const existing = rows?.[0]
         if (!existing?.id) return false
         await database.unsafe(STAGES.RECOVER, [stageId])
         return true

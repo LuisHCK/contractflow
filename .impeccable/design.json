@@ -1,0 +1,263 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-07-20T00:00:00.000Z",
+  "title": "Design System: ContractFlow",
+  "extensions": {
+    "colorMeta": {
+      "primary": {
+        "role": "primary",
+        "displayName": "Warm Peach",
+        "canonical": "hsl(25, 66%, 83%)",
+        "tonalRamp": [
+          "oklch(0.35 0.04 55)",
+          "oklch(0.45 0.06 55)",
+          "oklch(0.55 0.08 55)",
+          "oklch(0.65 0.10 55)",
+          "oklch(0.75 0.10 55)",
+          "oklch(0.82 0.08 50)",
+          "oklch(0.88 0.06 45)",
+          "oklch(0.94 0.03 40)"
+        ]
+      },
+      "link": {
+        "role": "accent",
+        "displayName": "Teal",
+        "canonical": "hsl(189, 79%, 50%)",
+        "tonalRamp": [
+          "oklch(0.25 0.06 210)",
+          "oklch(0.35 0.08 210)",
+          "oklch(0.45 0.10 210)",
+          "oklch(0.55 0.12 215)",
+          "oklch(0.65 0.10 215)",
+          "oklch(0.75 0.07 215)",
+          "oklch(0.85 0.04 210)",
+          "oklch(0.94 0.02 210)"
+        ]
+      },
+      "success": {
+        "role": "semantic",
+        "displayName": "Seafoam",
+        "canonical": "hsl(171, 48%, 69%)",
+        "tonalRamp": [
+          "oklch(0.35 0.04 170)",
+          "oklch(0.45 0.06 170)",
+          "oklch(0.55 0.08 170)",
+          "oklch(0.65 0.07 170)",
+          "oklch(0.73 0.06 170)",
+          "oklch(0.80 0.05 170)",
+          "oklch(0.88 0.03 170)",
+          "oklch(0.95 0.02 170)"
+        ]
+      },
+      "warning": {
+        "role": "semantic",
+        "displayName": "Warm Sand",
+        "canonical": "hsl(43, 72%, 79%)",
+        "tonalRamp": [
+          "oklch(0.35 0.03 70)",
+          "oklch(0.45 0.05 70)",
+          "oklch(0.55 0.06 70)",
+          "oklch(0.65 0.07 70)",
+          "oklch(0.73 0.06 70)",
+          "oklch(0.80 0.06 65)",
+          "oklch(0.88 0.04 60)",
+          "oklch(0.95 0.02 55)"
+        ]
+      },
+      "danger": {
+        "role": "semantic",
+        "displayName": "Coral",
+        "canonical": "hsl(16, 71%, 67%)",
+        "tonalRamp": [
+          "oklch(0.30 0.06 30)",
+          "oklch(0.40 0.08 30)",
+          "oklch(0.50 0.10 30)",
+          "oklch(0.58 0.11 30)",
+          "oklch(0.66 0.10 25)",
+          "oklch(0.74 0.08 25)",
+          "oklch(0.84 0.05 25)",
+          "oklch(0.94 0.02 20)"
+        ]
+      },
+      "info": {
+        "role": "semantic",
+        "displayName": "Muted Sage",
+        "canonical": "hsl(174, 20%, 68%)",
+        "tonalRamp": [
+          "oklch(0.35 0.02 180)",
+          "oklch(0.45 0.03 180)",
+          "oklch(0.55 0.03 180)",
+          "oklch(0.65 0.03 180)",
+          "oklch(0.72 0.02 180)",
+          "oklch(0.80 0.02 180)",
+          "oklch(0.88 0.01 180)",
+          "oklch(0.95 0.01 180)"
+        ]
+      },
+      "body-bg": {
+        "role": "neutral",
+        "displayName": "Light Slate",
+        "canonical": "hsl(0, 0%, 96%)",
+        "tonalRamp": [
+          "oklch(0.30 0.00 0)",
+          "oklch(0.40 0.00 0)",
+          "oklch(0.50 0.00 0)",
+          "oklch(0.60 0.00 0)",
+          "oklch(0.70 0.00 0)",
+          "oklch(0.80 0.00 0)",
+          "oklch(0.90 0.00 0)",
+          "oklch(0.97 0.00 0)"
+        ]
+      },
+      "text": {
+        "role": "neutral",
+        "displayName": "Ink Gray",
+        "canonical": "hsl(0, 0%, 29%)",
+        "tonalRamp": [
+          "oklch(0.30 0.00 0)",
+          "oklch(0.38 0.00 0)",
+          "oklch(0.46 0.00 0)",
+          "oklch(0.54 0.00 0)",
+          "oklch(0.62 0.00 0)",
+          "oklch(0.70 0.00 0)",
+          "oklch(0.80 0.00 0)",
+          "oklch(0.90 0.00 0)"
+        ]
+      },
+      "ink-dark": {
+        "role": "neutral",
+        "displayName": "Ink Dark",
+        "canonical": "hsl(200, 7%, 11%)",
+        "tonalRamp": [
+          "oklch(0.15 0.00 200)",
+          "oklch(0.22 0.00 200)",
+          "oklch(0.30 0.00 200)",
+          "oklch(0.38 0.00 200)",
+          "oklch(0.46 0.00 200)",
+          "oklch(0.54 0.00 200)",
+          "oklch(0.62 0.00 200)",
+          "oklch(0.70 0.00 200)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Hero headlines and page titles. One per page." },
+      "heading": { "displayName": "Heading", "purpose": "Section titles and card titles." },
+      "title": { "displayName": "Title", "purpose": "Subsection titles, dialog headings." },
+      "body": { "displayName": "Body", "purpose": "Prose, descriptions, cell content. 75ch max width." },
+      "label": { "displayName": "Label", "purpose": "Form labels, table headers, button text." },
+      "small": { "displayName": "Small", "purpose": "Metadata, timestamps, helper text." }
+    },
+    "shadows": [
+      { "name": "card-hover", "value": "0 0.5em 1em -0.125em rgba(10, 10, 10, 0.1), 0 0px 0 1px rgba(10, 10, 10, 0.02)", "purpose": "Card hover shadow. The only shadow in the system." }
+    ],
+    "motion": [
+      { "name": "card-hover-duration", "value": "200ms", "purpose": "Card lift transition duration." },
+      { "name": "card-hover-easing", "value": "ease", "purpose": "Card lift easing." }
+    ],
+    "breakpoints": [
+      { "name": "mobile", "value": "768px", "purpose": "Bulma mobile breakpoint. Sticky FAB appears below this." },
+      { "name": "tablet", "value": "769px", "purpose": "Bulma tablet breakpoint." },
+      { "name": "desktop", "value": "1024px", "purpose": "Bulma desktop breakpoint." },
+      { "name": "widescreen", "value": "1216px", "purpose": "Bulma widescreen container max." },
+      { "name": "fullhd", "value": "1408px", "purpose": "Bulma fullhd container max." }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Primary call-to-action button. Uses Warm Peach background.",
+      "html": "<button class=\"button is-primary\">Create Project</button>",
+      "css": ".ds-btn-primary { background: #f0cfb7; color: #191c1d; padding: 0.7em 1.5em; border: none; border-radius: 4px; font-family: 'Source Sans 3', system-ui, sans-serif; font-weight: 600; font-size: 1rem; cursor: pointer; transition: background 0.2s ease; } .ds-btn-primary:hover { background: #e8bc9f; } .ds-btn-primary:focus-visible { outline: 2px solid #1ba8bf; outline-offset: 2px; }"
+    },
+    {
+      "name": "Dark Button",
+      "kind": "button",
+      "refersTo": "button-dark",
+      "description": "High-emphasis button. Used on landing page CTA and primary actions.",
+      "html": "<button class=\"button is-dark\">Get Started</button>",
+      "css": ".ds-btn-dark { background: #191c1d; color: #ffffff; padding: 0.7em 1.5em; border: none; border-radius: 4px; font-family: 'Source Sans 3', system-ui, sans-serif; font-weight: 600; font-size: 1rem; cursor: pointer; transition: background 0.2s ease; } .ds-btn-dark:hover { background: #2d3235; } .ds-btn-dark:focus-visible { outline: 2px solid #1ba8bf; outline-offset: 2px; }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Standard text input field.",
+      "html": "<input class=\"input\" type=\"text\" placeholder=\"Project name\">",
+      "css": ".ds-input { background: #ffffff; color: #4a4a4a; padding: 0.5em 0.75em; border: 1px solid #dbdbdb; border-radius: 4px; font-family: 'Source Sans 3', system-ui, sans-serif; font-size: 1rem; width: 100%; transition: border-color 0.2s ease; } .ds-input:hover { border-color: #b5b5b5; } .ds-input:focus { border-color: #1ba8bf; outline: none; box-shadow: 0 0 0 0.125em rgba(27, 168, 191, 0.25); }"
+    },
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Content container. Flat at rest, lifts on hover.",
+      "html": "<div class=\"card\" style=\"width: 320px;\"><div class=\"card-content\"><h4 class=\"title is-5\">Project Alpha</h4><p class=\"subtitle\">Website redesign for client</p></div></div>",
+      "css": ".ds-card { background: #ffffff; border-radius: 8px; padding: 1.25rem; transition: transform 0.2s ease, box-shadow 0.2s ease; } .ds-card:hover { transform: translateY(-2px); box-shadow: 0 0.5em 1em -0.125em rgba(10, 10, 10, 0.1), 0 0px 0 1px rgba(10, 10, 10, 0.02); }"
+    },
+    {
+      "name": "Status Tag (Active)",
+      "kind": "chip",
+      "refersTo": "tag-active",
+      "description": "Status badge for active projects.",
+      "html": "<span class=\"tag is-success is-light is-uppercase\">Active</span>",
+      "css": ".ds-tag-active { background: #e8faf0; color: #257942; padding: 0.125em 0.75em; border-radius: 4px; font-family: 'Source Sans 3', system-ui, sans-serif; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; display: inline-block; }"
+    },
+    {
+      "name": "Navigation Bar",
+      "kind": "nav",
+      "refersTo": "navigation",
+      "description": "Top navigation bar with logo, links, dropdown, and auth.",
+      "html": "<nav class=\"navbar\" role=\"navigation\"><div class=\"navbar-brand\"><a class=\"navbar-item\" href=\"/\"><img src=\"/logo.png\" height=\"100px\" alt=\"ContractFlow\"></a></div><div class=\"navbar-menu\"><div class=\"navbar-start\"><a class=\"navbar-item\">Home</a></div><div class=\"navbar-end\"><div class=\"navbar-item\"><button class=\"button is-small\">Log in</button></div></div></div></nav>",
+      "css": ".ds-nav { background: #ffffff; border-bottom: 1px solid #dbdbdb; font-family: 'Source Sans 3', system-ui, sans-serif; } .ds-nav a { color: #4a4a4a; text-decoration: none; padding: 0.75rem; } .ds-nav a:hover { color: #191c1d; background: #f5f5f5; }"
+    },
+    {
+      "name": "Data Table",
+      "kind": "custom",
+      "refersTo": "table",
+      "description": "Striped data table with hover rows.",
+      "html": "<table class=\"table is-striped is-hoverable is-fullwidth\"><thead><tr><th>Name</th><th>Status</th><th>Budget</th></tr></thead><tbody><tr><td>Project Alpha</td><td><span class=\"tag is-success is-light is-uppercase\">Active</span></td><td>$12,500</td></tr></tbody></table>",
+      "css": ".ds-table { width: 100%; border-collapse: collapse; font-family: 'Source Sans 3', system-ui, sans-serif; font-size: 1rem; } .ds-table th { font-weight: 600; text-align: left; padding: 0.5em 0.75em; border-bottom: 2px solid #dbdbdb; } .ds-table td { padding: 0.5em 0.75em; border-bottom: 1px solid #dbdbdb; } .ds-table tbody tr:nth-child(even) { background: #fafafa; } .ds-table tbody tr:hover { background: #f5f5f5; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Ledger",
+    "overview": "ContractFlow is designed like a well-kept financial journal. Every number has its place, every transaction leaves a clear trail, and nothing is decorative. The system conveys precision, security, and absolute control.",
+    "keyCharacteristics": [
+      "Clean slate surfaces with subtle structure",
+      "Cards lift on interaction — a tactile response, not a decorative flourish",
+      "Serif headings for authority; sans body for readability",
+      "Status communicated through color — the only place color carries semantic weight",
+      "No decoration that doesn't serve a task"
+    ],
+    "rules": [
+      { "name": "The Semantic Restraint Rule", "body": "Color carries meaning or it doesn't appear. Peach = action, teal = navigation, green = active, yellow = paused, blue = complete, coral = danger. No decorative color use.", "section": "colors" },
+      { "name": "The One Accent Rule", "body": "Teal is the only saturated interactive color. It appears on links and interactive indicators only.", "section": "colors" },
+      { "name": "The Single Source Rule", "body": "All body copy and UI labels use Source Sans 3. Open Sans is exclusively for the navbar brand text. Source Serif 4 is exclusively for headings. No mixing within a role.", "section": "typography" },
+      { "name": "The Flat-By-Default Rule", "body": "Every surface starts at rest with no shadow. Shadows appear only as a response to hover state.", "section": "elevation" },
+      { "name": "The One-Shadow Rule", "body": "There is exactly one shadow in the system — the card hover. No modal shadows, no dropdown shadows, no tooltip shadows.", "section": "elevation" }
+    ],
+    "dos": [
+      "Use the Warm Peach primary for all primary CTAs to maintain consistent action affordance.",
+      "Use Teal for all links so the user instantly recognizes interactive text.",
+      "Keep the card grid responsive with repeat(auto-fill, minmax(300px, 1fr)).",
+      "Use semantic tags (green/yellow/blue/coral) for status — they're the only color that carries meaning.",
+      "Batch actions behind an 'Actions' dropdown on detail views to keep the header clean.",
+      "Lead every page with a title and breadcrumb trail so the user always knows where they are.",
+      "Follow the budget-first flow: show estimates alongside actuals on every financial view."
+    ],
+    "donts": [
+      "Don't use the primary peach as a background fill or decorative element — it's reserved for buttons and CTAs.",
+      "Don't add colored left borders to cards as accents (side-stripe border anti-pattern).",
+      "Don't use gradient text anywhere — all headings are solid colors.",
+      "Don't add glassmorphism, blurred surfaces, or decorative overlays.",
+      "Don't replicate the numbered section eyebrow (01 / 02 / 03) pattern — the landing page's 'How it Works' steps are a genuine sequence, not scaffolding.",
+      "Don't reinvent standard form controls — Bulma's .input, .select, .checkbox, and .file are the vocabulary.",
+      "Don't use modals as the first solution for create/edit flows — inline and progressive disclosure are better.",
+      "Don't add a card grid where the cards are all identical (icon + heading + text) — vary layout by content.",
+      "Don't use tiny uppercase tracked eyebrows above every section.",
+      "Don't look like traditional accounting software: no dense gray grids, no jargon-heavy labels, no overwhelming dashboards."
+    ]
+  }
+}

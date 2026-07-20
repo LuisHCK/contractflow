@@ -16,44 +16,50 @@
                 </ul>
             </nav>
 
-            <div class="is-flex is-justify-content-space-between is-align-items-center">
-                <h1 class="title is-1 is-size-3-mobile"><%= project.name %></h1>
-                <div class="dropdown is-right is-hoverable">
-                    <div class="dropdown-trigger">
-                        <button class="button is-small" aria-haspopup="true" aria-controls="dropdown-menu">
-                            <span><%= __('actions') %></span>
-                            <span class="icon is-small">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <polyline points="6 9 12 15 18 9"></polyline>
-                                </svg>
-                            </span>
-                        </button>
-                    </div>
-                    <div class="dropdown-menu" id="dropdown-menu" role="menu">
-                        <div class="dropdown-content">
-                            <a href="/projects/edit/<%= project.id %>" class="dropdown-item">
-                                <%= __('projects_edit') %>
-                            </a>
-                            <a href="/projects/show/<%= project.id %>/currency" class="dropdown-item">
-                                <%= __('projects_change_currency') %>
-                            </a>
-                            <hr class="dropdown-divider">
-                            <form action="/projects/delete/<%= project.id %>" method="POST" onsubmit="return confirm('Are you sure you want to archive this project?');">
-                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                                <button type="submit" class="dropdown-item has-text-danger" style="background:none;border:none;width:100%;text-align:left;cursor:pointer;">
-                                    Archive
-                                </button>
-                            </form>
+            <div class="columns is-vcentered mb-0">
+                <div class="column">
+                    <h1 class="title is-1 is-size-3-mobile"><%= project.name %></h1>
+                </div>
+                <div class="column is-narrow has-text-right">
+                    <div class="dropdown is-right" data-dropdown>
+                        <div class="dropdown-trigger">
+                            <button class="button is-small" aria-haspopup="true" aria-controls="dropdown-menu">
+                                <span><%= __('actions') %></span>
+                                <span class="icon is-small">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </span>
+                            </button>
+                        </div>
+                        <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                            <div class="dropdown-content">
+                                <a href="/projects/edit/<%= project.id %>" class="dropdown-item">
+                                    <%= __('projects_edit') %>
+                                </a>
+                                <a href="/projects/show/<%= project.id %>/currency" class="dropdown-item">
+                                    <%= __('projects_change_currency') %>
+                                </a>
+                                <hr class="dropdown-divider">
+                                <form action="/projects/delete/<%= project.id %>" method="POST" onsubmit="return confirm('Are you sure you want to archive this project?');">
+                                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                    <button type="submit" class="dropdown-item has-text-danger is-ghost">
+                                        Archive
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <h2 class="subtitle"><%= project.description %></h2>
+            <% if (project.description) { %>
+                <p class="subtitle"><%= project.description %></p>
+            <% } %>
 
             <section>
-                <h2 class="title is-5"><%= __('projects_overview') %></h2>
+                <h2 class="title is-5 mb-4"><%= __('projects_overview') %></h2>
                 <%- include('partials/_overview-cards', { project, stages }) %>
             </section>
 

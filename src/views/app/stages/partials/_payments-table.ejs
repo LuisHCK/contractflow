@@ -51,7 +51,7 @@
                     <% if (payment.evidences?.length > 0) { %>
                         <div class="tags">
                             <% payment.evidences.forEach(evidence => { %>
-                                <a href="/<%= evidence.filePath %>" target="_blank" class="tag is-link is-light is-small">
+                                <a href="/<%= evidence.filePath %>" target="_blank" rel="noopener noreferrer" class="tag is-link is-light is-small">
                                     <span class="icon is-small mr-1"><i class="fas fa-paperclip"></i></span>
                                     <%= evidence.fileName.length > 20 ? evidence.fileName.substring(0, 17) + '...' : evidence.fileName %>
                                 </a>

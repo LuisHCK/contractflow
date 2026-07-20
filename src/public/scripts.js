@@ -20,31 +20,28 @@ document.addEventListener('DOMContentLoaded', () => {
         })
     }
 
-    // Dropdowns
-    const dropdownButtons = document.querySelectorAll('.dropdown .button')
+    // Dropdowns — click toggle (works on touch, no hover dependency)
+    const dropdownTriggers = document.querySelectorAll('.dropdown-trigger .button, .dropdown .dropdown-trigger .button')
 
-    if (dropdownButtons.length > 0) {
-        dropdownButtons.forEach((button) => {
+    if (dropdownTriggers.length > 0) {
+        dropdownTriggers.forEach((button) => {
             const dropdown = button.closest('.dropdown')
-            
+
             button.addEventListener('click', (e) => {
-                // Prevent click from propagating if nested
                 e.stopPropagation()
-                
                 if (dropdown) {
                     dropdown.classList.toggle('is-active')
                 }
             })
+        })
 
-            // Close when focus receives an outside element
-            if (dropdown) {
-                dropdown.addEventListener('focusout', (e) => {
-                    const newFocus = e.relatedTarget
-                    if (!dropdown.contains(newFocus)) {
-                        dropdown.classList.remove('is-active')
-                    }
-                })
-            }
+        // Close any open dropdown when clicking/tapping outside
+        document.addEventListener('click', (e) => {
+            document.querySelectorAll('.dropdown.is-active').forEach((open) => {
+                if (!open.contains(e.target)) {
+                    open.classList.remove('is-active')
+                }
+            })
         })
     }
 

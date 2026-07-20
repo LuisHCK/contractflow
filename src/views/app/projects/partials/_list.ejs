@@ -1,7 +1,12 @@
 <% const statusStyles = {
+    in_progress: "is-success",
     active: "is-success",
+    on_hold: "is-warning",
     paused: "is-warning",
+    planned: "is-info",
     completed: "is-link",
+    canceled: "is-danger",
+    delayed: "is-danger",
     archived: "is-dark"
 }; %>
 
@@ -26,9 +31,9 @@
                         <div class="columns is-mobile">
                             <div class="column">
                                 <h4 class="title is-5 is-spaced"><%= project.name %></h4>
-                                <p class="subtitle is-6 has-text-grey">
-                                    <%= project.description %>
-                                </p>
+                                <% if (project.description) { %>
+                                    <p class="subtitle is-6 has-text-grey"><%= project.description %></p>
+                                <% } %>
                             </div>
                             <div class="column is-narrow">
                                 <span class="tag <%= statusClass %> is-light is-uppercase"><%= statusLabel %></span>
@@ -36,52 +41,48 @@
                         </div>
 
                         <div>
-                            <div class="columns mb-0">
-                                <div class="column pb-1"><%= __('progress') %></div>
-                                <div class="column has-text-right pb-2">
-                                    <%= project.progress %>%
-                                </div>
+                            <div class="is-flex is-justify-content-space-between mb-1">
+                                <span class="is-size-7"><%= __('progress') %></span>
+                                <span class="is-size-7"><%= project.progress %>%</span>
                             </div>
-                            <progress class="progress is-small" value="<%= project.progress %>" max="100"><%= project.progress %>%</progress>
+                            <progress class="progress is-small mb-0" value="<%= project.progress %>" max="100"><%= project.progress %>%</progress>
                         </div>
 
-                        <div class="columns">
+                        <div class="columns mt-3">
                             <div class="column">
-                                <div class="is-flex gap-2 mt-3">
-                                    <div class="is-flex is-align-items-center is-justify-content-center">
-                                        <%- include('../../../partials/icons/home-dollar.ejs') %>
+                                <div class="media">
+                                    <div class="media-left">
+                                        <span class="icon">
+                                            <%- include('../../../partials/icons/home-dollar.ejs') %>
+                                        </span>
                                     </div>
-                                    <div >
-                                        <p class="mb-1 is-size-7"><%= __('projects_list_estimated_cost') %></p>
-                                        <p class="m-0 "><%= formatToCurrency(project.estimatedCost, { currency: project.currencyCode, symbol: project.currencySymbol }) %></p>
+                                    <div class="media-content">
+                                        <p class="is-size-7 mb-1"><%= __('projects_list_estimated_cost') %></p>
+                                        <p class="m-0"><%= formatToCurrency(project.estimatedCost, { currency: project.currencyCode, symbol: project.currencySymbol }) %></p>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="column">
-                                <div class="is-flex gap-2 mt-3">
-                                    <div class="is-flex is-align-items-center is-justify-content-center">
-                                        <%- include('../../../partials/icons/calendar.ejs') %>
+                                <div class="media">
+                                    <div class="media-left">
+                                        <span class="icon">
+                                            <%- include('../../../partials/icons/calendar.ejs') %>
+                                        </span>
                                     </div>
-                                    <div >
-                                        <p class="mb-1 is-size-7"><%= __('projects_create_start_date') %></p>
-                                        <p class="m-0 "><%= formatDate(project.startDate) %></p>
+                                    <div class="media-content">
+                                        <p class="is-size-7 mb-1"><%= __('projects_create_start_date') %></p>
+                                        <p class="m-0"><%= formatDate(project.startDate) %></p>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-                        <% if (project.deleted) { %>
-                            <span class="tag is-danger is-light is-uppercase">
-                                <%= __('archived') %>
-                            </span>
-                        <% } %>
                     </div>
                 </div>
 
                 <footer class="card-footer">
                     <a href="/projects/show/<%= project.id %>" class="card-footer-item has-text-weight-semibold">
-                        <%= `${__('projects_list_view')} ${__('detail_details')}` %>
+                        <%= __('projects_list_view_details') %>
                     </a>
                     <a href="/projects/edit/<%= project.id %>" class="card-footer-item has-text-weight-semibold">
                         <%= __('projects_edit') %>
@@ -92,7 +93,7 @@
         <% }); %>
     <% } else { %>
         <div class="column is-12">
-            <div class="notification is-info is-light">
+            <div class="notification is-warning">
                 <%= __('projects_list_no_projects') %>
             </div>
         </div>

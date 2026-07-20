@@ -5,7 +5,8 @@
  */
 export const recoverPaymentById = async (paymentId) => {
     try {
-        const existing = await getById(paymentId)
+        const rows = await database.unsafe(PAYMENTS.GET_ANY, [paymentId])
+        const existing = rows?.[0]
         if (!existing?.id) return false
         await database.unsafe(PAYMENTS.RECOVER, [paymentId])
         return true

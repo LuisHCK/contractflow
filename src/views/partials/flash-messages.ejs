@@ -1,7 +1,7 @@
 <div>
     <% messages.forEach(function (message, index) { %>
         <div class="container p-4">
-            <div class="notification mb-4 is-<%= message.type %> is-light" role="alert" aria-live="assertive" id="flash-message-<%= index %>">
+            <div class="notification mb-4 is-<%= message.type %> is-light" role="status" aria-live="polite" id="flash-message-<%= index %>">
                 <button class="delete"
                     onclick="document.getElementById('flash-message-<%= index %>').remove();"
                     aria-label="Close"

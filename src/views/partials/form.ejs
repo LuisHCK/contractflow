@@ -5,6 +5,7 @@
     <% if (fields.some(field => field.type === 'file')) { %>
         enctype="multipart/form-data"
     <% } %>
+    onsubmit="var btn=this.querySelector('.button.is-primary[type=submit]');if(btn)btn.disabled=true;"
 >
     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
     <% fields.map(field => { %>
@@ -164,7 +165,7 @@
     <% }) %>
 
     <div class="has-text-right">
-        <button type="button" class="button is-secondary" onclick="window.history.back()">
+        <button type="button" class="button is-secondary" onclick="if (document.referrer) { window.history.back(); } else { window.location.href = '/projects'; }">
             Cancel
         </button>
         <button class="button is-primary" type="submit">

@@ -1,8 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap');
 @import 'https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css';
 
 :root {
-    --bulma-family-primary: 'Open Sans', sans-serif;
+    --bulma-family-primary: 'Source Sans 3', system-ui, sans-serif;
+    --bulma-family-secondary: 'Source Serif 4', Georgia, serif;
     --checkbox-size: 18px;
     --bulma-primary-h: 25deg;
     --bulma-primary-s: 66%;
@@ -24,8 +25,13 @@
     --bulma-radius: 0.25em;
 }
 
+.title,
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--bulma-family-secondary);
+}
+
 .title {
-    font-weight: 500 !important;
+    --bulma-title-weight: 600;
 }
 
 /* Overrides */
@@ -171,16 +177,12 @@ input[type='checkbox'],
     --bulma-button-padding-horizontal: 0.7em;
 }
 
-.title {
-    --bulma-title-weight: 600;
-}
-
 .input {
     --bulma-input-radius: 0.25rem;
 }
 
-.is-hidden-print {
-    @media print {
+@media print {
+    .is-hidden-print {
         display: none !important;
     }
 }
@@ -202,19 +204,87 @@ input[type='checkbox'],
     gap: 1rem !important;
 }
 
-/* Project overview cards */
-.overview-card-box {
-    display: flex;
-    align-items: center;
+/* Safe area padding for modern phones (notch, home indicator) */
+body {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
 }
 
-.overview-card-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* Larger touch targets on touch devices */
+@media (pointer: coarse) {
+    .button.is-small {
+        min-height: 44px;
+        padding-top: 0.6em;
+        padding-bottom: 0.6em;
+    }
+
+    .card-footer-item {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+    }
+
+    .tag {
+        min-height: 28px;
+        display: inline-flex;
+        align-items: center;
+    }
 }
 
-.overview-card-icon svg {
-    width: 2.75rem;
-    height: 2.75rem;
+/* No hover states on touch — use active instead */
+@media (hover: none) {
+    .card:hover {
+        transform: none;
+        box-shadow: none;
+    }
+
+    .card:active {
+        transform: translateY(-1px);
+        box-shadow: 0 0.5em 1em -0.125em rgba(10, 10, 10, 0.1), 0 0px 0 1px rgba(10, 10, 10, 0.02);
+    }
+
+    .project-card:hover {
+        transform: none;
+        box-shadow: none;
+    }
+
+    .project-card:active {
+        transform: translateY(-1px);
+        box-shadow: 0 0.5em 1em -0.125em rgba(10, 10, 10, 0.1), 0 0px 0 1px rgba(10, 10, 10, 0.02);
+    }
+}
+
+/* Inline SVGs inside Bulma icon containers */
+.icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* Stage card footer — stack vertically on narrow mobile */
+@media screen and (max-width: 480px) {
+    .card-footer {
+        flex-direction: column;
+    }
+
+    .card-footer-item {
+        justify-content: flex-start;
+        border-bottom: 1px solid var(--bulma-border);
+        padding: 0.75rem 1.25rem;
+    }
+
+    .card-footer-item:last-child {
+        border-bottom: none;
+    }
+}
+
+/* Card hover lift */
+.card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5em 1em -0.125em rgba(10, 10, 10, 0.1), 0 0px 0 1px rgba(10, 10, 10, 0.02);
 }

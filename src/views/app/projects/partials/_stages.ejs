@@ -13,47 +13,51 @@
                         <h4 class="title is-5 is-spaced"><%= stage.name %></h4>
 
                         <div>
-                            <div class="columns mb-0">
-                                <div class="column pb-1"><%= __('stages_progress') %></div>
-                                <div class="column has-text-right pb-2"><%= progressValue %>%</div>
+                            <div class="is-flex is-justify-content-space-between mb-1">
+                                <span class="is-size-7"><%= __('stages_progress') %></span>
+                                <span class="is-size-7"><%= progressValue %>%</span>
                             </div>
-                            <progress class="progress is-small <% if (progressValue >= 100) { %>is-success<% } %>" value="<%= progressValue %>" max="100">
+                            <progress class="progress is-small <% if (progressValue >= 100) { %>is-success<% } %> mb-0" value="<%= progressValue %>" max="100">
                                 <%= progressValue %>%
                             </progress>
                         </div>
 
-                        <div class="columns is-multiline">
-                            <div class="column is-half">
-                                <div class="is-flex gap-2 mt-3">
-                                    <div class="is-flex is-align-items-center is-justify-content-center">
-                                        <%- include('../../../partials/icons/coins.ejs') %>
+                        <div class="columns is-multiline is-mobile is-variable is-3 mt-3">
+                            <div class="column is-half-tablet is-one-third-desktop">
+                                <div class="media">
+                                    <div class="media-left">
+                                        <span class="icon">
+                                            <%- include('../../../partials/icons/coins.ejs') %>
+                                        </span>
                                     </div>
-                                    <div>
-                                        <p class="mb-1 is-size-7"><%= __('stages_estimated_cost') %></p>
+                                    <div class="media-content">
+                                        <p class="is-size-7 mb-0"><%= __('stages_estimated_cost') %></p>
                                         <p class="m-0"><%= formatToCurrency(estimatedCost, { currency: stage.displayCurrencyCode, symbol: stage.displayCurrencySymbol }) %></p>
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="column is-half">
-                                <div class="is-flex gap-2 mt-3">
-                                    <div class="is-flex is-align-items-center is-justify-content-center">
-                                        <%- include('../../../partials/icons/cash.ejs') %>
+                            <div class="column is-half-tablet is-one-third-desktop">
+                                <div class="media">
+                                    <div class="media-left">
+                                        <span class="icon">
+                                            <%- include('../../../partials/icons/cash.ejs') %>
+                                        </span>
                                     </div>
-                                    <div>
-                                        <p class="mb-1 is-size-7"><%= __('stages_paid') %></p>
+                                    <div class="media-content">
+                                        <p class="is-size-7 mb-0"><%= __('stages_paid') %></p>
                                         <p class="m-0"><%= formatToCurrency(totalPayments, { currency: stage.displayCurrencyCode, symbol: stage.displayCurrencySymbol }) %></p>
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="column is-half">
-                                <div class="is-flex gap-2 mt-3">
-                                    <div class="is-flex is-align-items-center is-justify-content-center">
-                                        <%- include('../../../partials/icons/wallet.ejs') %>
+                            <div class="column is-half-tablet is-one-third-desktop">
+                                <div class="media">
+                                    <div class="media-left">
+                                        <span class="icon">
+                                            <%- include('../../../partials/icons/wallet.ejs') %>
+                                        </span>
                                     </div>
-                                    <div>
-                                        <p class="mb-1 is-size-7"><%= __('stages_owed') %></p>
+                                    <div class="media-content">
+                                        <p class="is-size-7 mb-0"><%= __('stages_owed') %></p>
                                         <p class="m-0"><%= formatToCurrency(owedAmount, { currency: stage.displayCurrencyCode, symbol: stage.displayCurrencySymbol }) %></p>
                                     </div>
                                 </div>
@@ -69,9 +73,9 @@
                     <a href="/projects/show/<%= project.id %>/stages/show/<%= stage.id %>" class="card-footer-item has-text-weight-semibold">
                         <%= __('view') %>
                     </a>
-                    <form method="POST" action="/projects/show/<%= project.id %>/stages/remove/<%= stage.id %>" class="card-footer-item">
+                    <form method="POST" action="/projects/show/<%= project.id %>/stages/remove/<%= stage.id %>" class="card-footer-item" onsubmit="return confirm('<%= __('stages_delete_confirm') %>');">
                         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                        <button type="submit" class="button is-warning is-small">
+                        <button type="submit" class="button is-small is-ghost has-text-grey">
                             <%= __('stages_delete') %>
                         </button>
                     </form>
