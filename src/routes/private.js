@@ -4,6 +4,7 @@ import * as projectController from '@/controllers/projects'
 import * as stageController from '@/controllers/stages'
 import * as contractorsController from '@/controllers/contractors'
 import * as paymentsController from '@/controllers/payments'
+import * as paymentSchedulesController from '@/controllers/payment-schedules'
 import * as paymentCategoriesController from '@/controllers/payment-categories'
 import * as evidencesController from '@/controllers/evidences'
 import * as systemSettingsController from '@/controllers/system-settings'
@@ -58,6 +59,22 @@ router.post(
 router.get(
     '/payments/print/:id',
     paymentsController.print
+)
+
+/**
+ * PAYMENT SCHEDULES
+ */
+router.get(
+    '/projects/show/:id/stages/show/:stageId/schedule/create',
+    paymentSchedulesController.create
+)
+router.post(
+    '/projects/show/:id/stages/show/:stageId/schedule/create',
+    paymentSchedulesController.create
+)
+router.post(
+    '/projects/show/:id/stages/show/:stageId/schedule/delete',
+    paymentSchedulesController.destroy
 )
 
 /**

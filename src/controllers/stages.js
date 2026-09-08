@@ -10,6 +10,7 @@ import {
     deleteStageById,
     getStageReportSummary
 } from '@/services/stages'
+import { getScheduleByStage } from '@/services/payment-schedules'
 
 export const index = async (_req, res) => {
     try {
@@ -34,6 +35,8 @@ export const show = async (req, res) => {
             return res.status(404).send('Stage not found')
         }
 
+        const schedule = await getScheduleByStage(stage.id)
+
         const currencyOpts = { currency: stage.displayCurrencyCode, symbol: stage.displayCurrencySymbol }
         const totalPaid = payments.reduce((sum, p) => sum + Number(p.amount || 0), 0)
         const estimatedCost = Number(stage.estimatedCost || 0)
@@ -42,7 +45,7 @@ export const show = async (req, res) => {
             ? Math.min(100, Math.round((totalPaid / estimatedCost) * 1000) / 10)
             : 0
 
-        res.render('app/stages/show', { stage, project, payments, currencyOpts, totalPaid, estimatedCost, outstandingBalance, progress })
+        res.render('app/stages/show', { stage, project, payments, currencyOpts, totalPaid, estimatedCost, outstandingBalance, progress, schedule })
     } catch (error) {
         console.error(`[StagesController.show] Error fetching stage: ${error}`)
         return res

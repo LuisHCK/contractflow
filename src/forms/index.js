@@ -234,6 +234,50 @@ export const PAYMENT_CATEGORY_FORM = {
     ]
 }
 
+export const PAYMENT_SCHEDULE_FORM = {
+    fields: [
+        {
+            label: 'payment_schedule_installments',
+            name: 'installmentCount',
+            placeholder: 'payment_schedule_installments_placeholder',
+            required: true,
+            type: 'number',
+            min: 1,
+            step: 1
+        },
+        {
+            label: 'payment_schedule_frequency', name: 'frequency', type: 'select', required: true,
+            placeholder: 'payment_schedule_frequency',
+            options: [
+                { label: 'payment_schedule_frequency_daily', value: 'daily' },
+                { label: 'payment_schedule_frequency_weekly', value: 'weekly' },
+                { label: 'payment_schedule_frequency_biweekly', value: 'biweekly' },
+                { label: 'payment_schedule_frequency_monthly', value: 'monthly' }
+            ]
+        },
+        {
+            label: 'payment_schedule_weekday', name: 'weekday', type: 'select', required: false,
+            placeholder: 'payment_schedule_weekday',
+            options: [
+                { label: 'payment_schedule_weekday_monday', value: '0' },
+                { label: 'payment_schedule_weekday_tuesday', value: '1' },
+                { label: 'payment_schedule_weekday_wednesday', value: '2' },
+                { label: 'payment_schedule_weekday_thursday', value: '3' },
+                { label: 'payment_schedule_weekday_friday', value: '4' },
+                { label: 'payment_schedule_weekday_saturday', value: '5' },
+                { label: 'payment_schedule_weekday_sunday', value: '6' }
+            ]
+        },
+        {
+            label: 'payment_schedule_start_date',
+            name: 'startDate',
+            placeholder: 'payment_schedule_start_date_placeholder',
+            required: true,
+            type: 'date'
+        }
+    ]
+}
+
 export const EVIDENCE_FORM = {
     fields: [
         {

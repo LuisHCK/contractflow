@@ -409,6 +409,47 @@ export const CONTRACTORS = {
         LIMIT 10 OFFSET 0;`
 }
 
+export const PAYMENT_SCHEDULES = {
+    ADD: `
+        INSERT INTO payment_schedules (
+            stage_id, total_amount, total_amount_base, display_currency_code,
+            display_currency_symbol, exchange_rate, schedule_type, frequency,
+            interval, weekday, installment_count, start_date, created_by
+        )
+        VALUES (
+            $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13
+        )
+        RETURNING id;`,
+
+    GET_BY_STAGE: `
+        SELECT * FROM payment_schedules
+        WHERE stage_id = $1 AND deleted = false
+        LIMIT 1;`,
+
+    GET: `
+        SELECT * FROM payment_schedules
+        WHERE id = $1 AND deleted = false;`,
+
+    SOFT_DELETE: `
+        UPDATE payment_schedules
+        SET deleted = true
+        WHERE id = $1;`
+}
+
+export const SCHEDULE_INSTALLMENTS = {
+    ADD: `
+        INSERT INTO schedule_installments (
+            schedule_id, installment_number, due_date, amount, amount_base
+        )
+        VALUES ($1, $2, $3, $4, $5)
+        RETURNING id;`,
+
+    GET_BY_SCHEDULE: `
+        SELECT * FROM schedule_installments
+        WHERE schedule_id = $1 AND deleted = false
+        ORDER BY installment_number ASC;`
+}
+
 export const EVIDENCES = {
     ADD: `
         INSERT INTO evidences (

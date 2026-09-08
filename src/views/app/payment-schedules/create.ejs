@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="<%= locale %>" data-theme="<%= locals.theme || 'light' %>">
+<%- include('../../partials/head', { title: `ContractFlow | ${stage.name} — ${__('payment_schedule_create_title')}` }) %>
+
+<body>
+    <%- include('../../partials/navigation') %>
+
+    <main class="container is-max-widescreen py-6 px-4"
+        data-total="<%= stage.estimatedCost %>"
+        data-currency-code="<%= stage.displayCurrencyCode || 'USD' %>"
+        data-currency-symbol="<%= stage.displayCurrencySymbol || '' %>">
+
+        <nav class="breadcrumb is-small" aria-label="breadcrumbs">
+            <ul>
+                <li><a href="/"><%= __('breadcrumb_home') %></a></li>
+                <li><a href="/projects"><%= __('breadcrumb_projects') %></a></li>
+                <li><a href="/projects/show/<%= project.id %>"><%= project.name %></a></li>
+                <li><a href="/projects/show/<%= project.id %>/stages/show/<%= stage.id %>"><%= stage.name %></a></li>
+                <li class="is-active"><a href="#" aria-current="page" class="has-text-dark"><%= __('payment_schedule_create_title') %></a></li>
+            </ul>
+        </nav>
+
+        <h1 class="title is-2 mb-4"><%= __('payment_schedule_create_title') %></h1>
+
+        <% if (error) { %>
+            <div class="notification is-danger is-light">
+                <%= __('payment_schedule_create_error') %>
+            </div>
+        <% } %>
+
+        <div class="card mb-5">
+            <div class="card-content">
+                <%- include('../../partials/form', { ...form, action: `/projects/show/${project.id}/stages/show/${stage.id}/schedule/create`, submitLabel: 'payment_schedule_create' }) %>
+            </div>
+        </div>
+
+        <section id="preview" hidden aria-live="polite">
+            <h2 class="title is-5 mb-4"><%= __('payment_schedule_preview_title') %></h2>
+            <div class="table-container">
+                <table class="table is-fullwidth is-striped is-hoverable">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th><%= __('payment_schedule_due_date') %></th>
+                            <th class="has-text-right"><%= __('payment_schedule_amount') %></th>
+                        </tr>
+                    </thead>
+                    <tbody id="preview-body"></tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="2"><%= __('payment_schedule_total') %></th>
+                            <th id="preview-total" class="has-text-right"></th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        (function () {
+            const main = document.querySelector('main[data-total]')
+            const total = Number(main.dataset.total || 0)
+            const symbol = main.dataset.currencySymbol || ''
+            const code = main.dataset.currencyCode || 'USD'
+            const STEP_DAYS = { daily: 1, weekly: 7, biweekly: 14 }
+
+            const fmtDisplay = (d) => {
+                const dd = String(d.getDate()).padStart(2, '0')
+                const mm = String(d.getMonth() + 1).padStart(2, '0')
+                return dd + '/' + mm + '/' + d.getFullYear()
+            }
+            const fmtMoney = (n) => (symbol ? symbol : code + ' ') + n.toFixed(2)
+
+            const snapToWeekday = (date, isoWeekday) => {
+                const jsDay = (Number(isoWeekday) + 1) % 7
+                date.setDate(date.getDate() + ((jsDay - date.getDay() + 7) % 7))
+                return date
+            }
+            const advance = (date, frequency, interval) => {
+                const d = new Date(date)
+                if (frequency === 'monthly') d.setMonth(d.getMonth() + interval)
+                else d.setDate(d.getDate() + STEP_DAYS[frequency] * interval)
+                return d
+            }
+
+            const generate = (count, frequency, interval, weekday, startDateStr) => {
+                const [y, m, d] = startDateStr.split('-').map(Number)
+                let cursor = new Date(y, m - 1, d)
+                const usesWeekday = (frequency === 'weekly' || frequency === 'biweekly') && weekday !== ''
+                if (usesWeekday) cursor = snapToWeekday(cursor, weekday)
+
+                const totalCents = Math.round(total * 100)
+                const baseCents = Math.floor(totalCents / count)
+                const out = []
+                for (let i = 0; i < count; i++) {
+                    out.push({
+                        dueDate: fmtDisplay(cursor),
+                        amount: i === count - 1 ? (totalCents - baseCents * (count - 1)) / 100 : baseCents / 100
+                    })
+                    cursor = advance(cursor, frequency, interval)
+                }
+                return out
+            }
+
+            const render = () => {
+                const count = Number(document.getElementById('installmentCount').value || 0)
+                const frequency = document.getElementById('frequency').value
+                const weekday = document.getElementById('weekday').value
+                const interval = 1
+                const startDate = document.getElementById('startDate').value
+                const preview = document.getElementById('preview')
+                const body = document.getElementById('preview-body')
+
+                if (!count || count < 1 || !startDate || total <= 0) {
+                    preview.hidden = true
+                    return
+                }
+
+                const rows = generate(count, frequency, interval, weekday, startDate)
+                body.innerHTML = rows.map((r, i) =>
+                    '<tr><td>' + (i + 1) + '</td><td>' + r.dueDate + '</td><td class="has-text-right">' + fmtMoney(r.amount) + '</td></tr>'
+                ).join('')
+                document.getElementById('preview-total').textContent = fmtMoney(total)
+
+                preview.hidden = false
+            }
+
+            ;['installmentCount', 'frequency', 'weekday', 'startDate'].forEach((id) => {
+                document.getElementById(id).addEventListener('input', render)
+                document.getElementById(id).addEventListener('change', render)
+            })
+            render()
+        })()
+    </script>
+</body>
+</html>

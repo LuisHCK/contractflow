@@ -129,6 +129,9 @@
                     name="<%= field.name %>"
                     id="<%= field.name %>"
                     value="<%= field.value %>"
+                    <% if (field.min !== undefined) { %> min="<%= field.min %>" <% } %>
+                    <% if (field.max !== undefined) { %> max="<%= field.max %>" <% } %>
+                    <% if (field.step !== undefined) { %> step="<%= field.step %>" <% } %>
                     <% if (field.readonly) { %>
                         readonly
                     <% } %>

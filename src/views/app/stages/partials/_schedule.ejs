@@ -1,0 +1,79 @@
+<%
+    const fmtDate = (s) => { const [y, m, d] = String(s).split('-'); return d + '/' + m + '/' + y }
+%>
+
+<% if (!schedule) { %>
+    <div class="notification is-warning">
+        <div class="columns is-vcentered">
+            <div class="column">
+                <%= __('payment_schedule_no_schedule') %>
+            </div>
+            <div class="column is-narrow">
+                <a href="/projects/show/<%= stage.projectId %>/stages/show/<%= stage.id %>/schedule/create"
+                    class="button is-primary is-small">
+                    <%= __('payment_schedule_create') %>
+                </a>
+            </div>
+        </div>
+    </div>
+<% } else { %>
+    <% const currencyOpts = { currency: schedule.displayCurrencyCode, symbol: schedule.displayCurrencySymbol } %>
+    <div class="card">
+        <div class="card-content">
+            <div class="columns mb-4">
+                <div class="column">
+                    <p class="heading"><%= __('payment_schedule_total') %></p>
+                    <p class="title is-4"><%= formatToCurrency(schedule.totalAmount, currencyOpts) %></p>
+                </div>
+                <div class="column">
+                    <p class="heading"><%= __('payment_schedule_installments') %></p>
+                    <p class="title is-4"><%= schedule.installmentCount %></p>
+                </div>
+                <div class="column">
+                    <p class="heading"><%= __('payment_schedule_next_due_label') %></p>
+                    <p class="title is-4"><%= schedule.nextDueDate ? fmtDate(schedule.nextDueDate) : '-' %></p>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table class="table is-fullwidth is-striped is-hoverable">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th><%= __('payment_schedule_due_date') %></th>
+                            <th class="has-text-right"><%= __('payment_schedule_amount') %></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% schedule.installments.forEach((inst) => { %>
+                        <tr>
+                            <td><%= inst.installmentNumber %></td>
+                            <td>
+                                <%= fmtDate(inst.dueDate) %>
+                                <% if (inst.overdue) { %>
+                                    <span class="tag is-danger is-light is-small ml-2"><%= __('payment_schedule_overdue') %></span>
+                                <% } %>
+                            </td>
+                            <td class="has-text-right"><%= formatToCurrency(inst.amount, currencyOpts) %></td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <footer class="card-footer">
+            <form
+                action="/projects/show/<%= stage.projectId %>/stages/show/<%= stage.id %>/schedule/delete"
+                method="POST"
+                class="card-footer-item"
+                onsubmit="return confirm('<%= __('payment_schedule_delete_confirm') %>');"
+            >
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button type="submit" class="button is-small is-ghost has-text-danger">
+                    <%= __('payment_schedule_delete') %>
+                </button>
+            </form>
+        </footer>
+    </div>
+<% } %>
