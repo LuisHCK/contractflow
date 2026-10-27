@@ -1,6 +1,6 @@
 # Multi-stage Dockerfile for Bun + Express app
 # Base image (Bun 1.3.10 on Alpine)
-FROM mirror.gcr.io/oven/bun:1.3.10-alpine AS base
+FROM mirror.gcr.io/oven/bun:1.4.4-alpine AS base
 
 WORKDIR /app
 ENV NODE_ENV=production
